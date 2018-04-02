@@ -7,9 +7,9 @@
 masterDat<-read.csv("13C_PLFA_master.csv")
 
 # Obtain a list of FAME compounds identified in this analysis
-FAMEs<-unique(masterDat$Compounds.Result.Name)
-FAMEs # 60 different FAME compounds, 1 category for unknown FAME
-write.csv(FAMEs,file="FAME_compounds.csv")
+# FAMEs<-unique(masterDat$Compounds.Result.Name)
+# FAMEs # 60 different FAME compounds, 1 category for unknown FAME
+# write.csv(FAMEs,file="FAME_compounds.csv")
 
 cleanDat<-masterDat[masterDat$Compounds.Result.Name!="",] # Removed compounds that are not biomarkers
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:00",]
@@ -53,6 +53,46 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
 
+#### Create function to calculate percent C in all fame compounds.
+
+##########################################################################################################
+# FUNCTION: percentC
+# Function that calculates C % by mass for PLFA FAME compounds
+# input: dat = dataframe of with molecular formula for each compound broken down into C,H,O columns
+# output: perC = dataframe listing C % for each compound
+#---------------------------------------------------------------------------------------------------------
+
+percentC<-function(data=NULL) {
+  if(is.null(data)) { # Minimalist code for default data frame
+    comp_name<-seq(from=1,to=10)
+    C<-sample(x=1:30,size=10,replace=TRUE)
+    H<-sample(x=1:50,size=10,replace=TRUE)
+    O<-rep(2,times=10)
+    data<-data.frame(comp_name,C,H,O)
+  }
+  
+  N<-length(data$C)
+  perC<-c()
+  
+  for(i in 1:N) {
+    C<-data$C[i] * 12.011
+    H<-data$H[i] * 1.008
+    O<-data$O[i] * 15.999
+    molec_mass<-(C+H+O)
+    perC[i]<-C/molec_mass
+  }
+  
+  Cout<-data.frame(data,perC)
+  return(Cout)
+}
+
+#_________________________________________________
+
+#percentC()
+
+fame_molec<-read.csv("fame_percent_C.csv")
+
+fameCog<-percentC(data=fame_molec)
 
 
-
+fameC<-fameCog[,1:5] + fameCog[,7]
