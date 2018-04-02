@@ -59,3 +59,4 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
 
 
 
+
