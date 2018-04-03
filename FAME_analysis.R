@@ -5,6 +5,8 @@
 
 # Read in data
 masterDat<-read.csv("13C_PLFA_master.csv")
+#sampleNames<-data.frame(ID=seq(from=1,to=78),Sample_Name=unique(masterDat$Identifier.1))
+#write.csv(sampleNames,file="sampleNames.csv")
 
 # Obtain a list of FAME compounds identified in this analysis
 # FAMEs<-unique(masterDat$Compounds.Result.Name)
@@ -105,7 +107,4 @@ fameC<-data.frame(fameCog[,1:5],percent_C=fameCog[,7]) # Remove weird blank colu
 cleanDat<-read.csv("CleanFAME_dat.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0)
 unique(cleanDat$Compounds.Result.Name)
 
-
-
-
-
+####### Open CleanFAME_dat.csv in BBedit to make changes to sample names.
