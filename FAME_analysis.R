@@ -61,7 +61,7 @@ masterDat<-read.csv("13C_PLFA_master.csv")
 
 #### Create function to calculate percent C in all fame compounds.
 
-##########################################################################################################
+#########################################################################################################
 # FUNCTION: percentC
 # Function that calculates C % by mass for PLFA FAME compounds
 # input: dat = dataframe of with molecular formula for each compound broken down into C,H,O columns
@@ -94,17 +94,27 @@ percentC<-function(data=NULL) {
 
 #_________________________________________________
 
-#percentC()
+# percentC()
 
-fame_molec<-read.csv("fame_percent_C.csv")
+# fame_molec<-read.csv("fame_percent_C.csv")
+# fameCog<-percentC(data=fame_molec) # Data frame with percent_C calculations in last column
+# fameC<-data.frame(fameCog[,1:5],percent_C=fameCog[,7]) # Remove weird blank column
+# write.csv(fameC,file="FAME_carbon.csv")
 
-fameCog<-percentC(data=fame_molec) # Data frame with percent_C calculations in last column
-
-fameC<-data.frame(fameCog[,1:5],percent_C=fameCog[,7]) # Remove weird blank column
+FAMEcarbon<-read.csv("FAME_carbon.csv")
 
 ##### Creating dataframe that includes only variable relevant for analysis
 
-cleanDat<-read.csv("CleanFAME_dat.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0)
-unique(cleanDat$Compounds.Result.Name)
+cleanDat<-read.csv("CleanFAME_dat.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
 
-####### Open CleanFAME_dat.csv in BBedit to make changes to sample names.
+#########################################################################################################
+# FUNCTION: includeCarbon
+# Append FAME percent C to the PLFA data frame
+# input: perC = 2-column dataframe with FAME compound name and percent carbon 0.00)
+# dat = dataframe that percent C will be appended to
+# output: Data frame with percent C of each compound in last column
+#--------------------------------------------------------------------------------------------------------
+
+function<-function() {
+  return("testing...........FunctionName")
+}
