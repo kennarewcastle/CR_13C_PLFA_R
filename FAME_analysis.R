@@ -13,51 +13,50 @@ masterDat<-read.csv("13C_PLFA_master.csv")
 # FAMEs # 60 different FAME compounds, 1 category for unknown FAME
 # write.csv(FAMEs,file="FAME_compounds.csv")
 
-# cleanDat<-masterDat[masterDat$Compounds.Result.Name!="",] # Removed compounds that are not biomarkers
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="11:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="13:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 12:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 13:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:01",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 14:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:01",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 16:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="18:3n6",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="trans-18:1n9",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:02",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:6n3",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:00:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:01",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 14:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:2 and 22:1n9",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:01:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 10:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2O:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:00",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="11:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="13:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:2",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:0",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:1",]
-# cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
+cleanDat<-masterDat[masterDat$Compounds.Result.Name!="",] # Removed compounds that are not biomarkers
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="11:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="13:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 12:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 13:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:01",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 14:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:01",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 16:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="18:3n6",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:02",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:6n3",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:00:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:01",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 14:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:2 and 22:1n9",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:01:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 10:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2O:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:00",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="11:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="13:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:2",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:0",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:1",]
+cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
 
 #### Create a csv with only the meaningful compounds for each sample
 
-#write.csv(cleanDat,file="CleanFAME_dat.csv")
+# write.csv(cleanDat,file="CleanFAME_dat.csv")
 
 #### Create function to calculate percent C in all fame compounds.
 
@@ -95,7 +94,7 @@ percentC<-function(data=NULL) {
 #_________________________________________________
 
 # percentC()
-
+# 
 # fame_molec<-read.csv("fame_percent_C.csv")
 # fameCog<-percentC(data=fame_molec) # Data frame with percent_C calculations in last column
 # fameC<-data.frame(fameCog[,1:5],percent_C=fameCog[,7]) # Remove weird blank column
@@ -125,7 +124,7 @@ includeCarbon<-function(perC,data) {
   perCvect<-rep("NA",length=N)
   
   for(i in 1:N) {
-    if(data[i,4]=="12:0"){
+    if(data[i,4]=="12:00"){
       perCvect[i]<-round(perC[1,2],digits=4)
     }
     if(data[i,4]=="14:0"){
@@ -146,13 +145,86 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="i17:0"){
       perCvect[i]<-round(perC[7,2],digits=4)
     }
+    if(data[i,4]=="17:0cy"){
+      perCvect[i]<-round(perC[8,2],digits=4)
+    }
+    if(data[i,4]=="17:0"){
+      perCvect[i]<-round(perC[9,2],digits=4)
+    }
+    if(data[i,4]=="18:0"){
+      perCvect[i]<-round(perC[10,2],digits=4)
+    }
+    if(data[i,4]=="19:0cy"){
+      perCvect[i]<-round(perC[11,2],digits=4)
+    }
+    if(data[i,4]=="19:0"){
+      perCvect[i]<-round(perC[12,2],digits=4)
+    }
+    if(data[i,4]=="20:4n6"){
+      perCvect[i]<-round(perC[13,2],digits=4)
+    }
+    if(data[i,4]=="20:5n3"){
+      perCvect[i]<-round(perC[14,2],digits=4)
+    }
+    if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
+      perCvect[i]<-round(perC[15,2],digits=4)
+    }
+    if(data[i,4]=="trans-18:1n9"){
+      perCvect[i]<-round(perC[16,2],digits=4)
+    }
   
   }
   outDat<-data.frame(data,FAME_per_C=perCvect)
+  return(outDat)
+}
+
+#--------------------------------------------------------------------------------------------------------
+
+# Datasets are from above
+# datPLFA
+# carbPLFA
+
+final_PLFA<-includeCarbon(perC=carbPLFA,data=datPLFA)
+write.csv(final_PLFA,file="PLFA_with_per_carb.csv")
+final_PLFA<-read.csv("PLFA_with_per_carb.csv") # Corrected a sample name error on the .csv file
+
+#--------------------------------------------------------------------------------------------------------
+
+PLFA_soil<-read.csv("sampleNames.csv")
+PLFA_soil<-data.frame(Sample_Name=PLFA_soil$Sample_Name,Soil_weight_g=PLFA_soil$Soil.weight) # Read in dataframe with soil weights
+
+final_PLFA<-final_PLFA[,2:9] # Removed a weird extra integer ID column at beginning
+sample_Names<-data.frame(unique(final_PLFA$SampleName))
+
+#########################################################################################################
+# FUNCTION: getSoilMass
+# appends soil weights for each sample to the PLFA data frame
+# input: soil = 2-column data frame with sample name and soil weight
+# data = master PLFA data frame to which soil masses will be appended
+# output: master dataframe where the last column = dry soil masses
+#--------------------------------------------------------------------------------------------------------
+
+getSoilMass<-function(soil,data) {
+  N<-length(data[,1])
+  soilVect<-rep("NA",length=N)
+  K<-length(soil[,1])
+  
+  for(i in 1:N) {
+    for(j in 1:K) {
+      soil[,1]<-factor(soil[,1], levels=levels(data[,2]))
+      data_samp<-data[i,]
+      dataName<-data_samp$SampleName
+      soil_samp<-soil[j,]
+      soilName<-soil_samp$Sample_Name
+      
+      if(soilName==dataName) {
+      soilVect[i]<-soil[j,2]
+      } 
+    }
+  }
+  outDat<-data.frame(data,Dry_Soil_Mass_g=soilVect)
   return(head(outDat))
 }
 
-testerDAT<-datPLFA
-testerCARB<-carbPLFA
-
-includeCarbon(perC=testerCARB,data=testerDAT)
+debugonce(getSoilMass)
+getSoilMass(soil=PLFA_soil,data=final_PLFA)
