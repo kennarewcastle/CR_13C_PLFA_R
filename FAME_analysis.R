@@ -102,19 +102,57 @@ percentC<-function(data=NULL) {
 # write.csv(fameC,file="FAME_carbon.csv")
 
 FAMEcarbon<-read.csv("FAME_carbon.csv")
+carbPLFA<-data.frame(FAME_compound=FAMEcarbon[,2],FAME_per_C=FAMEcarbon[,7])
 
 ##### Creating dataframe that includes only variable relevant for analysis
 
 cleanDat<-read.csv("CleanFAME_dat.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
 
+datPLFA<-data.frame(ID=seq(from=1,to=length(cleanDat$X)),cleanDat[,2:4],cleanDat[7],cleanDat$Area.All,cleanDat$d.13C.12C,cleanDat$AT..13C.12C)
+
+names(datPLFA)<-c("ID","SampleName","InjectionVol_ul","FAME_compound","Sample_Dilution","Peak_Area","d13","Atom_per_13C")
+
 #########################################################################################################
 # FUNCTION: includeCarbon
 # Append FAME percent C to the PLFA data frame
 # input: perC = 2-column dataframe with FAME compound name and percent carbon 0.00)
-# dat = dataframe that percent C will be appended to
+# dat = dataframe that percent C will be appended to where first column= ID
 # output: Data frame with percent C of each compound in last column
 #--------------------------------------------------------------------------------------------------------
 
-function<-function() {
-  return("testing...........FunctionName")
+includeCarbon<-function(perC,data) {
+  N<-length(data[,1])
+  perCvect<-rep("NA",length=N)
+  
+  for(i in 1:N) {
+    if(data[i,4]=="12:0"){
+      perCvect[i]<-round(perC[1,2],digits=4)
+    }
+    if(data[i,4]=="14:0"){
+      perCvect[i]<-round(perC[2,2],digits=4)
+    }
+    if(data[i,4]=="a15:0"){
+      perCvect[i]<-round(perC[3,2],digits=4)
+    }
+    if(data[i,4]=="15:0"){
+      perCvect[i]<-round(perC[4,2],digits=4)
+    }
+    if(data[i,4]=="16:1n9/i16:0"){
+      perCvect[i]<-round(perC[5,2],digits=4)
+    }
+    if(data[i,4]=="16:0"){
+      perCvect[i]<-round(perC[6,2],digits=4)
+    }
+    if(data[i,4]=="i17:0"){
+      perCvect[i]<-round(perC[7,2],digits=4)
+    }
+  
+  }
+  outDat<-data.frame(data,FAME_per_C=perCvect)
+  return(head(outDat))
 }
+
+testerDAT<-datPLFA
+testerCARB<-carbPLFA
+
+includeCarbon(perC=testerCARB,data=testerDAT)
