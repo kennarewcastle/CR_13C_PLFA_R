@@ -369,7 +369,7 @@ getSoilMass<-function(soil,data) {
     if(data[i,2]=="24.02.2"){
       soilVect[i]<-soil[54,2]
     }
-    if(data[i,2]=="24.02.13"){
+    if(data[i,2]=="24.02.3"){
       soilVect[i]<-soil[55,2]
     }
     if(data[i,2]=="28.01.2"){
@@ -387,6 +387,60 @@ getSoilMass<-function(soil,data) {
     if(data[i,2]=="37.04.1"){
       soilVect[i]<-soil[60,2]
     }
+    if(data[i,2]=="37.04.2"){
+      soilVect[i]<-soil[61,2]
+    }
+    if(data[i,2]=="37.04.3"){
+      soilVect[i]<-soil[62,2]
+    }
+    if(data[i,2]=="43.02.1"){
+      soilVect[i]<-soil[63,2]
+    }
+    if(data[i,2]=="43.02.2"){
+      soilVect[i]<-soil[64,2]
+    }
+    if(data[i,2]=="43.02.3"){
+      soilVect[i]<-soil[65,2]
+    }
+    if(data[i,2]=="46.03.2"){
+      soilVect[i]<-soil[66,2]
+    }
+    if(data[i,2]=="46.03.3"){
+      soilVect[i]<-soil[67,2]
+    }
+    if(data[i,2]=="48.01.1"){
+      soilVect[i]<-soil[68,2]
+    }
+    if(data[i,2]=="48.01.3"){
+      soilVect[i]<-soil[69,2]
+    }
+    if(data[i,2]=="52.04.1"){
+      soilVect[i]<-soil[70,2]
+    }
+    if(data[i,2]=="52.04.2"){
+      soilVect[i]<-soil[71,2]
+    }
+    if(data[i,2]=="52.04.3"){
+      soilVect[i]<-soil[72,2]
+    }
+    if(data[i,2]=="55.11.1"){
+      soilVect[i]<-soil[73,2]
+    }
+    if(data[i,2]=="55.11.2"){
+      soilVect[i]<-soil[74,2]
+    }
+    if(data[i,2]=="58.05.1"){
+      soilVect[i]<-soil[75,2]
+    }
+    if(data[i,2]=="58.05.2"){
+      soilVect[i]<-soil[76,2]
+    }
+    if(data[i,2]=="58.05.3"){
+      soilVect[i]<-soil[77,2]
+    }
+    if(data[i,2]=="63.04.2"){
+      soilVect[i]<-soil[78,2]
+    }
     
   }
   
@@ -395,6 +449,7 @@ getSoilMass<-function(soil,data) {
   return(outDat)
 }
 
-trial_dat<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
+#--------------------------------------------------------------------------------------------------------
 
+MASTER_DAT_W_SOIL<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
 
