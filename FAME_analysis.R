@@ -285,6 +285,54 @@ getSoilMass<-function(soil,data) {
     if(data[i,2]=="17.06.1"){
       soilVect[i]<-soil[26,2]
     }
+    if(data[i,2]=="17.06.2"){
+      soilVect[i]<-soil[27,2]
+    }
+    if(data[i,2]=="17.01.1b"){
+      soilVect[i]<-soil[28,2]
+    }
+    if(data[i,2]=="02.08.1"){
+      soilVect[i]<-soil[29,2]
+    }
+    if(data[i,2]=="02.08.2"){
+      soilVect[i]<-soil[30,2]
+    }
+    if(data[i,2]=="02.08.3"){
+      soilVect[i]<-soil[31,2]
+    }
+    if(data[i,2]=="02.10.1"){
+      soilVect[i]<-soil[32,2]
+    }
+    if(data[i,2]=="02.10.3"){
+      soilVect[i]<-soil[33,2]
+    }
+    if(data[i,2]=="03.07.2"){
+      soilVect[i]<-soil[34,2]
+    }
+    if(data[i,2]=="03.07.3"){
+      soilVect[i]<-soil[35,2]
+    }
+    if(data[i,2]=="05.03.1"){
+      soilVect[i]<-soil[36,2]
+    }
+    if(data[i,2]=="05.03.2"){
+      soilVect[i]<-soil[37,2]
+    }
+    if(data[i,2]=="05.03.3"){
+      soilVect[i]<-soil[38,2]
+    }
+    if(data[i,2]=="05.09.2"){
+      soilVect[i]<-soil[39,2]
+    }
+    if(data[i,2]=="05.09.3"){
+      soilVect[i]<-soil[40,2]
+    }
+    if(data[i,2]=="06.06.1"){
+      soilVect[i]<-soil[41,2]
+    }
+    if(data[i,2]=="06.06.2"){
+      soilVect[i]<-soil[42,2]
+    }
   }
   
   outDat<-data.frame(data,Dry_Soil_Mass_g=soilVect)
