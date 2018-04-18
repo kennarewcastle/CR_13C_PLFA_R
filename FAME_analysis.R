@@ -213,16 +213,85 @@ getSoilMass<-function(soil,data) {
     if(data[i,2]=="01.05.1"){
       soilVect[i]<-soil[1,2]
     }
-    #if(data[i,2]=="01.05.1"){
-      #soilVect[i]<-soil[1,2]
-      #} 
+    if(data[i,2]=="01.13.1"){
+      soilVect[i]<-soil[2,2]
+    }
+    if(data[i,2]=="01.13.2"){
+      soilVect[i]<-soil[3,2]
+    }
+    if(data[i,2]=="01.13.3"){
+      soilVect[i]<-soil[4,2]
+    }
+    if(data[i,2]=="01.05.3"){
+      soilVect[i]<-soil[5,2]
+    }
+    if(data[i,2]=="10.02.2"){
+      soilVect[i]<-soil[6,2]
+    }
+    if(data[i,2]=="10.02.1"){
+      soilVect[i]<-soil[7,2]
+    }
+    if(data[i,2]=="10.02.3"){
+      soilVect[i]<-soil[8,2]
+    }
+    if(data[i,2]=="11.06.2"){
+      soilVect[i]<-soil[10,2]
+    }
+    if(data[i,2]=="11.10.3"){
+      soilVect[i]<-soil[11,2]
+    }
+    if(data[i,2]=="11.06.3"){
+      soilVect[i]<-soil[12,2]
+    }
+    if(data[i,2]=="12.09.1"){
+      soilVect[i]<-soil[13,2]
+    }
+    if(data[i,2]=="12.09.2"){
+      soilVect[i]<-soil[14,2]
+    }
+    if(data[i,2]=="12.01.2"){
+      soilVect[i]<-soil[15,2]
+    }
+    if(data[i,2]=="12.01.3"){
+      soilVect[i]<-soil[16,2]
+    }
+    if(data[i,2]=="12.05.2"){
+      soilVect[i]<-soil[17,2]
+    }
+    if(data[i,2]=="12.05.3"){
+      soilVect[i]<-soil[18,2]
+    }
+    if(data[i,2]=="12.09.3"){
+      soilVect[i]<-soil[19,2]
+    }
+    if(data[i,2]=="14.10.3"){
+      soilVect[i]<-soil[20,2]
+    }
+    if(data[i,2]=="14.10.1"){
+      soilVect[i]<-soil[21,2]
+    }
+    if(data[i,2]=="14.10.2"){
+      soilVect[i]<-soil[22,2]
+    }
+    if(data[i,2]=="15.16.2"){
+      soilVect[i]<-soil[23,2]
+    }
+    if(data[i,2]=="17.01.1"){
+      soilVect[i]<-soil[24,2]
+    }
+    if(data[i,2]=="17.01.3"){
+      soilVect[i]<-soil[25,2]
+    }
+    if(data[i,2]=="17.06.1"){
+      soilVect[i]<-soil[26,2]
+    }
   }
   
   outDat<-data.frame(data,Dry_Soil_Mass_g=soilVect)
-  print(outDat)
 
-  return("Soil sample masses successfully added to master data.")
+  return(outDat)
 }
 
 trial_dat<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
+
 
