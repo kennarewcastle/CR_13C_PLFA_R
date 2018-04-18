@@ -194,7 +194,8 @@ PLFA_soil<-read.csv("sampleNames.csv")
 PLFA_soil<-data.frame(Sample_Name=PLFA_soil$Sample_Name,Soil_weight_g=PLFA_soil$Soil.weight) # Read in dataframe with soil weights
 
 final_PLFA<-final_PLFA[,2:9] # Removed a weird extra integer ID column at beginning
-sample_Names<-data.frame(unique(final_PLFA$SampleName))
+sample_Names<-data.frame(SampleName=unique(final_PLFA$SampleName))
+write.csv(sample_Names,file="CoreSampleNames.csv")
 
 #########################################################################################################
 # FUNCTION: getSoilMass
@@ -207,24 +208,21 @@ sample_Names<-data.frame(unique(final_PLFA$SampleName))
 getSoilMass<-function(soil,data) {
   N<-length(data[,1])
   soilVect<-rep("NA",length=N)
-  K<-length(soil[,1])
   
   for(i in 1:N) {
-    for(j in 1:K) {
-      soil[,1]<-factor(soil[,1], levels=levels(data[,2]))
-      data_samp<-data[i,]
-      dataName<-data_samp$SampleName
-      soil_samp<-soil[j,]
-      soilName<-soil_samp$Sample_Name
-      
-      if(soilName==dataName) {
-      soilVect[i]<-soil[j,2]
-      } 
+    if(data[i,2]=="01.05.1"){
+      soilVect[i]<-soil[1,2]
     }
+    #if(data[i,2]=="01.05.1"){
+      #soilVect[i]<-soil[1,2]
+      #} 
   }
+  
   outDat<-data.frame(data,Dry_Soil_Mass_g=soilVect)
-  return(head(outDat))
+  print(outDat)
+
+  return("Soil sample masses successfully added to master data.")
 }
 
-debugonce(getSoilMass)
-getSoilMass(soil=PLFA_soil,data=final_PLFA)
+trial_dat<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
+
