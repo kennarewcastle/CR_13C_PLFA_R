@@ -124,7 +124,7 @@ includeCarbon<-function(perC,data) {
   perCvect<-rep("NA",length=N)
   
   for(i in 1:N) {
-    if(data[i,4]=="12:00"){
+    if(data[i,4]=="12:0"){
       perCvect[i]<-round(perC[1,2],digits=4)
     }
     if(data[i,4]=="14:0"){
@@ -169,6 +169,9 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
       perCvect[i]<-round(perC[15,2],digits=4)
     }
+    if(data[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
+      perCvect[i]<-round(perC[15,2],digits=4)
+    }
     if(data[i,4]=="trans-18:1n9"){
       perCvect[i]<-round(perC[16,2],digits=4)
     }
@@ -193,7 +196,7 @@ final_PLFA<-read.csv("PLFA_with_per_carb.csv") # Corrected a sample name error o
 PLFA_soil<-read.csv("sampleNames.csv")
 PLFA_soil<-data.frame(Sample_Name=PLFA_soil$Sample_Name,Soil_weight_g=PLFA_soil$Soil.weight) # Read in dataframe with soil weights
 
-final_PLFA<-final_PLFA[,2:9] # Removed a weird extra integer ID column at beginning
+final_PLFA<-final_PLFA[,2:10] # Removed a weird extra integer ID column at beginning
 sample_Names<-data.frame(SampleName=unique(final_PLFA$SampleName))
 write.csv(sample_Names,file="CoreSampleNames.csv")
 
@@ -452,4 +455,7 @@ getSoilMass<-function(soil,data) {
 #--------------------------------------------------------------------------------------------------------
 
 MASTER_DAT_W_SOIL<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
+
+fix_master<-MASTER_DAT_W_SOIL[MASTER_DAT_W_SOIL$Dry_Soil_Mass_g=="NA",]
+
 write.csv(MASTER_DAT_W_SOIL,file="MASTER_DAT_W_SOIL.csv")
