@@ -23,7 +23,6 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:01",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 14:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:01",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 16:0",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="18:3n6",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:02",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:00",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
@@ -56,7 +55,7 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
 
 #### Create a csv with only the meaningful compounds for each sample
 
-# write.csv(cleanDat,file="CleanFAME_dat.csv")
+#write.csv(cleanDat,file="CleanFAME_dat_UPDATE.csv",row.names=FALSE) 
 
 #### Create function to calculate percent C in all fame compounds.
 
