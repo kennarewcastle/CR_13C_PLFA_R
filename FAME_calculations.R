@@ -110,6 +110,8 @@ nmolFAME<-function(data,stdRatio) {
   N<-length(data[,1])
   Cvec<-rep(NA,times=N)
   stdVec<-rep(NA,times=N)
+  totalMassC<-rep(NA,times=N)
+  ugFAME<-rep(NA,times=N)
   
   for (i in 1:N) {
     if(data[i,2]=="01.05.1"){
@@ -346,20 +348,35 @@ nmolFAME<-function(data,stdRatio) {
   } # close first for loop
   
   outDat1<-data.frame(data,StandardRatio=stdVec)
-  
+
+###### Calculates ugC present in each compound from Peak Area
   for (i in 1:N) {
-    Cvec[i]<-outDat1[i,6]/outDat1[i,11] # Calculates ugC present in each compound from Peak Area
+    Cvec[i]<-outDat1[i,6]/outDat1[i,11]
     Cvec[i]<-round(Cvec[i],digits=4)
   } # close second for loop
   
   outDat2<-data.frame(outDat1,ugC_FAME_compound=Cvec)
-  return(outDat2)
+
+##### Divides ugC by injection volume, multiplies by 300 ul hexane to give total mass (ug) C in FAME compound 
+  for (i in 1:N) {
+    totalMassC[i]<-(outDat2[i,12]/outDat2[i,3])*300
+  } # close third for loop
+    
+  outDat3<-data.frame(outDat2,Total_C_ug=round(totalMassC,digits=2))
+  
+##### Divides by the percent carbon in each FAME compound to yield ug FAME compound in total sample
+  for (i in 1:N) {
+    ugFAME[i]<-outDat3[i,13]/outDat3[i,9]
+  } # close fourth for loop
+  
+  outDat4<-data.frame(outDat3,Total_Mass_FAME_ug=round(ugFAME,digits=2))
+  return(outDat4)
   
 } # close function body
 
-ugCperSample(data=data,stdRatio=dat_stdRatio)
+nmolFAME(data=data,stdRatio=dat_stdRatio)
 
-#### Data to run the ugCperSample function
+#### Data to run the nmolFAAME function
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
 data<-data[,2:11] # Get rid of extra numerical ID column
 data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
