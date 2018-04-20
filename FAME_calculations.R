@@ -99,10 +99,27 @@ dat_stdRatio<-stdRatio(data=data_PeakC)
 write.csv(dat_stdRatio,file="PeakAreaC_ratio_per_sample.csv",row.names=FALSE)
 
 #########################################################################################################
+# FUNCTION: MolecMass
+# Calculates molecular mass of each FAME compound, prints data frame
+# input: data = data frame with the number of C, H, and O atoms in each compound in individual columns
+# output: original data frame with percent_C and molec_mass calculated and appended as columns at the end
+#--------------------------------------------------------------------------------------------------------
+
+MolecMass<-function(data) {
+  N<-length(data[,1])
+  
+  for(i in 1:N) {
+  
+  }
+}
+
+
+#########################################################################################################
 # FUNCTION: nmolFAME
 # Appends column with Peak Area:C standard ratio for each compound to data frame, uses this value to calcualte ugC of each fame compound, and appends to final data set.
 # input: data = data frame where column 2= SampleName, column 6 = Peak_Area
 #        stdRatio =  2-column data frame, column 1= sample name, column 2= standard PeakArea:C ratio for #        each sample.
+#        molecular_mass = data frame with molecular mass for each FAME compound
 # output: Data frame above with ugC for each FAME compound per sample is included as the last column in the data frame
 #--------------------------------------------------------------------------------------------------------
 
@@ -112,6 +129,7 @@ nmolFAME<-function(data,stdRatio) {
   stdVec<-rep(NA,times=N)
   totalMassC<-rep(NA,times=N)
   ugFAME<-rep(NA,times=N)
+  nmolVec<-rep(NA,times=N)
   
   for (i in 1:N) {
     if(data[i,2]=="01.05.1"){
@@ -370,7 +388,9 @@ nmolFAME<-function(data,stdRatio) {
   } # close fourth for loop
   
   outDat4<-data.frame(outDat3,Total_Mass_FAME_ug=round(ugFAME,digits=2))
-  return(outDat4)
+
+##### Appends molecular mass of each FAME compound to data frame.
+  
   
 } # close function body
 
