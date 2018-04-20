@@ -89,7 +89,7 @@ stdRatio<-function(data) {
   outDat<-pre_outDat[!duplicated(pre_outDat[,'SampleName']),] # Pulls out 1 average standard ratio for each sample.
   return(outDat)
   
-} # close function
+} # close function body
 
 #--------------------------------------------------------------------------------------------------------
 
@@ -99,14 +99,14 @@ dat_stdRatio<-stdRatio(data=data_PeakC)
 write.csv(dat_stdRatio,file="PeakAreaC_ratio_per_sample.csv",row.names=FALSE)
 
 #########################################################################################################
-# FUNCTION: ugCperSample
+# FUNCTION: nmolFAME
 # Appends column with Peak Area:C standard ratio for each compound to data frame, uses this value to calcualte ugC of each fame compound, and appends to final data set.
 # input: data = data frame where column 2= SampleName, column 6 = Peak_Area
 #        stdRatio =  2-column data frame, column 1= sample name, column 2= standard PeakArea:C ratio for #        each sample.
 # output: Data frame above with ugC for each FAME compound per sample is included as the last column in the data frame
 #--------------------------------------------------------------------------------------------------------
 
-ugCperSample<-function(data,stdRatio) {
+nmolFAME<-function(data,stdRatio) {
   N<-length(data[,1])
   Cvec<-rep(NA,times=N)
   stdVec<-rep(NA,times=N)
@@ -343,14 +343,23 @@ ugCperSample<-function(data,stdRatio) {
     if(data[i,2]=="63.04.2"){
       stdVec[i]<-stdRatio[77,2]
     } # close final if statement
-  } # close for loop
+  } # close first for loop
   
   outDat1<-data.frame(data,StandardRatio=stdVec)
+  
+  for (i in 1:N) {
+    Cvec[i]<-outDat1[i,6]/outDat1[i,11] # Calculates ugC present in each compound from Peak Area
+    Cvec[i]<-round(Cvec[i],digits=4)
+  } # close second for loop
+  
+  outDat2<-data.frame(outDat1,ugC_FAME_compound=Cvec)
+  return(outDat2)
   
 } # close function body
 
 ugCperSample(data=data,stdRatio=dat_stdRatio)
 
+#### Data to run the ugCperSample function
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
 data<-data[,2:11] # Get rid of extra numerical ID column
 data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
