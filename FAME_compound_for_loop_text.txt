@@ -1,51 +1,51 @@
-if(outDat4[i,4]=="12:0"){
-      molec_mass_vec[i]<-round(molecular_mass[1,7],digits=4)
+	if(data[i,4]=="12:0"){
+      group_vec[i]<-round(molecular_mass[1,7],digits=4)
     }
-    if(outDat4[i,4]=="14:0"){
-      molec_mass_vec[i]<-round(molecular_mass[2,7],digits=4)
+    if(data[i,4]=="14:0"){
+      group_vec[i]<-round(molecular_mass[2,7],digits=4)
     }
-    if(outDat4[i,4]=="a15:0"){
-      molec_mass_vec[i]<-round(molecular_mass[3,7],digits=4)
+    if(data[i,4]=="a15:0"){
+      group_vec[i]<-round(molecular_mass[3,7],digits=4)
     }
-    if(outDat4[i,4]=="15:0"){
-      molec_mass_vec[i]<-round(molecular_mass[4,7],digits=4)
+    if(data[i,4]=="15:0"){
+      group_vec[i]<-round(molecular_mass[4,7],digits=4)
     }
-    if(outDat4[i,4]=="16:1n9/i16:0"){
-      molec_mass_vec[i]<-round(molecular_mass[5,7],digits=4)
+    if(data[i,4]=="16:1n9/i16:0"){
+      group_vec[i]<-round(molecular_mass[5,7],digits=4)
     }
-    if(outDat4[i,4]=="16:0"){
-      molec_mass_vec[i]<-round(molecular_mass[6,7],digits=4)
+    if(data[i,4]=="16:0"){
+      group_vec[i]<-round(molecular_mass[6,7],digits=4)
     }
-    if(outDat4[i,4]=="i17:0"){
-      molec_mass_vec[i]<-round(molecular_mass[7,7],digits=4)
+    if(data[i,4]=="i17:0"){
+      group_vec[i]<-round(molecular_mass[7,7],digits=4)
     }
-    if(outDat4[i,4]=="17:0cy"){
-      molec_mass_vec[i]<-round(molecular_mass[8,7],digits=4)
+    if(data[i,4]=="17:0cy"){
+      group_vec[i]<-round(molecular_mass[8,7],digits=4)
     }
-    if(outDat4[i,4]=="17:0"){
-      molec_mass_vec[i]<-round(molecular_mass[9,7],digits=4)
+    if(data[i,4]=="17:0"){
+      group_vec[i]<-round(molecular_mass[9,7],digits=4)
     }
-    if(outDat4[i,4]=="18:0"){
-      molec_mass_vec[i]<-round(molecular_mass[10,7],digits=4)
+    if(data[i,4]=="18:0"){
+      group_vec[i]<-round(molecular_mass[10,7],digits=4)
     }
-    if(outDat4[i,4]=="19:0cy"){
-      molec_mass_vec[i]<-round(molecular_mass[11,7],digits=4)
+    if(data[i,4]=="19:0cy"){
+      group_vec[i]<-round(molecular_mass[11,7],digits=4)
     }
-    if(outDat4[i,4]=="19:0"){
-      molec_mass_vec[i]<-round(molecular_mass[12,7],digits=4)
+    if(data[i,4]=="19:0"){
+      group_vec[i]<-round(molecular_mass[12,7],digits=4)
     }
-    if(outDat4[i,4]=="20:4n6"){
-      molec_mass_vec[i]<-round(molecular_mass[13,7],digits=4)
+    if(data[i,4]=="20:4n6"){
+      group_vec[i]<-round(molecular_mass[13,7],digits=4)
     }
-    if(outDat4[i,4]=="20:5n3"){
-      molec_mass_vec[i]<-round(molecular_mass[14,7],digits=4)
+    if(data[i,4]=="20:5n3"){
+      group_vec[i]<-round(molecular_mass[14,7],digits=4)
     }
-    if(outDat4[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
-      molec_mass_vec[i]<-round(molecular_mass[15,7],digits=4)
+    if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
+      group_vec[i]<-round(molecular_mass[15,7],digits=4)
     }
-    if(outDat4[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
-      molec_mass_vec[i]<-round(molecular_mass[15,7],digits=4)
+    if(data[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
+      group_vec[i]<-round(molecular_mass[15,7],digits=4)
     }
-    if(outDat4[i,4]=="trans-18:1n9"){
-      molec_mass_vec[i]<-round(molecular_mass[16,7],digits=4)
+    if(data[i,4]=="trans-18:1n9"){
+      group_vec[i]<-round(molecular_mass[16,7],digits=4)
     }
