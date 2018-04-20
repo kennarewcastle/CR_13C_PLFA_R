@@ -62,9 +62,33 @@ write.csv(data_PeakC,file="Standards_w_PeakArea_C_ratio.csv")
 # FUNCTION: stdRatio
 # Calculates the mean Peak Area:C ratio for each sample from the two internal standards (19:0 and 12:0)
 # input: data = data frame where column 2 = SampleName, column 12 = Peak_Area_C_ratio
-# output: 
+# output: New data frame with an average PeakArea:C ratio for each FAME compound, pull out unique outside of function
 #---------------------------------------------------------------------------------------------------------
+library(dplyr)
 
-function<-function() {
-  return("testing...........FunctionName")
-}
+stdRatio<-function(data) {
+  N<-length(data[,1])
+  ratioVec<-rep(NA,times=N)
+  
+  for (i in 1:N) {
+   if (i == 1) {
+     x<-c(data[1,12],data[2,12])
+     ratioVec[i]<-mean(x)
+      } else {
+    if (data[i,2] == data[i-1,2]) {
+      ratioVec[i]<-ratioVec[i-1]
+      }
+    if (data[i,2] != data[i-1,2]) {
+      x<-c(data[i,12],data[i+1,12])
+      ratioVec[i]<-mean(x)
+      } # close final if statement
+    } # close else statement
+  } # close for loop
+    
+  outDat<-data.frame(data,Mean_PeakArea_C_Ratio=as.numeric(ratioVec))
+  return(outDat)
+} # close function
+
+tester_stdRatio<-stdRatio(data=data_PeakC)
+new<-tester_stdRatio[!duplicated(tester_stdRatio[,'SampleName']),]
+
