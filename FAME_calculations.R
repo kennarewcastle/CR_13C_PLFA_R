@@ -63,7 +63,7 @@ write.csv(data_PeakC,file="Standards_w_PeakArea_C_ratio.csv",row.names=FALSE) # 
 # Calculates the mean Peak Area:C ratio for each sample from the two internal standards (19:0 and 12:0)
 # input: data = data frame where column 2 = SampleName, column 12 = Peak_Area_C_ratio
 # output: New data frame with an average standard PeakArea:C ratio for each sample
-#---------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------
 library(dplyr)
 
 stdRatio<-function(data) {
@@ -107,12 +107,26 @@ write.csv(dat_stdRatio,file="PeakAreaC_ratio_per_sample.csv",row.names=FALSE)
 
 MolecMass<-function(data) {
   N<-length(data[,1])
+  molec_mass<-rep(NA,times=N)
+  perC<-rep(NA,times=N)
   
   for(i in 1:N) {
-  
+    C<-data$C[i] * 12.011
+    H<-data$H[i] * 1.008
+    O<-data$O[i] * 15.999
+    molec_mass[i]<-(C+H+O)
+    perC[i]<-C/molec_mass[i]
   }
+  
+  outDat<-data.frame(data,percent_C=perC,molecular_mass=molec_mass)
+  return(outDat)
 }
 
+#--------------------------------------------------------------------------------------------------------
+
+FAME_elements<-read.csv("fame_percent_C.csv")
+FAME_for_csv<-MolecMass(data=FAME_elements)
+write.csv(FAME_for_csv,file="FAME_molecular_mass_data.csv",row.names=FALSE)
 
 #########################################################################################################
 # FUNCTION: nmolFAME
@@ -123,13 +137,15 @@ MolecMass<-function(data) {
 # output: Data frame above with ugC for each FAME compound per sample is included as the last column in the data frame
 #--------------------------------------------------------------------------------------------------------
 
-nmolFAME<-function(data,stdRatio) {
+nmolFAME<-function(data,stdRatio,molecular_mass) {
   N<-length(data[,1])
   Cvec<-rep(NA,times=N)
   stdVec<-rep(NA,times=N)
   totalMassC<-rep(NA,times=N)
   ugFAME<-rep(NA,times=N)
+  molec_mass_vec<-rep(NA,times=N)
   nmolVec<-rep(NA,times=N)
+  FAMEsoil<-rep(NA,times=N)
   
   for (i in 1:N) {
     if(data[i,2]=="01.05.1"){
@@ -367,7 +383,7 @@ nmolFAME<-function(data,stdRatio) {
   
   outDat1<-data.frame(data,StandardRatio=stdVec)
 
-###### Calculates ugC present in each compound from Peak Area
+  ###### Calculates ugC present in each compound from Peak Area
   for (i in 1:N) {
     Cvec[i]<-outDat1[i,6]/outDat1[i,11]
     Cvec[i]<-round(Cvec[i],digits=4)
@@ -375,32 +391,107 @@ nmolFAME<-function(data,stdRatio) {
   
   outDat2<-data.frame(outDat1,ugC_FAME_compound=Cvec)
 
-##### Divides ugC by injection volume, multiplies by 300 ul hexane to give total mass (ug) C in FAME compound 
+  ##### Divides ugC by injection volume, multiplies by 300 ul hexane to give total mass (ug) C in FAME     compound 
   for (i in 1:N) {
     totalMassC[i]<-(outDat2[i,12]/outDat2[i,3])*300
   } # close third for loop
     
   outDat3<-data.frame(outDat2,Total_C_ug=round(totalMassC,digits=2))
   
-##### Divides by the percent carbon in each FAME compound to yield ug FAME compound in total sample
+  ##### Divides by the percent carbon in each FAME compound to yield ug FAME compound in total sample
   for (i in 1:N) {
     ugFAME[i]<-outDat3[i,13]/outDat3[i,9]
   } # close fourth for loop
   
   outDat4<-data.frame(outDat3,Total_Mass_FAME_ug=round(ugFAME,digits=2))
 
-##### Appends molecular mass of each FAME compound to data frame.
+  ##### Appends molecular mass of each FAME compound to data frame.
+  for (i in 1:N) {
+    if(outDat4[i,4]=="12:0"){
+      molec_mass_vec[i]<-round(molecular_mass[1,7],digits=4)
+    }
+    if(outDat4[i,4]=="14:0"){
+      molec_mass_vec[i]<-round(molecular_mass[2,7],digits=4)
+    }
+    if(outDat4[i,4]=="a15:0"){
+      molec_mass_vec[i]<-round(molecular_mass[3,7],digits=4)
+    }
+    if(outDat4[i,4]=="15:0"){
+      molec_mass_vec[i]<-round(molecular_mass[4,7],digits=4)
+    }
+    if(outDat4[i,4]=="16:1n9/i16:0"){
+      molec_mass_vec[i]<-round(molecular_mass[5,7],digits=4)
+    }
+    if(outDat4[i,4]=="16:0"){
+      molec_mass_vec[i]<-round(molecular_mass[6,7],digits=4)
+    }
+    if(outDat4[i,4]=="i17:0"){
+      molec_mass_vec[i]<-round(molecular_mass[7,7],digits=4)
+    }
+    if(outDat4[i,4]=="17:0cy"){
+      molec_mass_vec[i]<-round(molecular_mass[8,7],digits=4)
+    }
+    if(outDat4[i,4]=="17:0"){
+      molec_mass_vec[i]<-round(molecular_mass[9,7],digits=4)
+    }
+    if(outDat4[i,4]=="18:0"){
+      molec_mass_vec[i]<-round(molecular_mass[10,7],digits=4)
+    }
+    if(outDat4[i,4]=="19:0cy"){
+      molec_mass_vec[i]<-round(molecular_mass[11,7],digits=4)
+    }
+    if(outDat4[i,4]=="19:0"){
+      molec_mass_vec[i]<-round(molecular_mass[12,7],digits=4)
+    }
+    if(outDat4[i,4]=="20:4n6"){
+      molec_mass_vec[i]<-round(molecular_mass[13,7],digits=4)
+    }
+    if(outDat4[i,4]=="20:5n3"){
+      molec_mass_vec[i]<-round(molecular_mass[14,7],digits=4)
+    }
+    if(outDat4[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
+      molec_mass_vec[i]<-round(molecular_mass[15,7],digits=4)
+    }
+    if(outDat4[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
+      molec_mass_vec[i]<-round(molecular_mass[15,7],digits=4)
+    }
+    if(outDat4[i,4]=="trans-18:1n9"){
+      molec_mass_vec[i]<-round(molecular_mass[16,7],digits=4)
+    }
+  } # close fifth for loop
   
+  outDat5<-data.frame(outDat4,FAME_molecular_mass=molec_mass_vec)
+  
+  ##### Calculates nmol FAME compound per sample using molecular mass of FAME compound
+  for (i in 1:N) {
+    g<-outDat5[i,14]/1000000 # ug FAME to g FAME
+    moles<-g/outDat5[i,15] # converts g to moles using molecular mass
+    nmolVec[i]<-moles * 10^9 # converts moles to nanomoles
+  } # close sixth for loop
+
+  outDat6<-data.frame(outDat5,nmol_FAME=nmolVec)
+ 
+  ##### Calculates nmol FAME per g dry soil in sample
+  for (i in 1:N) {
+    FAMEsoil[i]<-outDat6[i,16]/outDat6[i,10] # Divide nmol FAME by g dry soil in each sample
+  } # close seventh for loop
+    
+  finalDat<-data.frame(data,nmol_FAME_per_g_soil=round(FAMEsoil,digits=2))
+  return(finalDat)
   
 } # close function body
 
-nmolFAME(data=data,stdRatio=dat_stdRatio)
+#--------------------------------------------------------------------------------------------------------
 
-#### Data to run the nmolFAAME function
+FINAL_PLFA<-nmolFAME(data=data,stdRatio=dat_stdRatio,molecular_mass=dat_molec_mass)
+write.csv(FINAL_PLFA,file="PLFA_MASTER_nmol_g_soil.csv",row.names=FALSE)
+
+#### Data to run the nmolFAME function
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
 data<-data[,2:11] # Get rid of extra numerical ID column
 data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
 
 dat_stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
+dat_molec_mass<-read.csv("FAME_molecular_mass_data.csv")
 
                
