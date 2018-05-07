@@ -8,6 +8,7 @@ library(dplyr)
 # Read in data frame that was created with append functions in FAME_data_prep.R
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
 data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
+
 # Filter out the FAME internal standards (12:0 and 19:0) from each sample
 std_dat<-filter(data,FAME_compound=="12:0" | FAME_compound=="19:0")
 
@@ -458,6 +459,9 @@ nmolFAME<-function(data,stdRatio,molecular_mass) {
     if(outDat4[i,4]=="trans-18:1n9"){
       molec_mass_vec[i]<-round(molecular_mass[16,7],digits=4)
     }
+    if(outDat4[i,4]=="18:3n6"){
+      molec_mass_vec[i]<-round(molecular_mass[17,7],digits=4)
+    }
   } # close fifth for loop
   
   outDat5<-data.frame(outDat4,FAME_molecular_mass=molec_mass_vec)
@@ -491,7 +495,7 @@ dat_stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
 dat_molec_mass<-read.csv("FAME_molecular_mass_data.csv")
 ####
 
-FINAL_PLFA<-nmolFAME(data=data,stdRatio=dat_stdRatio,molecular_mass=dat_molec_mass) # Start here, looks like the nmolFAME function is missing 18:3n6 compound reference
+FINAL_PLFA<-nmolFAME(data=data,stdRatio=dat_stdRatio,molecular_mass=dat_molec_mass)
 write.csv(FINAL_PLFA,file="PLFA_MASTER_nmol_g_soil.csv",row.names=FALSE)
 
 #########################################################################################################
