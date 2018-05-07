@@ -1,0 +1,385 @@
+for (i in 1:N) {
+    if(data[i,2]=="01.05.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="01.13.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="01.13.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="01.13.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="01.05.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="10.02.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="10.02.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="10.02.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="11.06.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="11.10.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="11.10.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="11.06.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.09.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.09.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.01.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.01.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.05.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.05.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="12.09.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="14.10.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="14.10.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="14.10.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="15.16.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.01.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.01.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.06.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.06.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.01.1b"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="02.08.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="02.08.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="02.08.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="02.10.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="02.10.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="03.07.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="03.07.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="05.03.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="05.03.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="05.03.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="05.09.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="05.09.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="06.06.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="06.06.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="06.06.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="17.06.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="18.05.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="18.05.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="18.05.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="20.04.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="20.04.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="22.07.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="22.07.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="24.02.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="24.02.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="24.02.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="28.01.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="28.01.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="34.06.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="34.06.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="37.04.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="37.04.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="37.04.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="43.02.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="43.02.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="43.02.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="46.03.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="46.03.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="48.01.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="48.01.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="52.04.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="52.04.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="52.04.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="55.11.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="55.11.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="58.05.1"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="58.05.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="58.05.3"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
+    }
+    if(data[i,2]=="63.04.2"){
+      treeVec[i]<-""
+rhizVec[i]<-""
+substrateVec[i]<-""
