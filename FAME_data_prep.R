@@ -455,4 +455,4 @@ getSoilMass<-function(soil,data) {
 #--------------------------------------------------------------------------------------------------------
 
 MASTER_DAT_W_SOIL<-getSoilMass(soil=PLFA_soil,data=final_PLFA)
-write.csv(MASTER_DAT_W_SOIL,file="MASTER_DAT_W_SOIL.csv")
+write.csv(MASTER_DAT_W_SOIL,file="MASTER_DAT_W_SOIL.csv",row.names=FALSE)
