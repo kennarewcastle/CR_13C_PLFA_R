@@ -561,13 +561,20 @@ getBugGroup<-function(data) {
     if(data[i,4]=="trans-18:1n9"){
       group_vec[i]<-"gram-bacteria"
     }
+    if(data[i,4]=="18:3n6"){
+      group_vec[i]<-"fungi"
+    }
   }
   outDat<-data.frame(data,Microbial_Group=group_vec)
   return(outDat)  
 }
+
 #--------------------------------------------------------------------------------------------------------
 
 PLFA_microbe_groups<-getBugGroup(data=FINAL_PLFA)
-summary(PLFA_microbe_groups$Microbial_Group)
+write.csv(PLFA_microbe_groups,file="MASTER_PLFA_w_MICROBE_GROUP.csv",row.names=FALSE)
+
+
+
 
                
