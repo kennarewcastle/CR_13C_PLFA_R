@@ -483,9 +483,6 @@ nmolFAME<-function(data,stdRatio,molecular_mass) {
 
 #--------------------------------------------------------------------------------------------------------
 
-FINAL_PLFA<-nmolFAME(data=data,stdRatio=dat_stdRatio,molecular_mass=dat_molec_mass)
-write.csv(FINAL_PLFA,file="PLFA_MASTER_nmol_g_soil.csv",row.names=FALSE)
-
 #### Data to run the nmolFAME function
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
 data<-data[,2:11] # Get rid of extra numerical ID column
@@ -493,5 +490,81 @@ data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
 
 dat_stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
 dat_molec_mass<-read.csv("FAME_molecular_mass_data.csv")
+####
+
+FINAL_PLFA<-nmolFAME(data=data,stdRatio=dat_stdRatio,molecular_mass=dat_molec_mass)
+write.csv(FINAL_PLFA,file="PLFA_MASTER_nmol_g_soil.csv",row.names=FALSE)
+
+#########################################################################################################
+# FUNCTION: getBugGroup
+# Appends corresponding microbial group for each FAME compound in a column at the end of the data frame
+# input: data = master data frame
+# output: Original data frame with microbial group column added to the end
+#--------------------------------------------------------------------------------------------------------
+
+getBugGroup<-function(data) {
+  N<-length(data[,1])
+  group_vec<-rep(NA,times=N)
+  
+  for (i in 1:N) {
+    if(data[i,4]=="12:0"){
+      group_vec[i]<-"standard"
+    }
+    if(data[i,4]=="14:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="a15:0"){
+      group_vec[i]<-"gram+bacteria"
+    }
+    if(data[i,4]=="15:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="16:1n9/i16:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="16:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="i17:0"){
+      group_vec[i]<-"gram+bacteria"
+    }
+    if(data[i,4]=="17:0cy"){
+      group_vec[i]<-"gram-bacteria"
+    }
+    if(data[i,4]=="17:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="18:0"){
+      group_vec[i]<-"bacteria"
+    }
+    if(data[i,4]=="19:0cy"){
+      group_vec[i]<-"gram-bacteria"
+    }
+    if(data[i,4]=="19:0"){
+      group_vec[i]<-"standard"
+    }
+    if(data[i,4]=="20:4n6"){
+      group_vec[i]<-"protozoa"
+    }
+    if(data[i,4]=="20:5n3"){
+      group_vec[i]<-"protozoa"
+    }
+    if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
+      group_vec[i]<-"fungi"
+    }
+    if(data[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
+      group_vec[i]<-"fungi"
+    }
+    if(data[i,4]=="trans-18:1n9"){
+      group_vec[i]<-"gram-bacteria"
+    }
+  }
+  outDat<-data.frame(data,Microbial_Group=group_vec)
+  return(outDat)  
+}
+#--------------------------------------------------------------------------------------------------------
+
+PLFA_microbe_groups<-getBugGroup(data=FINAL_PLFA)
+summary(PLFA_microbe_groups$Microbial_Group)
 
                

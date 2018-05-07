@@ -98,11 +98,12 @@ TukeyHSD(anovaMod4) # mesh 3 is signficantly different from the other two, which
 leaf_d13_core<-ggplot(data=d13leaf,aes(x=coreL,y=d13L)) +
   geom_boxplot(lwd=1.5) +
   geom_hline(yintercept=-25, linetype="dashed",lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
-  annotate("text", x = 1, y = 20, label = "A", size=10, color="red") +
-  annotate("text", x = 2, y = 20, label = "A", size=10, color="red") +
-  annotate("text", x = 3, y = 20, label = "B", size=10, color="red") +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C  in Microbial PLFA (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
+  annotate("text", x = 1, y = 27, label = "A", size=8, color="red") +
+  annotate("text", x = 2, y = 27, label = "A", size=8, color="red") +
+  annotate("text", x = 3, y = 27, label = "B", size=8, color="red") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  ylim(-30,27) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),
@@ -120,7 +121,7 @@ TukeyHSD(anovaMod5) # no differences among mesh
 starch_d13_core<-ggplot(data=d13starch,aes(x=coreS,y=d13S)) +
   geom_boxplot(lwd=1.5) +
   geom_hline(yintercept=-25, linetype="dashed",lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C (\u2030)"))), title = expression(bold("Starch Substrate"))) +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C in Microbial PLFA (\u2030)"))), title = expression(bold("Starch Substrate"))) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
