@@ -94,20 +94,19 @@ percentC<-function(data=NULL) {
 #_________________________________________________
 
 # percentC()
-# 
+
 # fame_molec<-read.csv("fame_percent_C.csv")
-# fameCog<-percentC(data=fame_molec) # Data frame with percent_C calculations in last column
-# fameC<-data.frame(fameCog[,1:5],percent_C=fameCog[,7]) # Remove weird blank column
-# write.csv(fameC,file="FAME_carbon.csv")
+# fameC<-percentC(data=fame_molec) # Data frame with percent_C calculations in last column
+# write.csv(fameC,file="FAME_carbon.csv",row.names=FALSE)
 
 FAMEcarbon<-read.csv("FAME_carbon.csv")
-carbPLFA<-data.frame(FAME_compound=FAMEcarbon[,2],FAME_per_C=FAMEcarbon[,7])
+carbPLFA<-data.frame(FAME_compound=FAMEcarbon[,1],FAME_per_C=FAMEcarbon[,6])
 
 ##### Creating dataframe that includes only variable relevant for analysis
 
-cleanDat<-read.csv("CleanFAME_dat.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
+cleanDat<-read.csv("CleanFAME_dat_UPDATE.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
 
-datPLFA<-data.frame(ID=seq(from=1,to=length(cleanDat$X)),cleanDat[,2:4],cleanDat[7],cleanDat$Area.All,cleanDat$d.13C.12C,cleanDat$AT..13C.12C)
+datPLFA<-data.frame(ID=seq(from=1,to=length(cleanDat[,1])),cleanDat[,1:3],cleanDat[6],cleanDat$Area.All,cleanDat$d.13C.12C,cleanDat$AT..13C.12C)
 
 names(datPLFA)<-c("ID","SampleName","InjectionVol_ul","FAME_compound","Sample_Dilution","Peak_Area","d13","Atom_per_13C")
 
@@ -175,6 +174,9 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="trans-18:1n9"){
       perCvect[i]<-round(perC[16,2],digits=4)
     }
+    if(data[i,4]=="18:3n6"){
+      perCvect[i]<-round(perC[17,2],digits=4)
+    }
   
   }
   outDat<-data.frame(data,FAME_per_C=perCvect)
@@ -188,17 +190,15 @@ includeCarbon<-function(perC,data) {
 # carbPLFA
 
 final_PLFA<-includeCarbon(perC=carbPLFA,data=datPLFA)
-write.csv(final_PLFA,file="PLFA_with_per_carb.csv")
-final_PLFA<-read.csv("PLFA_with_per_carb.csv") # Corrected a sample name error on the .csv file (01.05.03 to 01.05.3)
-final_PLFA<-final_PLFA[,2:10] # Removed a weird extra integer ID column at beginning
+write.csv(final_PLFA,file="PLFA_with_per_carb.csv",row.names=FALSE)
 
 #--------------------------------------------------------------------------------------------------------
 
 PLFA_soil<-read.csv("sampleNames.csv")
 PLFA_soil<-data.frame(Sample_Name=PLFA_soil$Sample_Name,Soil_weight_g=PLFA_soil$Soil.weight) # Read in dataframe with soil weights
 
-sample_Names<-data.frame(SampleName=unique(final_PLFA$SampleName))
-write.csv(sample_Names,file="CoreSampleNames.csv")
+# sample_Names<-data.frame(SampleName=unique(final_PLFA$SampleName))
+# write.csv(sample_Names,file="CoreSampleNames.csv")
 
 #########################################################################################################
 # FUNCTION: getSoilMass
