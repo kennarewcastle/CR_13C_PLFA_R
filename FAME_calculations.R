@@ -680,300 +680,306 @@ addMetaData<-function(data) {
       substrateVec[i]<-"L"
     }
     if(data[i,2]=="12.09.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"L"
+      substrateVec[i]<-"3"
     }
     if(data[i,2]=="14.10.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="14.10.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="14.10.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="15.16.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="17.01.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="17.01.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="17.06.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="17.06.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="17.01.1b"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="02.08.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="02.08.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="02.08.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="02.10.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="02.10.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="03.07.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="03.07.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="05.03.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="05.03.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="05.03.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="05.09.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="05.09.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="06.06.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="06.06.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="06.06.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="17.06.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="18.05.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="18.05.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="18.05.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="20.04.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="20.04.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="22.07.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="22.07.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="24.02.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="24.02.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="24.02.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="28.01.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="28.01.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="34.06.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="34.06.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="37.04.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="37.04.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="37.04.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="43.02.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="43.02.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="43.02.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="46.03.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="46.03.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="48.01.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="48.01.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"G"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="52.04.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="52.04.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="52.04.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="55.11.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="55.11.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"S"
     }
     if(data[i,2]=="58.05.1"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"1"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="58.05.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="58.05.3"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="63.04.2"){
-      treeVec[i]<-""
-      rhizVec[i]<-""
-      substrateVec[i]<-""
+      treeVec[i]<-"P"
+      rhizVec[i]<-"2"
+      substrateVec[i]<-"L"
     } # close final if statement
-  } # close first for loop
+  } # for loop
+  rhizVec<-as.factor(rhizVec)
+  outDat<-data.frame(ID=data[,1],SampleName=data[,2],Tree_Type=treeVec,Rhizosphere_Manipulation=rhizVec,Substrate_Type=substrateVec,data[,3:11])
+  return(outDat)
 }
-               
+
+
+PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv")    
+head(PLFA_bugs)
