@@ -681,8 +681,8 @@ addMetaData<-function(data) {
     }
     if(data[i,2]=="12.09.3"){
       treeVec[i]<-"G"
-      rhizVec[i]<-"L"
-      substrateVec[i]<-"3"
+      rhizVec[i]<-"3"
+      substrateVec[i]<-"L"
     }
     if(data[i,2]=="14.10.3"){
       treeVec[i]<-"G"
@@ -976,10 +976,13 @@ addMetaData<-function(data) {
     } # close final if statement
   } # for loop
   rhizVec<-as.factor(rhizVec)
-  outDat<-data.frame(ID=data[,1],SampleName=data[,2],Tree_Type=treeVec,Rhizosphere_Manipulation=rhizVec,Substrate_Type=substrateVec,data[,3:11])
+  outDat<-data.frame(ID=data[,1],SampleName=data[,2],Tree_Type=treeVec,Rhizosphere_Manipulation=rhizVec,Substrate_Type=substrateVec,data[,3:12])
   return(outDat)
 }
 
+#--------------------------------------------------------------------------------------------------------
 
-PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv")    
-head(PLFA_bugs)
+PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv")
+PLFA_with_meta<-addMetaData(data=PLFA_bugs)
+write.csv(PLFA_with_meta,file="FINAL_PLFA_with_metadata.csv",row.names=FALSE)
+
