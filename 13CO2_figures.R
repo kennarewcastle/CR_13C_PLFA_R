@@ -10,6 +10,7 @@ dat<-read.csv("Costa Rica Master sheet annotated.csv")
 dat<-filter(dat,dat$Exclusion!="NA")
 dat$Exclusion<-as.factor(dat$Exclusion)
 
+
 leafDat<-filter(dat,dat$Isotope_label=="L") # Only cores labeled with leaf 13C
 starchDat<-filter(dat,dat$Isotope_label=="S") # Only cores labeled with starch 13C
 #starchDat<-filter(starchDat,starchDat$d13_d5<150)
@@ -62,4 +63,8 @@ TukeyHSD(anovaStarchMod) # Mesh 1 is different from the others
 
 #### Panelled figure
 grid.arrange(leaf_d13,starch_d13,nrow=1)
+
+#### Dry root weight by core type
+ggplot(dat,aes(x=Exclusion,y=Dry_root_wt)) +
+  geom_boxplot()
 

@@ -4,7 +4,7 @@
 # Separating 13C signal in FAME compounds according to rhizsophere, substrate, and tree treatments
 
 # Read in data
-masterDat<-read.csv("13C_PLFA_master.csv")
+masterDat<-read.csv("13C_PLFA_master.csv") ### Clean this up to allow for changes later
 #sampleNames<-data.frame(ID=seq(from=1,to=78),Sample_Name=unique(masterDat$Identifier.1))
 #write.csv(sampleNames,file="sampleNames.csv")
 
