@@ -130,4 +130,26 @@ HarvestResp<-function(data) {
 
 data<-HarvestResp(data=data) # Respiration rate on harvest day is now in "data" dataframe
 
+# ANOVA for respiration by tree species
+tree_resp<-lm(data$harvest_day_resp~data$Tree_species)
+Anova(tree_resp) # No difference in resp between tree species (p=0.2191)
+ggplot(data,aes(x=Tree_species,y=nut_enzymes)) +
+  geom_boxplot() +
+  ylab(label="Respiration Rate") +
+  xlab(label="Tree Species") +
+  theme_classic()
+
+# ANOVA for C-enzymes by rhizosphere manipulation
+rhizo_resp<-lm(data$harvest_day_resp~data$Exclusion)
+Anova(rhizo_resp) # Marginal differences in resp between rhizosphere treatments (p=0.05852)
+aov_rhizo_resp<-aov(rhizo_resp)
+TukeyHSD(aov_rhizo_resp) # 1 is must diferent from 3
+ggplot(data,aes(x=Exclusion,y=harvest_day_resp)) +
+geom_boxplot(lwd=1.3) +
+  ylab(expression(bold(paste("Respiration (",mu,"mol"," ","CO"[2]," ","m"^-2," s"^-1,")")))) +
+  xlab(label=expression(bold("Rhizosphere Manipulation"))) +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme_classic()
+
+ggsave(filename="resp_rhizo.jpg")
 
