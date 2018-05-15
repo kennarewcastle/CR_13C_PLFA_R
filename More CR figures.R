@@ -53,7 +53,7 @@ tree_Cenzy<-lm(data$C_enzymes~data$Tree_species)
 Anova(tree_Cenzy) # No difference in C-enzyme activity between tree species
 ggplot(data,aes(x=Tree_species,y=C_enzymes)) +
   geom_boxplot() +
-  ylab(label="Carbon Degrading Enzyme Activity") +
+  ylab(label="Carbon Acquiring Enzyme Activity") +
   xlab(label="Tree Species") +
   theme_classic()
 
@@ -62,10 +62,33 @@ rhizo_Cenzy<-lm(data$C_enzymes~data$Exclusion)
 Anova(rhizo_Cenzy) # No difference in C-enzyme activity between rhizosphere manipulation
 ggplot(data,aes(x=Exclusion,y=C_enzymes)) +
   geom_boxplot(lwd=1.3) +
-  ylab(expression(bold(paste("C-Degrading Enzyme Activity"," (nmol"," g"^-1," h"^-1,")")))) +
+  ylab(expression(bold(paste("C-Acquiring Enzyme Activity"," (nmol"," g"^-1," h"^-1,")")))) +
   xlab(label=expression(bold("Rhizosphere Manipulation"))) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme_classic()
 
 ggsave(filename="Cenzy_rhizo.jpg")
 
+
+# Nutrient enzymes by rhizosphere manipulation ----------------------------
+
+# ANOVA for nut-enzymes by tree species
+tree_nutenzy<-lm(data$nut_enzymes~data$Tree_species)
+Anova(tree_nutenzy) # No difference in nut-enzyme activity between tree species
+ggplot(data,aes(x=Tree_species,y=nut_enzymes)) +
+  geom_boxplot() +
+  ylab(label="Nutrient Acquiring Enzyme Activity") +
+  xlab(label="Tree Species") +
+  theme_classic()
+
+# ANOVA for C-enzymes by rhizosphere manipulation
+rhizo_nutenzy<-lm(data$nut_enzymes~data$Exclusion)
+Anova(rhizo_nutenzy) # No difference in C-enzyme activity between rhizosphere manipulation
+ggplot(data,aes(x=Exclusion,y=nut_enzymes)) +
+  geom_boxplot(lwd=1.3) +
+  ylab(expression(bold(paste("Nutrient-Acquiring Enzyme Activity"," (nmol"," g"^-1," h"^-1,")")))) +
+  xlab(label=expression(bold("Rhizosphere Manipulation"))) +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme_classic()
+
+ggsave(filename="nutenzy_rhizo.jpg")
