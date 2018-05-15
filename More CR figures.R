@@ -153,3 +153,16 @@ geom_boxplot(lwd=1.3) +
 
 ggsave(filename="resp_rhizo.jpg")
 
+
+# d13 by rhizosphere manipulation for leaf and starch ---------------------
+
+
+
+
+# Data read in--> starch and leaf will be separated
+d13dat<-read.csv("FINAL_PLFA_with_metadata.csv")
+d13dat$Rhizosphere_Manipulation<-as.factor(d13dat$Rhizosphere_Manipulation)
+starch_dat<-filter(d13dat,Substrate_Type=="S")
+leaf_dat<-filter(d13dat,Substrate_Type=="L")
+
+# ANOVA 
