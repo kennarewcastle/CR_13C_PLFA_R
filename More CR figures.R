@@ -38,16 +38,17 @@ ggplot(newDat,aes(x=Exclusion,y=hyphal_scaled)) + # y-axis is the mass of endoph
   geom_boxplot()
 
 
-# C-enzymes by rhizosphere manipulation -----------------------------------
-
+# Data for summary figures ------------------------------------------------
 data<-read.csv("Costa Rica Master sheet annotated.csv")
 data$Exclusion<-as.factor(data$Exclusion) # Rhizosphere manipulation is now a factor instead of numeric
 data<-filter(data,Exclusion!="NA")
-C_enzymes<-data$cbh + data$a_gluc + data$b_gluc
+C_enzymes<-data$cbh + data$a_gluc + data$b_gluc # Creating binned C and nutrient enzyme variables
 nut_enzymes<-data$nag + data$phos + data$lap
 data<-data.frame(data,C_enzymes,nut_enzymes)
 
-# ANOVA for tree_species by C-enzymes
+# C-enzymes by rhizosphere manipulation -----------------------------------
+
+# ANOVA for C-enzymes by tree species
 tree_Cenzy<-lm(data$C_enzymes~data$Tree_species)
 Anova(tree_Cenzy) # No difference in C-enzyme activity between tree species
 ggplot(data,aes(x=Tree_species,y=C_enzymes)) +
@@ -55,3 +56,16 @@ ggplot(data,aes(x=Tree_species,y=C_enzymes)) +
   ylab(label="Carbon Degrading Enzyme Activity") +
   xlab(label="Tree Species") +
   theme_classic()
+
+# ANOVA for C-enzymes by rhizosphere manipulation
+rhizo_Cenzy<-lm(data$C_enzymes~data$Exclusion)
+Anova(rhizo_Cenzy) # No difference in C-enzyme activity between rhizosphere manipulation
+ggplot(data,aes(x=Exclusion,y=C_enzymes)) +
+  geom_boxplot(lwd=1.3) +
+  ylab(expression(bold(paste("C-Degrading Enzyme Activity"," (nmol"," g"^-1," h"^-1,")")))) +
+  xlab(label=expression(bold("Rhizosphere Manipulation"))) +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme_classic()
+
+ggsave(filename="Cenzy_rhizo.jpg")
+
