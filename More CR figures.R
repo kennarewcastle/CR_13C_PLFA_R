@@ -38,7 +38,7 @@ ggplot(newDat,aes(x=Exclusion,y=hyphal_scaled)) + # y-axis is the mass of endoph
   geom_boxplot()
 
 
-# Data for summary figures ------------------------------------------------
+# Data for summary figures (ALL CORES) ------------------------------------------------
 data<-read.csv("Costa Rica Master sheet annotated.csv")
 data$Exclusion<-as.factor(data$Exclusion) # Rhizosphere manipulation is now a factor instead of numeric
 data<-filter(data,Exclusion!="NA")
@@ -92,3 +92,42 @@ ggplot(data,aes(x=Exclusion,y=nut_enzymes)) +
   theme_classic()
 
 ggsave(filename="nutenzy_rhizo.jpg")
+
+
+# Respiration by rhizosphere manipulation ---------------------------------
+
+# Respiration data on harvest day is different for starch and leaf cores, create new column for harvest day resp that contains appropriate resp measurement for each core (starch = d5, leaf = d9)
+
+#########################################################################################################
+# FUNCTION: HarvestResp
+# Creates vector of respiration value on the day each core was harvested, appends to dataframe
+# input: data= dataframe
+# output: dataframe with harvestresp column appended to end
+#--------------------------------------------------------------------------------------------------------
+
+HarvestResp<-function(data) {
+  N<-length(data$Exclusion)
+  harVec<-rep(NA,times=N)
+
+  for (i in 1:N) {
+    if (data[i,4]=="L") {
+      harVec[i]<-data$Efflux_d9[i]
+    }
+    if (data[i,4]=="LW") {
+      harVec[i]<-data$Efflux_d9[i]
+    }
+    if (data[i,4]=="S") {
+      harVec[i]<-data$Efflux_d5[i]
+    }
+    if (data[i,4]=="SW") {
+      harVec[i]<-data$Efflux_d5[i]
+    }
+  }
+  outDat<-data.frame(data,harvest_day_resp=harVec)
+  return(outDat)
+}
+#--------------------------------------------------------------------------------------------------------
+
+data<-HarvestResp(data=data) # Respiration rate on harvest day is now in "data" dataframe
+
+
