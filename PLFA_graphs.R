@@ -42,7 +42,7 @@ ggsave(filename="FAME_rhizosphere.jpg",plot=FAME_rhizo)
 FAME_rhizo_mod<-lm(data$umol_FAME~data$Rhizosphere_Manipulation*data$Microbial_Group) # super super significant p < 0.001
 anovaFAME_rhizo<-aov(FAME_rhizo_mod)
 anova(FAME_rhizo_mod)
-TukeyHSD(anovaFAME_rhizo)
+TukeyHSD(anovaFAME_rhizo) # None of the microbial groups change by rhizosphere treatment
 
 
 # Bar graph of d13 microbial groups by tree type
