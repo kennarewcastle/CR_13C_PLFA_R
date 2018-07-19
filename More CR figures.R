@@ -156,13 +156,61 @@ ggsave(filename="resp_rhizo.jpg")
 
 # d13 by rhizosphere manipulation for leaf and starch ---------------------
 
+# Data separation for starch and leaf labeled cores
+starch_dat<-filter(data,Isotope_label=="S")
+leaf_dat<-filter(data,Isotope_label=="L")
 
+# ANOVA for d13 by tree species for starch
+tree_starch_co2<-lm(starch_dat$d13_d5~starch_dat$Tree_species)
+Anova(tree_starch_co2) # No difference in starch CO2 d13 between tree species (p=0.7339)
+d13_tree_starch<-ggplot(starch_dat,aes(x=Tree_species,y=d13_d5)) +
+  geom_boxplot() +
+  ylab(label=expression(bold(paste("\u03B4"^{bold("13")}, "CO"[bold("2")]," (\u2030)")))) +
+  xlab(label=expression(bold("Tree Species"))) +
+  scale_x_discrete(labels=c("Goeth"="Goethalsia","Penta"="Pentaclethra")) +
+  ylim(-25,50) +
+  labs(title = expression(bold("Starch Substrate"))) +
+  theme_classic() +
+  theme(axis.text=element_text(colour="black",size=12))
+
+# ANOVA for d13 by tree species for leaf
+tree_leaf_co2<-lm(leaf_dat$d13_d9~leaf_dat$Tree_species)
+Anova(tree_leaf_co2) # Significant difference in d13 in CO2 by tree species for leaf (p=0.03057)
+d13_tree_leaf<-ggplot(leaf_dat,aes(x=Tree_species,y=d13_d9)) +
+  geom_boxplot() +
+  ylab(label=expression(bold(paste("\u03B4"^{bold("13")}, "CO"[bold("2")]," (\u2030)")))) +
+  xlab(label=expression(bold("Tree Species"))) +
+  scale_x_discrete(labels=c("Goeth"="Goethalsia","Penta"="Pentaclethra")) +
+  labs(title = expression(bold("Leaf Substrate"))) +
+  annotate("text", x = 2, y = 92, label = "*p = 0.031", size=4) +
+  theme_classic() +
+  theme(axis.text=element_text(colour="black",size=12))
+
+# Two paneled figure for effect of tree species on 13C-CO2 for starch and leaf substrates
+d13_tree<-grid.arrange(d13_tree_starch,d13_tree_leaf,nrow=1)
+ggsave(filename="d13_CO2_tree.jpg",plot=d13_tree)
+
+
+
+###########################
+# ANOVA for d13 by rhizosphere manipulation for 
+rhizo_resp<-lm(data$harvest_day_resp~data$Exclusion)
+Anova(rhizo_resp) # Marginal differences in resp between rhizosphere treatments (p=0.05852)
+aov_rhizo_resp<-aov(rhizo_resp)
+TukeyHSD(aov_rhizo_resp) # 1 is must diferent from 3
+ggplot(data,aes(x=Exclusion,y=harvest_day_resp)) +
+  geom_boxplot(lwd=1.3) +
+  ylab(expression(bold(paste("Respiration (",mu,"mol"," ","CO"[2]," ","m"^-2," s"^-1,")")))) +
+  xlab(label=expression(bold("Rhizosphere Manipulation"))) +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme_classic()
+
+ggsave(filename="resp_rhizo.jpg")
 
 
 # Data read in--> starch and leaf will be separated
-d13dat<-read.csv("FINAL_PLFA_with_metadata.csv")
-d13dat$Rhizosphere_Manipulation<-as.factor(d13dat$Rhizosphere_Manipulation)
-starch_dat<-filter(d13dat,Substrate_Type=="S")
-leaf_dat<-filter(d13dat,Substrate_Type=="L")
+d13PLFAdat<-read.csv("FINAL_PLFA_with_metadata.csv")
+d13PLFAdat$Rhizosphere_Manipulation<-as.factor(d13PLFAdat$Rhizosphere_Manipulation)
+PLFA_starch<-filter(d13PLFAdat,Substrate_Type=="S")
+PLFA_leaf<-filter(d13PLFAdat,Substrate_Type=="L")
 
-# ANOVA 
