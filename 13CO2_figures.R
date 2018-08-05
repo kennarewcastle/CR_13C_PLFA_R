@@ -64,6 +64,13 @@ TukeyHSD(anovaStarchMod) # Mesh 1 is different from the others
 #### Panelled figure
 grid.arrange(leaf_d13,starch_d13,nrow=1)
 
+#### Is there a difference between leaf and starch 13CO2 release?
+
+# New data frame, puts d13 response (Day 4 for starch, Day 9 for leaf) in one column.
+smallStarchDat<-data.frame(core_ID=starchDat$core_ID, Isotope_lable=starchDat$Isotope_label, Exclusion=starchDat$Exclusion, d13_CO2=starchDat$d13_d4)
+
+smallLeafDat<-data.frame(core_ID=leafDat$core_ID, Isotope_lable=leafDat$Isotope_label, Exclusion=leafDat$Exclusion, d13_CO2=leafDat$d13_d9)
+
 #### Dry root weight by core type
 ggplot(dat,aes(x=Exclusion,y=Dry_root_wt)) +
   geom_boxplot()
