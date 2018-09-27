@@ -1,5 +1,6 @@
 # Constructing graphs for PLFA data
-# 8 May 2018
+# 7 May 2018
+# Edited: 27 September 2018
 # KER
 
 
@@ -156,3 +157,30 @@ starch_d13<-lm(starch_dat$d13~starch_dat$Microbial_Group+starch_dat$Rhizosphere_
 anova(starch_d13)
 anovaStarchd13<-aov(starch_d13)
 TukeyHSD(anovaStarchd13) # Bacteria is unique, fungi is usually unique, 3 is different from 1 & 2
+
+# AMF abundance by rhizosphere treatment
+AMF_dat<-filter(data,Microbial_Group=="AMF")
+
+plot.new()
+ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Tree_Type)) +
+  geom_boxplot() +
+  labs(x="Rhizosphere Manipulation",y="umol FAME compound/ g dry soil") +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA))
+
+# ANOVA on differences between AMF abundance between rhizosphere treatments
+rhizo_AMF<-lm(AMF_dat$umol_FAME~AMF_dat$Rhizosphere_Manipulation)
+anova(rhizo_AMF) # p = 0.319
+anovaRhizo_AMF<-aov(rhizo_AMF)
+TukeyHSD(anovaRhizo_AMF) # Bacteria is unique, fungi is usually unique, 3 is different from 1 & 2
+
+# ANOVA on differences between AMF abundance between tree types
+rhizo_tree_AMF<-lm(AMF_dat$umol_FAME~AMF_dat$Rhizosphere_Manipulation*AMF_dat$Tree_Type) 
+anova(rhizo_tree_AMF) # Significant difference between AMF abundance between tree types (p = 0.0236), no interaction between tree type and rhizosphere manipulation
+
+

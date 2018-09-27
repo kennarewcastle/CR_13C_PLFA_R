@@ -4,7 +4,7 @@
 # Separating 13C signal in FAME compounds according to rhizsophere, substrate, and tree treatments
 
 # Read in data
-masterDat<-read.csv("13C_PLFA_master.csv") ### Clean this up to allow for changes later
+masterDat<-read.csv("13C_PLFA_master_names_fixed.csv") ### Clean this up to allow for changes later
 #sampleNames<-data.frame(ID=seq(from=1,to=78),Sample_Name=unique(masterDat$Identifier.1))
 #write.csv(sampleNames,file="sampleNames.csv")
 
@@ -24,12 +24,9 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="3OH 14:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:01",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 16:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:02",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:00",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:6n3",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:00",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:00",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:00:00",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:01",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 14:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:01",]
@@ -39,9 +36,6 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2OH 10:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="10:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="14:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="17:1",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="2O:0",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="22:0",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:00",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="11:0",]
@@ -51,11 +45,10 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="21:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="23:0",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="15:1",]
 cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:1",]
-cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="20:0",]
 
 #### Create a csv with only the meaningful compounds for each sample
 
-# write.csv(cleanDat,file="CleanFAME_dat_UPDATE.csv",row.names=FALSE)
+# write.csv(cleanDat,file="CleanFAME_dat_092718.csv",row.names=FALSE)
 # DO NOT OPEN THIS FILE IN EXCEL--> will change the 12:0 format to 12:00!!
 
 #### Create function to calculate percent C in all fame compounds.
@@ -104,7 +97,7 @@ carbPLFA<-data.frame(FAME_compound=FAMEcarbon[,1],FAME_per_C=FAMEcarbon[,6])
 
 ##### Creating dataframe that includes only variable relevant for analysis
 
-cleanDat<-read.csv("CleanFAME_dat_UPDATE.csv") # This dataset has been edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
+cleanDat<-read.csv("CleanFAME_dat_092718.csv") # NEEDS TO BE edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
 
 datPLFA<-data.frame(ID=seq(from=1,to=length(cleanDat[,1])),cleanDat[,1:3],cleanDat[6],cleanDat$Area.All,cleanDat$d.13C.12C,cleanDat$AT..13C.12C)
 
@@ -123,7 +116,7 @@ includeCarbon<-function(perC,data) {
   perCvect<-rep("NA",length=N)
   
   for(i in 1:N) {
-    if(data[i,4]=="12:0"){
+    if(data[i,4]=="12:00"){ # edit to one 0 when compound names fixed
       perCvect[i]<-round(perC[1,2],digits=4)
     }
     if(data[i,4]=="14:0"){
@@ -156,8 +149,8 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="19:0cy"){
       perCvect[i]<-round(perC[11,2],digits=4)
     }
-    if(data[i,4]=="19:0"){
-      perCvect[i]<-round(perC[12,2],digits=4)
+    if(data[i,4]=="19:00"){
+      perCvect[i]<-round(perC[12,2],digits=4)  # edit to one 0 when compound names fixed
     }
     if(data[i,4]=="20:4n6"){
       perCvect[i]<-round(perC[13,2],digits=4)
@@ -177,7 +170,9 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="18:3n6"){
       perCvect[i]<-round(perC[17,2],digits=4)
     }
-  
+    if(data[i,4]=="16:1w5"){
+      perCvect[i]<-round(perC[18,2],digits=4)
+    }
   }
   outDat<-data.frame(data,FAME_per_C=perCvect)
   return(outDat)
