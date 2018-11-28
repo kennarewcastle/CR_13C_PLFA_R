@@ -35,11 +35,12 @@ core<-as.factor(d13_dat1$core_type)
 mod1<-lm(d13~core)
 anova(mod1) # core has significant effect!!
 
-d13_core<-ggplot(data=d13_dat1,aes(x=core,y=d13)) +
+d13_core<-ggplot(data=d13_dat1,aes(x=core,y=d13,fill=tree.type)) +
   geom_boxplot(lwd=1.5) +
   geom_hline(yintercept=-25, linetype="dashed",lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C (\u2030)")))) +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C (\u2030)"))),fill="Tree Species") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  scale_fill_discrete(labels=c("G"="Goeth","P"="Penta")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),
@@ -90,20 +91,22 @@ treeS<-d13starch$tree.type
 
 # effect of rhizosphere manipulation on leaf decomp
 
-mod4<-lm(d13L~coreL) # super super significant
+mod4<-lm(d13L~coreL*treeL) # super super significant
 anovaMod4<-aov(mod4)
 anova(mod4)
 TukeyHSD(anovaMod4) # mesh 3 is signficantly different from the other two, which are identical (root presence is the important driver here???)
 
-leaf_d13_core<-ggplot(data=d13leaf,aes(x=coreL,y=d13L)) +
+leaf_d13_core<-ggplot(data=d13leaf,aes(x=coreL,y=d13L,fill=tree.type)) +
   geom_boxplot(lwd=1.5) +
   geom_hline(yintercept=-25, linetype="dashed",lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C  in Microbial PLFA (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
-  annotate("text", x = 1, y = 27, label = "A", size=8, color="red") +
-  annotate("text", x = 2, y = 27, label = "A", size=8, color="red") +
-  annotate("text", x = 3, y = 27, label = "B", size=8, color="red") +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C  in Microbial PLFA (\u2030)"))),title = expression(bold("Leaf Substrate")),fill="Tree Species") +
+  #annotate("text", x = 1, y = 27, label = "A", size=8, color="red") +
+  #annotate("text", x = 2, y = 27, label = "A", size=8, color="red") +
+  #annotate("text", x = 3, y = 27, label = "B", size=8, color="red") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  scale_fill_discrete(labels=c("G"="Goeth","P"="Penta")) +
   ylim(-30,27) +
+  guides(fill=FALSE) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),
@@ -113,16 +116,17 @@ leaf_d13_core<-ggplot(data=d13leaf,aes(x=coreL,y=d13L)) +
 
 # effect of rhizosphere manipulation on starch decomp
 
-mod5<-lm(d13S~coreS) # Not significant!!!
+mod5<-lm(d13S~coreS*treeS) # Not significant!!!
 anova(mod5)
 anovaMod5<-aov(mod5)
 TukeyHSD(anovaMod5) # no differences among mesh
 
-starch_d13_core<-ggplot(data=d13starch,aes(x=coreS,y=d13S)) +
+starch_d13_core<-ggplot(data=d13starch,aes(x=coreS,y=d13S,fill=tree.type)) +
   geom_boxplot(lwd=1.5) +
   geom_hline(yintercept=-25, linetype="dashed",lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C in Microbial PLFA (\u2030)"))), title = expression(bold("Starch Substrate"))) +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")}, "C in Microbial PLFA (\u2030)"))), title = expression(bold("Starch Substrate")),fill="Tree Species") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  scale_fill_discrete(labels=c("G"="Goeth","P"="Penta")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),

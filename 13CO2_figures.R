@@ -63,14 +63,15 @@ d13_day_leaf_mod<-lm(d13_peak_leaf$d13_CO2~d13_peak_leaf$day)
 anova(d13_day_leaf_mod) # No statistically significant difference between days
 
 #### 13C CO2 leaf boxplot figure
-leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d9)) +
+leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d9,fill=Tree_species)) +
   geom_boxplot(lwd=1.5) +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
-  annotate("text", x = 1, y = 100, label = "A", size=8, color="red") +
-  annotate("text", x = 2, y = 100, label = "B", size=8, color="red") +
-  annotate("text", x = 3, y = 100, label = "B", size=8, color="red") +
+  #annotate("text", x = 1, y = 100, label = "A", size=8, color="red") +
+  #annotate("text", x = 2, y = 100, label = "B", size=8, color="red") +
+  #annotate("text", x = 3, y = 100, label = "B", size=8, color="red") +
   ylim(-20,100) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  guides(fill=FALSE) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),
@@ -79,18 +80,18 @@ leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d9)) +
         panel.background=element_rect(fill=NA))
 
 #### 13C CO2 leaf anova and TukeyHSD
-leafMod<-lm(leafDat$d13_d9~leafDat$Exclusion) # super super significant p < 0.001
+leafMod<-lm(leafDat$d13_d9~leafDat$Exclusion*leafDat$Tree_species) # super super significant p < 0.001
 anovaLeafMod<-aov(leafMod)
 anova(leafMod)
 TukeyHSD(anovaLeafMod) # Mesh 1 is different from the others
 
 #### 13C CO2 starch boxplot figure
-starch_d13<-ggplot(data=starchDat,aes(x=Exclusion,y=d13_d2)) +
+starch_d13<-ggplot(data=starchDat,aes(x=Exclusion,y=d13_d2,fill=Tree_species)) +
   geom_boxplot(lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Starch Substrate"))) +
-  annotate("text", x = 1, y = 260, label = "A", size=8, color="red") +
-  annotate("text", x = 2, y = 260, label = "B", size=8, color="red") +
-  annotate("text", x = 3, y = 260, label = "B", size=8, color="red") +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Starch Substrate")),fill="Tree Species") +
+  #annotate("text", x = 1, y = 260, label = "A", size=8, color="red") +
+  #annotate("text", x = 2, y = 260, label = "B", size=8, color="red") +
+  #annotate("text", x = 3, y = 260, label = "B", size=8, color="red") +
   ylim(-20,260) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
@@ -101,7 +102,7 @@ starch_d13<-ggplot(data=starchDat,aes(x=Exclusion,y=d13_d2)) +
         panel.background=element_rect(fill=NA))
 
 #### 13C CO2 starch anova and TukeyHSD
-starchMod<-lm(starchDat$d13_d2~starchDat$Exclusion) # super super significant p < 0.001
+starchMod<-lm(starchDat$d13_d2~starchDat$Exclusion*starchDat$Tree_species) # super super significant p < 0.001
 anovaStarchMod<-aov(starchMod)
 anova(starchMod)
 TukeyHSD(anovaStarchMod) # Mesh 1 is different from the others
@@ -232,15 +233,15 @@ CollectResp<-function(dat) {
 respiration_data<-CollectResp(dat=dat)
 
 # ANOVA for respiration by rhizosphere manipulation
-resp_mod<-lm(respiration_data$resp~respiration_data$Exclusion) # Marginally significant p = 0.059
+resp_mod<-lm(respiration_data$resp~respiration_data$Exclusion*respiration_data$Tree_species) # Marginally significant p = 0.059
 anova(resp_mod)
 resp_mod_aov<-aov(resp_mod)
 TukeyHSD(resp_mod_aov)
 
 # Boxplot for respiration by rhizosphere manipulation 
-resp_rhizo<-ggplot(data=respiration_data,aes(x=Exclusion,y=resp)) +
+resp_rhizo<-ggplot(data=respiration_data,aes(x=Exclusion,y=resp,fill=Tree_species)) +
   geom_boxplot(lwd=1.5) +
-  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("Respiration Rate")))) +
+  labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("Respiration Rate"))),fill="Tree Species") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
@@ -248,6 +249,8 @@ resp_rhizo<-ggplot(data=respiration_data,aes(x=Exclusion,y=resp)) +
         axis.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
         panel.background=element_rect(fill=NA))
+
+ggsave(filename="resp_rhizo_tree.jpg")
 
 #### Respiration by tree type
 resp_tree<-lm(respiration_data$resp~respiration_data$Tree_species) # Not significant

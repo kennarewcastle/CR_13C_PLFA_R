@@ -162,7 +162,7 @@ TukeyHSD(anovaStarchd13) # Bacteria is unique, fungi is usually unique, 3 is dif
 AMF_dat<-filter(data,Microbial_Group=="AMF")
 
 plot.new()
-ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Tree_Type)) +
+ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=d13,fill=Tree_Type)) +
   geom_boxplot() +
   labs(x="Rhizosphere Manipulation",y="umol FAME compound/ g dry soil") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
