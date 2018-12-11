@@ -555,9 +555,6 @@ getBugGroup<-function(data) {
     if(data[i,4]=="20:5n3"){
       group_vec[i]<-"protozoa"
     }
-    if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
-      group_vec[i]<-"fungi"
-    }
     if(data[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
       group_vec[i]<-"fungi"
     }
@@ -988,7 +985,7 @@ addMetaData<-function(data) {
 
 #--------------------------------------------------------------------------------------------------------
 
-PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv")
+PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv") 
 PLFA_with_meta<-addMetaData(data=PLFA_bugs)
 write.csv(PLFA_with_meta,file="FINAL_PLFA_with_metadata.csv",row.names=FALSE)
 
