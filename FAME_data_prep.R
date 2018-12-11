@@ -97,7 +97,7 @@ carbPLFA<-data.frame(FAME_compound=FAMEcarbon[,1],FAME_per_C=FAMEcarbon[,6])
 
 ##### Creating dataframe that includes only variable relevant for analysis
 
-cleanDat<-read.csv("CleanFAME_dat_092718.csv") # NEEDS TO BE edited using RegEx in BBedit to make compound labels consistent (ex. 14:00 and 14:0 = 14:0) AND sample names consitent (format = ##.##.#)
+cleanDat<-read.csv("CleanFAME_dat_092718.csv") # Clean version 092718 cleaned up on 121118
 
 datPLFA<-data.frame(ID=seq(from=1,to=length(cleanDat[,1])),cleanDat[,1:3],cleanDat[6],cleanDat$Area.All,cleanDat$d.13C.12C,cleanDat$AT..13C.12C)
 
@@ -116,7 +116,7 @@ includeCarbon<-function(perC,data) {
   perCvect<-rep("NA",length=N)
   
   for(i in 1:N) {
-    if(data[i,4]=="12:00"){ # edit to one 0 when compound names fixed
+    if(data[i,4]=="12:0"){
       perCvect[i]<-round(perC[1,2],digits=4)
     }
     if(data[i,4]=="14:0"){
@@ -149,17 +149,14 @@ includeCarbon<-function(perC,data) {
     if(data[i,4]=="19:0cy"){
       perCvect[i]<-round(perC[11,2],digits=4)
     }
-    if(data[i,4]=="19:00"){
-      perCvect[i]<-round(perC[12,2],digits=4)  # edit to one 0 when compound names fixed
+    if(data[i,4]=="19:0"){
+      perCvect[i]<-round(perC[12,2],digits=4)
     }
     if(data[i,4]=="20:4n6"){
       perCvect[i]<-round(perC[13,2],digits=4)
     }
     if(data[i,4]=="20:5n3"){
       perCvect[i]<-round(perC[14,2],digits=4)
-    }
-    if(data[i,4]=="18:2n9,12 and cis18:1n9 and 18:3n3"){
-      perCvect[i]<-round(perC[15,2],digits=4)
     }
     if(data[i,4]=="18:2n9,12 and cis-18:1n9 and 183n3"){
       perCvect[i]<-round(perC[15,2],digits=4)
@@ -185,7 +182,7 @@ includeCarbon<-function(perC,data) {
 # carbPLFA
 
 final_PLFA<-includeCarbon(perC=carbPLFA,data=datPLFA)
-write.csv(final_PLFA,file="PLFA_with_per_carb.csv",row.names=FALSE)
+#write.csv(final_PLFA,file="PLFA_with_per_carb.csv",row.names=FALSE)
 
 #--------------------------------------------------------------------------------------------------------
 
