@@ -1,6 +1,6 @@
 # Calculations for the concentrations of FAME compounds in each sample.
 # 18 April 2018
-# Last modified: 
+# Last modified: 11 December 2018
 # KER
 
 library(dplyr)
@@ -10,7 +10,7 @@ data<-read.csv("MASTER_DAT_W_SOIL.csv")
 data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
 
 # Filter out the FAME internal standards (12:0 and 19:0) from each sample
-std_dat<-filter(data,FAME_compound=="12:00" | FAME_compound=="19:00") # change this back to single 0s after editing compound names
+std_dat<-filter(data,FAME_compound=="12:0" | FAME_compound=="19:0")
 
 #########################################################################################################
 # FUNCTION: ugC
