@@ -1,5 +1,6 @@
 # Costa Rica Summary Graphs
 # 12 December 2018
+# Last Edited: 14 January 2019
 # KER
 
 
@@ -66,6 +67,27 @@ fungi_bact<-((.[,2] + .[,4])/(.[,3] + .[,5] + .[,6])) # (AMF + fungi) / (bacteri
 data3_wide<-data.frame(data3_wide, "fungi_bacteria" = fungi_bact)
 
 colnames(data3_wide)<-c("Sample_Name","AMF","bacteria","fungi","gram_neg_bacteria","gram_pos_bacteria","protozoa","fungi_bacteria_ratio") 
+
+# D13 BY MICROBIAL GROUP --- list d13 of FAME compounds averaged across all compounds in a microbial group, use this data to compute ACTIVE fungi:bacteria ratios.
+
+data4<-data.frame("Sample_Name"=data[,1],"Microbial_Group"=data[,14],"d13"=data[,9])
+
+# Reshape from long to wide format, average d13 values across compounds linked to the same microbial groups
+data4_wide<-dcast(data4,Sample_Name ~ Microbial_Group, value.var="d13", fun.aggregate=mean, na.rm=TRUE)
+
+# Convert NaNs (not a real number from using mean function on NA values) to NA.
+is.nan.data.frame <- function(x)
+  do.call(cbind, lapply(x, is.nan))
+
+data4_wide[is.nan(data4_wide)] <- NA
+
+.<-data4_wide
+
+d13_fungi_bact<-(((.[,2]+100) + (.[,4]+100))/((.[,3]+100) + (.[,5]+100) + (.[,6]+100))) # (AMF + fungi) / (bacteria + g+bact + g-bact), all values scaled by adding 100 to remove negative values.
+
+data4_wide<-data.frame(data4_wide, "d13_fungi_bacteria" = d13_fungi_bact)
+
+colnames(data4_wide)<-c("Sample_Name","d13_AMF","d13_bacteria","d13_fungi","d13_gram_neg_bacteria","d13_gram_pos_bacteria","d13_protozoa","d13_fungi_bacteria_ratio") 
 
 # Microbial community by rhizosphere and tree -----------------------------
 # Two panneled figure, one for each tree type.
