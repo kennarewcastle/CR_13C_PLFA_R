@@ -38,6 +38,12 @@ ggplot(data=d13_peak_starch,aes(x=day,y=d13_CO2)) +
   labs(x="Days",y="delta 13C") +
   theme(panel.grid.minor=element_blank(),axis.text=element_text(colour="black",size=14),axis.title=element_text(size=16,face="bold")) # Seems like day 2 is the peak for starch decomp?
 
+ggplot(data=dat,aes(x=day,y=d13_CO2)) +
+  geom_point(colour="seagreen") +
+  geom_smooth(colour="seagreen",size=1.5) +
+  labs(x="Days",y="delta 13C") +
+  theme(panel.grid.minor=element_blank(),axis.text=element_text(colour="black",size=14),axis.title=element_text(size=16,face="bold")) # Seems like day 2 is the peak for starch decomp?
+
 d13_day_starch_mod<-lm(d13_peak_starch$d13_CO2~as.factor(d13_peak_starch$day))
 anova(d13_day_starch_mod)
 starch_peak<-aov(d13_day_starch_mod)
@@ -63,7 +69,7 @@ d13_day_leaf_mod<-lm(d13_peak_leaf$d13_CO2~d13_peak_leaf$day)
 anova(d13_day_leaf_mod) # No statistically significant difference between days
 
 #### 13C CO2 leaf boxplot figure
-leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d9,fill=Tree_species)) +
+leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d4,fill=Tree_species)) +
   geom_boxplot(lwd=1.5) +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
   #annotate("text", x = 1, y = 100, label = "A", size=8, color="red") +

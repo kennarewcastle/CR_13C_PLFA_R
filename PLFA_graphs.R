@@ -18,27 +18,57 @@ data<-cbind(data,umol_FAME)
 
 # Bar graph of microbial groups by tree type
 ggplot(data,aes(x=Tree_Type,y=nmol_FAME_per_g_soil,fill=Microbial_Group)) +
-  geom_bar() +
+  geom_bar(stat="identity") +
   scale_fill_brewer(palette = "Set2") # Looks like no differences
 
 # Box plot of microbial groups by tree type
 
 # Bar graph of microbial groups by rhizosphere manipulation
-FAME_rhizo<-ggplot(data,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Microbial_Group)) +
-  geom_bar(stat="identity",position="dodge") +
+# Two panneled figure, one for each tree type.
+
+data_goeth<-filter(data,Tree_Type=="G")
+FAME_rhizo_g<-ggplot(data_goeth,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Microbial_Group)) +
+  geom_boxplot() +
   scale_fill_brewer(palette = "Set1") +
   ylab(label="FAME concentration (\u03BCmol FAME per g dry soil)") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   xlab(label="Rhizosphere Manipulation") +
+  ggtitle("Goethalsia") +
+  labs(fill="Microbial Group") +
+  ylim(0,42) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
         axis.text.y=element_text(colour="black",size=10),
         axis.text.x=element_text(colour="black",size=14),
         axis.title=element_text(size=14,face="bold"),
+        plot.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
         panel.background=element_rect(fill=NA),
-        legend.position="none") # All groups increase with mesh size?
+        legend.position="none")
 
-ggsave(filename="FAME_rhizosphere.jpg",plot=FAME_rhizo)
+
+data_pent<-filter(data,Tree_Type=="P")
+FAME_rhizo_p<-ggplot(data_pent,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Microbial_Group)) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set1") +
+  ylab(label="FAME concentration (\u03BCmol FAME per g dry soil)") +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  xlab(label="Rhizosphere Manipulation") +
+  ggtitle("Pentaclethera") +
+  labs(fill="Microbial Group") +
+  ylim(0,42)+
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        plot.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA),
+        legend.position="none")
+
+library(gridExtra)
+grid.arrange(FAME_rhizo_p,FAME_rhizo_g,nrow=1)
+
+#ggsave(filename="FAME_rhizosphere.jpg",plot=FAME_rhizo)
 
 FAME_rhizo_mod<-lm(data$umol_FAME~data$Rhizosphere_Manipulation*data$Microbial_Group) # super super significant p < 0.001
 anovaFAME_rhizo<-aov(FAME_rhizo_mod)

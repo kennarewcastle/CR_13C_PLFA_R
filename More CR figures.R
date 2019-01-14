@@ -190,6 +190,8 @@ ggsave(filename="resp_rhizo.jpg")
 starch_dat<-filter(data,Isotope_label=="S")
 leaf_dat<-filter(data,Isotope_label=="L")
 
+
+
 # ANOVA for d13 by tree species for starch
 tree_starch_co2<-lm(starch_dat$d13_d5~starch_dat$Tree_species)
 Anova(tree_starch_co2) # No difference in starch CO2 d13 between tree species (p=0.7339)
@@ -202,6 +204,8 @@ d13_tree_starch<-ggplot(starch_dat,aes(x=Tree_species,y=d13_d5)) +
   labs(title = expression(bold("Starch Substrate"))) +
   theme_classic() +
   theme(axis.text=element_text(colour="black",size=12))
+
+
 
 # ANOVA for d13 by tree species for leaf
 tree_leaf_co2<-lm(leaf_dat$d13_d9~leaf_dat$Tree_species)
