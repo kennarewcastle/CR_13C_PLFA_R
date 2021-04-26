@@ -48,7 +48,7 @@ cleanDat<-cleanDat[cleanDat$Compounds.Result.Name!="24:1",]
 
 #### Create a csv with only the meaningful compounds for each sample
 
-# write.csv(cleanDat,file="CleanFAME_dat_092718.csv",row.names=FALSE)
+# write.csv(cleanDat,file="CleanFAME_dat_021020.csv",row.names=FALSE) # formerly 092718
 # DO NOT OPEN THIS FILE IN EXCEL--> will change the 12:0 format to 12:00!!
 
 #### Create function to calculate percent C in all fame compounds.

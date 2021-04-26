@@ -17,9 +17,15 @@ umol_FAME<-data$nmol_FAME_per_g_soil/1000
 data<-cbind(data,umol_FAME)
 
 # Bar graph of microbial groups by tree type
-ggplot(data,aes(x=Tree_Type,y=nmol_FAME_per_g_soil,fill=Microbial_Group)) +
+ggplot(data,aes(x=Tree_Type,y=umol_FAME,fill=Microbial_Group)) +
   geom_bar(stat="identity") +
-  scale_fill_brewer(palette = "Set2") # Looks like no differences
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() # Looks like no differences
+
+ggplot(data,aes(x=Tree_Type,y=umol_FAME,fill=Microbial_Group)) +
+  geom_bar(stat="identity",position="dodge") +
+  scale_fill_brewer(palette = "Set1") +
+  theme_classic() # Looks like no differences
 
 # Box plot of microbial groups by tree type
 
@@ -28,7 +34,7 @@ ggplot(data,aes(x=Tree_Type,y=nmol_FAME_per_g_soil,fill=Microbial_Group)) +
 
 data_goeth<-filter(data,Tree_Type=="G")
 FAME_rhizo_g<-ggplot(data_goeth,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Microbial_Group)) +
-  geom_boxplot() +
+  geom_bar(stat="identity",position="dodge") +
   scale_fill_brewer(palette = "Set1") +
   ylab(label="FAME concentration (\u03BCmol FAME per g dry soil)") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
@@ -48,7 +54,7 @@ FAME_rhizo_g<-ggplot(data_goeth,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=
 
 data_pent<-filter(data,Tree_Type=="P")
 FAME_rhizo_p<-ggplot(data_pent,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Microbial_Group)) +
-  geom_boxplot() +
+  geom_bar(stat="identity",position="dodge") +
   scale_fill_brewer(palette = "Set1") +
   ylab(label="FAME concentration (\u03BCmol FAME per g dry soil)") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
@@ -62,8 +68,7 @@ FAME_rhizo_p<-ggplot(data_pent,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=M
         axis.title=element_text(size=14,face="bold"),
         plot.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
-        panel.background=element_rect(fill=NA),
-        legend.position="none")
+        panel.background=element_rect(fill=NA))
 
 library(gridExtra)
 grid.arrange(FAME_rhizo_p,FAME_rhizo_g,nrow=1)
@@ -80,7 +85,14 @@ TukeyHSD(anovaFAME_rhizo) # None of the microbial groups change by rhizosphere t
 ggplot(data,aes(x=Tree_Type,y=d13,fill=Microbial_Group)) +
   geom_bar(stat="identity",position="dodge") +
   scale_fill_brewer(palette = "Set1") +
-  ylab(label="d13 FAME compounds")
+  ylab(label="d13 FAME compounds") +
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        plot.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA))
 
 # Box plot of d13 microbial groups by tree type
 ggplot(data,aes(x=Tree_Type,y=d13,fill=Microbial_Group)) +
@@ -91,15 +103,33 @@ ggplot(data,aes(x=Tree_Type,y=d13,fill=Microbial_Group)) +
 # Bar graph of d13 microbial groups by rhizosphere treatment
 ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
   geom_bar(stat="identity",position="dodge") +
+  scale_fill_brewer(palette = "Set1") +
+  ylab(label="d13 FAME compounds") +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  xlab(label="Rhizosphere Manipulation") +
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        plot.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA))
+
+ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
+  geom_bar(stat="identity",position="dodge") +
   scale_fill_brewer(palette = "Set2") +
   ylab(label="d13 FAME compounds")
+
 
 # Box plot of d13 microbial groups by rhizosphere treatment
 ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
   geom_boxplot() +
   scale_fill_brewer(palette = "Set1") +
-  ylab(label="d13 FAME compounds")
+  ylim(-50,500) +
+  ylab(label="d13 FAME compounds") +
+  theme_classic()
 
+range(data$d13)
 # Splitting bar graph of rhizosphere manipulation into starch and leaf
 starch_dat<-filter(data,Substrate_Type=="S") # filter data
 leaf_dat<-filter(data,Substrate_Type=="L")
@@ -136,7 +166,6 @@ leaf_rhizo<-ggplot(leaf_dat,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_
         axis.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
         panel.background=element_rect(fill=NA),
-        legend.position="none",
         axis.title.y=element_blank())
   
 
@@ -177,13 +206,13 @@ leaf_rhizo_box<-ggplot(leaf_dat,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microb
 grid.arrange(starch_rhizo_box,leaf_rhizo_box,nrow=1) # THE COOLEST GRAPH OF THEM ALL!!!
 
 # ANOVA on differences between d13 signal in microbial groups x rhizosphere manipulation--LEAF
-leaf_d13<-lm(leaf_dat$d13~leaf_dat$Microbial_Group+leaf_dat$Rhizosphere_Manipulation)
+leaf_d13<-lm(leaf_dat$d13~leaf_dat$Microbial_Group*leaf_dat$Rhizosphere_Manipulation)
 anova(leaf_d13)
 anovaLeafd13<-aov(leaf_d13)
 TukeyHSD(anovaLeafd13) # Bacteria is unique, fungi is usually unique, 3 is different from 1 & 2
 
 # ANOVA on differences between d13 signal in microbial groups x rhizosphere manipulation--STARCH
-starch_d13<-lm(starch_dat$d13~starch_dat$Microbial_Group+starch_dat$Rhizosphere_Manipulation)
+starch_d13<-lm(starch_dat$d13~starch_dat$Microbial_Group*starch_dat$Rhizosphere_Manipulation)
 anova(starch_d13)
 anovaStarchd13<-aov(starch_d13)
 TukeyHSD(anovaStarchd13) # Bacteria is unique, fungi is usually unique, 3 is different from 1 & 2
@@ -192,7 +221,7 @@ TukeyHSD(anovaStarchd13) # Bacteria is unique, fungi is usually unique, 3 is dif
 AMF_dat<-filter(data,Microbial_Group=="AMF")
 
 plot.new()
-ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=d13,fill=Tree_Type)) +
+ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=umol_FAME,fill=Tree_Type)) +
   geom_boxplot() +
   labs(x="Rhizosphere Manipulation",y="umol FAME compound/ g dry soil") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
@@ -202,6 +231,19 @@ ggplot(data=AMF_dat,aes(x=Rhizosphere_Manipulation,y=d13,fill=Tree_Type)) +
         axis.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
         panel.background=element_rect(fill=NA))
+
+# AMF abundance by tree type
+ggplot(data=AMF_dat,aes(x=Tree_Type,y=umol_FAME,fill=Tree_Type)) +
+  geom_boxplot() +
+  labs(x="Tree Species",y="umol FAME compound/ g dry soil") +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA))
+
 
 # ANOVA on differences between AMF abundance between rhizosphere treatments
 rhizo_AMF<-lm(AMF_dat$umol_FAME~AMF_dat$Rhizosphere_Manipulation)

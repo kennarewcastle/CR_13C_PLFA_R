@@ -517,19 +517,19 @@ getBugGroup<-function(data) {
       group_vec[i]<-"standard"
     }
     if(data[i,4]=="14:0"){
-      group_vec[i]<-"bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="a15:0"){
       group_vec[i]<-"gram+bacteria"
     }
     if(data[i,4]=="15:0"){
-      group_vec[i]<-"bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="16:1n9/i16:0"){
       group_vec[i]<-"bacteria"
     }
     if(data[i,4]=="16:0"){
-      group_vec[i]<-"bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="i17:0"){
       group_vec[i]<-"gram+bacteria"
@@ -538,10 +538,10 @@ getBugGroup<-function(data) {
       group_vec[i]<-"gram-bacteria"
     }
     if(data[i,4]=="17:0"){
-      group_vec[i]<-"bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="18:0"){
-      group_vec[i]<-"bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="19:0cy"){
       group_vec[i]<-"gram-bacteria"
@@ -559,7 +559,7 @@ getBugGroup<-function(data) {
       group_vec[i]<-"fungi"
     }
     if(data[i,4]=="trans-18:1n9"){
-      group_vec[i]<-"gram-bacteria"
+      group_vec[i]<-"general"
     }
     if(data[i,4]=="18:3n6"){
       group_vec[i]<-"fungi"
@@ -988,4 +988,21 @@ addMetaData<-function(data) {
 PLFA_bugs<-read.csv("MASTER_PLFA_w_MICROBE_GROUP.csv") 
 PLFA_with_meta<-addMetaData(data=PLFA_bugs)
 write.csv(PLFA_with_meta,file="FINAL_PLFA_with_metadata.csv",row.names=FALSE)
+
+
+# Calculate fungal:bacterial ratios ---------------------------------------
+
+data<-read.csv("FINAL_PLFA_with_metadata.csv")
+bacteria.dat<-filter(data,data$Microbial_Group=="bacteria"|data$Microbial_Group=="gram-bacteria"|data$Microbial_Group=="gram+bacteria")
+
+bacteria_mass<-data.frame(tapply(bacteria.dat$nmol_FAME_per_g_soil,bacteria.dat$SampleName,FUN=sum))
+names(bacteria_mass)<-"Bacteria_nmol_FAME_g_soil"
+
+fungi.dat<-filter(data,data$Microbial_Group=="fungi"|data$Microbial_Group=="AMF")        
+fungi_mass<-data.frame(tapply(fungi.dat$nmol_FAME_per_g_soil,fungi.dat$SampleName,FUN=sum))
+names(fungi_mass)<-"Fungi_nmol_FAME_g_soil"
+
+bact_fungi<-cbind(bacteria_mass,fungi_mass)
+
+write.csv(bact_fungi,file="Bacteria:Fungi.csv")
 
