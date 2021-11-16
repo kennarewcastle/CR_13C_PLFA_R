@@ -101,10 +101,16 @@ ggplot(data,aes(x=Tree_Type,y=d13,fill=Microbial_Group)) +
   ylab(label="d13 FAME compounds")
 
 # Bar graph of d13 microbial groups by rhizosphere treatment
-ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
+
+starch13<-filter(data,Substrate_Type=="S")
+leaf13<-filter(data,Substrate_Type=="L")
+
+starch13_plot<-ggplot(starch13,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
   geom_bar(stat="identity",position="dodge") +
   scale_fill_brewer(palette = "Set1") +
   ylab(label="d13 FAME compounds") +
+  ggtitle("Starch Label") +
+  ylim(-100,1000) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   xlab(label="Rhizosphere Manipulation") +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
@@ -113,12 +119,27 @@ ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
         axis.title=element_text(size=14,face="bold"),
         plot.title=element_text(size=14,face="bold"),
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
-        panel.background=element_rect(fill=NA))
+        panel.background=element_rect(fill=NA),
+        legend.position="none")
 
-ggplot(data,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
+leaf13_plot<-ggplot(leaf13,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
   geom_bar(stat="identity",position="dodge") +
-  scale_fill_brewer(palette = "Set2") +
-  ylab(label="d13 FAME compounds")
+  scale_fill_brewer(palette = "Set1") +
+  ylab(label="d13 FAME compounds") +
+  ggtitle("Leaf Label") +
+  ylim(-100,1000) +
+  scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+  xlab(label="Rhizosphere Manipulation") +
+  theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+        axis.text.y=element_text(colour="black",size=10),
+        axis.text.x=element_text(colour="black",size=14),
+        axis.title=element_text(size=14,face="bold"),
+        plot.title=element_text(size=14,face="bold"),
+        panel.border=element_rect(fill=NA,colour="black",size=1.5),
+        panel.background=element_rect(fill=NA),
+        legend.position="none")
+
+grid.arrange(starch13_plot,leaf13_plot,nrow=1)
 
 
 # Box plot of d13 microbial groups by rhizosphere treatment
