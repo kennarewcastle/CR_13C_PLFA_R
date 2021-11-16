@@ -1,31 +1,31 @@
-# 13C CO2 Calculations for Costa Rica 2016
-# April 27th, 2018
-# Modified August 6th, 2018
-# KER
+#### 13C CO2 Calculations for Costa Rica 2016
+#### KER
+#### Created: 27 April 2018
+#### Last modified:
+####          6 August 2018
+####          16 November 2021       
+
+
+# Load packages -----------------------------------------------------------
 
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+
+
+# Read in data ------------------------------------------------------------
 
 dat<-read.csv("Costa Rica Master sheet annotated.csv")
 dat<-filter(dat,dat$Exclusion!="NA")
 dat$Exclusion<-as.factor(dat$Exclusion)
 
 starchDat<-filter(dat,dat$Isotope_label=="S") # Only cores labeled with starch 13C
-#starchDat<-filter(starchDat,starchDat$d13_d5<150)
-starchDat<-filter(starchDat,starchDat$d13_d5!="NA")
-starchDat<-filter(starchDat,starchDat$d13_d2!="NA")
-starchDat<-filter(starchDat,starchDat$d13_d3!="NA")
-starchDat<-filter(starchDat,starchDat$d13_d4!="NA")
 
 leafDat<-filter(dat,dat$Isotope_label=="L") # Only cores labeled with leaf 13C
-leafDat<-filter(dat,dat$d13_d4!="NA")
-leafDat<-filter(dat,dat$d13_d6!="NA")
-leafDat<-filter(dat,dat$d13_d7!="NA")
-leafDat<-filter(dat,dat$d13_d9!="NA")
 
 
-#### 13CO2 trends over 5 days, starch
+# 13CO2 trends over 5 days, starch ----------------------------------------
+
 d13_starch_dat<-c(starchDat$d13_d2,starchDat$d13_d3,starchDat$d13_d4,starchDat$d13_d5)
 N<-length(starchDat[,1])
 d13_starch_days<-c(rep(2,times=N),rep(3,times=N),rep(4,times=N),rep(5,times=N))
@@ -38,18 +38,14 @@ ggplot(data=d13_peak_starch,aes(x=day,y=d13_CO2)) +
   labs(x="Days",y="delta 13C") +
   theme(panel.grid.minor=element_blank(),axis.text=element_text(colour="black",size=14),axis.title=element_text(size=16,face="bold")) # Seems like day 2 is the peak for starch decomp?
 
-ggplot(data=dat,aes(x=day,y=d13_CO2)) +
-  geom_point(colour="seagreen") +
-  geom_smooth(colour="seagreen",size=1.5) +
-  labs(x="Days",y="delta 13C") +
-  theme(panel.grid.minor=element_blank(),axis.text=element_text(colour="black",size=14),axis.title=element_text(size=16,face="bold")) # Seems like day 2 is the peak for starch decomp?
-
 d13_day_starch_mod<-lm(d13_peak_starch$d13_CO2~as.factor(d13_peak_starch$day))
 anova(d13_day_starch_mod)
 starch_peak<-aov(d13_day_starch_mod)
 TukeyHSD(starch_peak)
 
-#### 13CO2 trends over 9 days, leaf
+
+# 13CO2 trends over 9 days, leaf ------------------------------------------
+
 d13_leaf_dat<-c(leafDat$d13_d4,leafDat$d13_d6,leafDat$d13_d7,leafDat$d13_d9)
 N<-length(leafDat[,1])
 d13_leaf_days<-c(rep(4,times=N),rep(6,times=N),rep(7,times=N),rep(9,times=N))
@@ -58,19 +54,20 @@ d13_peak_leaf<-data.frame(day=d13_leaf_days,d13_CO2=d13_leaf_dat)
 
 plot.new()
 ggplot(data=d13_peak_leaf,aes(x=day,y=d13_CO2,group=day)) +
-  #geom_point(colour="seagreen") +
-  #geom_smooth(colour="seagreen",size=1.5) +
   geom_boxplot() +
   scale_x_discrete() +
   labs(x="Days",y="delta 13C") +
   theme(panel.grid.minor=element_blank(),axis.text=element_text(colour="black",size=14),axis.title=element_text(size=16,face="bold")) # Pretty even decomp of leaf substrate, just go with harvest day reading.
 
 d13_day_leaf_mod<-lm(d13_peak_leaf$d13_CO2~d13_peak_leaf$day)
-anova(d13_day_leaf_mod) # No statistically significant difference between days
+anova(d13_day_leaf_mod)
+leaf_peak<-aov(d13_day_leaf_mod)
+TukeyHSD(leaf_peak) # Day 6 is lower than the others, but no clear peak
+
 
 #### 13C CO2 leaf boxplot figure
-leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d4,fill=Tree_species)) +
-  geom_boxplot(lwd=1.5) +
+leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d9,fill=Tree_species)) +
+  geom_boxplot(lwd=1) +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Leaf Substrate"))) +
   #annotate("text", x = 1, y = 100, label = "A", size=8, color="red") +
   #annotate("text", x = 2, y = 100, label = "B", size=8, color="red") +
@@ -87,13 +84,11 @@ leaf_d13<-ggplot(data=leafDat,aes(x=Exclusion,y=d13_d4,fill=Tree_species)) +
 
 #### 13C CO2 leaf anova and TukeyHSD
 leafMod<-lm(leafDat$d13_d9~leafDat$Exclusion*leafDat$Tree_species) # super super significant p < 0.001
-anovaLeafMod<-aov(leafMod)
-anova(leafMod)
-TukeyHSD(anovaLeafMod) # Mesh 1 is different from the others
+anova(leafMod) # Significant rhizosphere manipulation, significant tree species, significant interaction)
 
 #### 13C CO2 starch boxplot figure
 starch_d13<-ggplot(data=starchDat,aes(x=Exclusion,y=d13_d2,fill=Tree_species)) +
-  geom_boxplot(lwd=1.5) +
+  geom_boxplot(lwd=1) +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("\u03B4"^{bold("13")},"CO"[bold("2")]," (\u2030)"))),title = expression(bold("Starch Substrate")),fill="Tree Species") +
   #annotate("text", x = 1, y = 260, label = "A", size=8, color="red") +
   #annotate("text", x = 2, y = 260, label = "B", size=8, color="red") +
@@ -108,10 +103,8 @@ starch_d13<-ggplot(data=starchDat,aes(x=Exclusion,y=d13_d2,fill=Tree_species)) +
         panel.background=element_rect(fill=NA))
 
 #### 13C CO2 starch anova and TukeyHSD
-starchMod<-lm(starchDat$d13_d2~starchDat$Exclusion*starchDat$Tree_species) # super super significant p < 0.001
-anovaStarchMod<-aov(starchMod)
-anova(starchMod)
-TukeyHSD(anovaStarchMod) # Mesh 1 is different from the others
+starchMod<-lm(starchDat$d13_d2~starchDat$Exclusion*starchDat$Tree_species)
+anova(starchMod) # Only significant differences are exclusion
 
 #### Panelled figure
 grid.arrange(leaf_d13,starch_d13,nrow=1)
@@ -167,7 +160,8 @@ TukeyEnzyC<-TukeyHSD(anovaCenzyMod) # No differences between C-acquiring enzyme 
 
 # Boxplots for C enzyme activity by rhizosphere manipulation
 rhizo_enzyC<-ggplot(data=enzyDat,aes(x=Exclusion,y=C_enzymes)) +
-  geom_boxplot(lwd=1.5) +
+  geom_boxplot(lwd=1) +
+  geom_dotplot(binaxis = "y", stackdir = "center") +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("C Enzyme Activity (nmol ","g dry ","soil"^{bold("-1")}," h"^{bold("-1")},")")))) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
@@ -185,7 +179,8 @@ TukeyEnzyNut<-TukeyHSD(anovaNutEnzyMod) # No differences between nutrient-acquir
 
 # Boxplots for nutrient enzyme activity by rhizosphere manipulation
 rhizo_enzyNut<-ggplot(data=enzyDat,aes(x=Exclusion,y=nut_enzymes)) +
-  geom_boxplot(lwd=1.5) +
+  geom_boxplot(lwd=1) +
+  geom_dotplot(binaxis = "y", stackdir = "center") +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("Nutrient Enzyme Activity (nmol ","g dry ","soil"^{bold("-1")}," h"^{bold("-1")},")")))) +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
@@ -246,7 +241,7 @@ TukeyHSD(resp_mod_aov)
 
 # Boxplot for respiration by rhizosphere manipulation 
 resp_rhizo<-ggplot(data=respiration_data,aes(x=Exclusion,y=resp,fill=Tree_species)) +
-  geom_boxplot(lwd=1.5) +
+  geom_boxplot(lwd=1) +
   labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("Respiration Rate"))),fill="Tree Species") +
   scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
   theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
