@@ -6,6 +6,7 @@
 # Load packages -----------------------------------------------------------
 
 library(dplyr)
+library(tidyr)
 
 # Function to convert raw PLFA data to ug C in FAME -----------------------
 
@@ -258,7 +259,7 @@ ug_C_FAME<-function(data,stdRatio) {
     } # close final if statement
   } # close first for loop
   
-  outDat1<-data.frame(data,StandardRatio=stdVec)
+  outDat1<-data.frame(data,"StandardRatio"=stdVec)
   
   ###### Calculates ugC present in each compound from Peak Area
   for (i in 1:N) {
@@ -285,7 +286,13 @@ ug_C_FAME<-function(data,stdRatio) {
 
 ## Read in data
 data<-read.csv("MASTER_DAT_W_SOIL.csv") 
-data$InjectionVol_ul<-as.numeric(data$InjectionVol_ul)
-dat_stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
+
+data$InjectionVol_ul[1239:1255] <- "3 ul" # Fixes weird typo in convention
+data<-data %>% separate(InjectionVol_ul,into=c("Injection_vol_ul",NA),sep=" ",remove=TRUE,convert=FALSE,extra="merge",fill="warn") # Pulls out the number from the 3 ul character string
+data$Injection_vol_ul<-as.numeric(data$Injection_vol_ul)
+
+stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
+
 C_data<-ug_C_FAME(data=data,stdRatio=dat_stdRatio)
 
+# write.csv(C_data,file="Total_g_FAME_for_specific_resp.csv",row.names=FALSE)
