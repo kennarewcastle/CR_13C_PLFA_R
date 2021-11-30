@@ -1,12 +1,16 @@
 ### Calculation of carbon use efficiency from 13CO2 and 13C PLFA
 ### KER
 ### Created on: 16 November 2021
-
+### Last modified:
+###         30 November 2021: Summed 13C mass across all FAME compounds per sample
 
 # Load packages -----------------------------------------------------------
 
+library(plyr)
 library(dplyr)
 library(tidyr)
+library(ggplot2)
+library(gridExtra)
 
 # Function to convert raw PLFA data to ug C in FAME -----------------------
 
@@ -296,3 +300,59 @@ stdRatio<-read.csv("PeakAreaC_ratio_per_sample.csv")
 C_data<-ug_C_FAME(data=data,stdRatio=dat_stdRatio)
 
 # write.csv(C_data,file="Total_g_FAME_for_specific_resp.csv",row.names=FALSE)
+
+# Multiply atom % by C content to get mass labeled C ----------------------
+
+C_data<-read.csv("Total_g_FAME_for_specific_resp.csv")
+C_data<-data.frame(C_data$ID,C_data$SampleName,C_data$FAME_compound,C_data$d13,C_data$Atom_per_13C,C_data$Total_C_ug)
+names(C_data)<-c("Unique_ID","Core_ID","FAME_Compound","d13","Atom_per_13C","Total_C_ug")
+
+C_data$Mass_13C_ug<-(C_data$Atom_per_13C/100)*C_data$Total_C_ug
+
+# Aggregate 13C per core across all FAME compounds ------------------------
+
+outdat<-ddply(C_data, .(Core_ID), summarise, Total_13C_ug=sum(Mass_13C_ug))
+write.csv(outdat,file="Total_13C_per_Core.csv",row.names=FALSE) # Core leaf/starch label type added manually after writing this file
+
+
+# Figures for microbial 13C by core ---------------------------------------
+
+data<-read.csv("Total_13C_per_Core.csv")
+data$Mesh_Type<-as.factor(data$Mesh_Type)
+
+leaf<-filter(data,Label_Type=="L")
+starch<-filter(data,Label_Type=="S")
+
+### These ylim scalers eliminate 1 outlier in starch with total ug 13C > 3000, change for publication
+leaf_rhizo_13C<-ggplot(leaf,aes(x=Mesh_Type,y=Total_13C_ug)) +
+  geom_boxplot(lwd=1.5,outlier.shape=NA) +
+  geom_point(size=5,alpha=0.7) +
+  ylim(190,2500) +
+  labs(y=expression(bold(paste("Total Microbial PLFA"," "^13,"C (",mu,"g)"))),x="Rhizosphere Exclusion",title="Leaf") +
+  scale_x_discrete(labels=c("-R-M","-R+M","+R+M")) +
+  theme_classic()+
+  theme(
+    axis.text.x=element_text(colour="black",size=14),
+    axis.text.y=element_text(colour="black"),
+    axis.title.x=element_text(face="bold",size=16),
+    axis.title.y=element_text(face="bold",size=16),
+    plot.title=element_text(face="bold",size=18))
+
+starch_rhizo_13C<-ggplot(starch,aes(x=Mesh_Type,y=Total_13C_ug)) +
+  geom_boxplot(lwd=1.5,outlier.shape=NA) +
+  geom_point(size=5,alpha=0.7) +
+  ylim(190,2500) +
+  labs(y=expression(bold(paste("Total Microbial PLFA"," "^13,"C (",mu,"g)"))),x="Rhizosphere Exclusion",title="Starch") +
+  scale_x_discrete(labels=c("-R-M","-R+M","+R+M")) +
+  theme_classic()+
+  theme(
+    axis.text.x=element_text(colour="black",size=14),
+    axis.text.y=element_text(colour="black"),
+    axis.title.x=element_text(face="bold",size=16),
+    axis.title.y=element_text(face="bold",size=16),
+    plot.title=element_text(face="bold",size=18))
+
+grid.arrange(starch_rhizo_13C,leaf_rhizo_13C,ncol=2)
+
+
+
