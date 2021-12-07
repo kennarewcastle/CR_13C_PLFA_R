@@ -438,5 +438,3 @@ leaf$Total_13C_ug<-(leaf$C13_ug_D1/10*1440) + (leaf$C13_ug_D4/10*4320) + (leaf$C
 outCO2<-rbind(starch,leaf)
   
 #write.csv(outCO2,file="13C_CO2_Final_Calculations.csv",row.names=FALSE)
-
-
