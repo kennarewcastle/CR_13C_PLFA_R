@@ -401,14 +401,42 @@ starch$Total_13C_ug<-(starch$C13_ug_D1/10*1440) + (starch$C13_ug_D2/10*1440) + (
   
 # Redo cores with missing samples manually
   
-  # Cores with day 2 samples missing (day 2 ppmv = average ug of day 1 and day 3)
+  # Cores with day 2 samples missing (day 2 ug = average ug of day 1 and day 3)
   starch$Total_13C_ug[6]<-(starch$C13_ug_D1[6]/10*1440) + (mean(c(starch$C13_ug_D1[6],starch$C13_ug_D3[6]))/10*1440) + (starch$C13_ug_D3[6]/10*1440) + (starch$C13_ug_D4[6]/10*1440) + (starch$C13_ug_D5[6]/10*1440)
   
   starch$Total_13C_ug[15]<-(starch$C13_ug_D1[15]/10*1440) + (mean(c(starch$C13_ug_D1[15],starch$C13_ug_D3[15]))/10*1440) + (starch$C13_ug_D3[15]/10*1440) + (starch$C13_ug_D4[15]/10*1440) + (starch$C13_ug_D5[15]/10*1440)
   
   # Core with day 4 sample missing
-  starch$Total_13C_ug[3]<-(starch$C13_ug_D1[3]/10*1440) + (starch$C13_ug_D2[3]/10*1440) + (starch$C13_ug_D3[3]/10*1440) + (mean(c(starch$C13_ug_D1[15],starch$C13_ug_D3[15]))/10*1440) + (starch$C13_ug_D5[3]/10*1440)
-
+  starch$Total_13C_ug[3]<-(starch$C13_ug_D1[3]/10*1440) + (starch$C13_ug_D2[3]/10*1440) + (starch$C13_ug_D3[3]/10*1440) + (mean(c(starch$C13_ug_D3[3],starch$C13_ug_D5[3]))/10*1440) + (starch$C13_ug_D5[3]/10*1440)
   
+  # Core with day 5 sample missing (just use day 4 ug value)
+  starch$Total_13C_ug[45]<-(starch$C13_ug_D1[45]/10*1440) + (starch$C13_ug_D2[45]/10*1440) + (starch$C13_ug_D3[45]/10*1440) + (starch$C13_ug_D4[45]/10*2880)
+
+# Check to see if any leaf cores are missing gas samples for certain days... Missing samples will be calculated manually after calculating total mass produced for the rest of the dataset. Gas sampling days are 1, 4, 6, 7, 9
+  
+length(leaf$ppmv_day1[is.na(leaf$ppmv_day1)]) # All samples present day 1
+  
+length(leaf$ppmv_day4[is.na(leaf$ppmv_day4)]) # All samples present day 4
+  
+length(leaf$ppmv_day6[is.na(leaf$ppmv_day6)]) # All samples present day 6
+  
+length(leaf$ppmv_day7[is.na(leaf$ppmv_day7)]) # Missing 2 samples (2, 3)
+  leaf[c(2,3),] # Missing samples are 1.5.2, 1.5.3
+  
+length(leaf$ppmv_day9[is.na(leaf$ppmv_day9)]) # All samples present day 9
+
+# Calculate total 13C emitted over 9 day leaf incubation (considering 10 minute cap period at time of gas sample collection)... 1440 = number of minutes in 24 hours
+leaf$Total_13C_ug<-(leaf$C13_ug_D1/10*1440) + (leaf$C13_ug_D4/10*4320) + (leaf$C13_ug_D6/10*2880) + (leaf$C13_ug_D7/10*1440) + (leaf$C13_ug_D9/10*2880)
+
+# Redo cores with missing samples manually
+
+  # Cores with day 7 samples missing (day 7 ug = average ug of day 6 and day 9)
+  leaf$Total_13C_ug[2]<-(leaf$C13_ug_D1[2]/10*1440) + (leaf$C13_ug_D4[2]/10*4320) + (leaf$C13_ug_D6[2]/10*2880) + (mean(c(leaf$C13_ug_D6[2],leaf$C13_ug_D9[2]))/10*1440) + (leaf$C13_ug_D9[2]/10*2880)
+  
+  leaf$Total_13C_ug[3]<-(leaf$C13_ug_D1[3]/10*1440) + (leaf$C13_ug_D4[3]/10*4320) + (leaf$C13_ug_D6[3]/10*2880) + (mean(c(leaf$C13_ug_D6[3],leaf$C13_ug_D9[3]))/10*1440) + (leaf$C13_ug_D9[3]/10*2880)
+  
+outCO2<-rbind(starch,leaf)
+  
+#write.csv(outCO2,file="13C_CO2_Final_Calculations.csv",row.names=FALSE)
 
 
