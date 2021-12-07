@@ -2,8 +2,8 @@
 ### KER
 ### Created on: 16 November 2021
 ### Last modified:
-###         30 November 2021: Summed 13C mass across all FAME compounds per sample
-
+###         30 November 2021: Summed 13C-PLFA mass across all FAME compounds per sample
+###         30 November 2021: Added analysis for total 13C-CO2 for each core
 # Load packages -----------------------------------------------------------
 
 library(plyr)
@@ -354,5 +354,61 @@ starch_rhizo_13C<-ggplot(starch,aes(x=Mesh_Type,y=Total_13C_ug)) +
 
 grid.arrange(starch_rhizo_13C,leaf_rhizo_13C,ncol=2)
 
+
+# Calculate mass 13C-CO2 per core -----------------------------------------
+
+### This conversion is kind of tricky... First use the ideal gas law with the following variables to solve for the number of moles of gas total in each core (volume changes for each core with the depth of the headspace in teh cores). P = atmospheric pressure at 35 m above sea level (from La Selva website) = 345.39 Pa, T= 298.91 K (average of all temperatures taken inside each core in the field notes spreadsheet), V = units are m3, calculated by multiplying the area of the cores given the cores' radii (2.5 cm) by the depth of soil from the top of the cores (field notes spreadsheet), R = gas constant (8.314510).
+
+CO2<-read.csv("CR2016_13CO2_Gas_Samples.csv")
+
+# Calculate gas volume
+CO2$Core_Volume_m3<-((pi*(2.5)^2)*CO2$Core_Depth_cm)/1000000
+
+# Calculate moles of gas = PV/RT
+CO2$Gas_Moles<-(345.39*CO2$Core_Volume_m3)/(8.314510*298.91)
+
+# Multiply moles of gas by ppmv/1000000 to get moles of CO2 on each day, then multiply by 13 (molecular weight of 13C carbon) to get g of 13C emitted by each core over 10 minute capping interval, then multiply by 1000000 to get ug 13C
+CO2$C13_ug_D1<-CO2$Gas_Moles*(CO2$ppmv_day1/1000000)*100000
+CO2$C13_ug_D2<-CO2$Gas_Moles*(CO2$ppmv_day2/1000000)*100000
+CO2$C13_ug_D3<-CO2$Gas_Moles*(CO2$ppmv_day3/1000000)*100000
+CO2$C13_ug_D4<-CO2$Gas_Moles*(CO2$ppmv_day4/1000000)*100000
+CO2$C13_ug_D5<-CO2$Gas_Moles*(CO2$ppmv_day5/1000000)*100000
+CO2$C13_ug_D6<-CO2$Gas_Moles*(CO2$ppmv_day6/1000000)*100000
+CO2$C13_ug_D7<-CO2$Gas_Moles*(CO2$ppmv_day7/1000000)*100000
+CO2$C13_ug_D9<-CO2$Gas_Moles*(CO2$ppmv_day9/1000000)*100000
+
+# Separate leaf data from starch data because cores were sampled/harvested on different dates
+leaf<-filter(CO2,Label_Type=="leaf") # Gas sampling days are 1, 4, 6, 7, 9
+starch<-filter(CO2,Label_Type=="starch") # Gas sampling days are 1, 2, 3, 4, 5
+
+# Check to see if any starch cores are missing gas samples for certain days... Missing samples will be calculated manually after calculating total mass produced for the rest of the dataset
+
+length(starch$ppmv_day1[is.na(starch$ppmv_day1)]) # All samples present day 1
+
+length(starch$ppmv_day2[is.na(starch$ppmv_day2)]) # Missing 2 samples (6 and 15)
+  starch[c(6,15),] # Missing samples are 10.2.3 and 17.1.3
+
+length(starch$ppmv_day3[is.na(starch$ppmv_day3)]) # All samples present day 3
+
+length(starch$ppmv_day4[is.na(starch$ppmv_day4)]) # Missing 1 sample (3)
+  starch[3,] # Missing sample is 1.13.3
+  
+length(starch$ppmv_day5[is.na(starch$ppmv_day5)]) # Missing 1 sample (45)
+  starch[45,] # Missing sample is 52.4.3
+  
+# Calculate total 13C emitted over 5 day starch incubation (considering 10 minute cap period at time of gas sample collection)... 1440 = number of minutes in 24 hours
+starch$Total_13C_ug<-(starch$C13_ug_D1/10*1440) + (starch$C13_ug_D2/10*1440) + (starch$C13_ug_D3/10*1440) + (starch$C13_ug_D4/10*1440) + (starch$C13_ug_D5/10*1440)
+  
+# Redo cores with missing samples manually
+  
+  # Cores with day 2 samples missing (day 2 ppmv = average ug of day 1 and day 3)
+  starch$Total_13C_ug[6]<-(starch$C13_ug_D1[6]/10*1440) + (mean(c(starch$C13_ug_D1[6],starch$C13_ug_D3[6]))/10*1440) + (starch$C13_ug_D3[6]/10*1440) + (starch$C13_ug_D4[6]/10*1440) + (starch$C13_ug_D5[6]/10*1440)
+  
+  starch$Total_13C_ug[15]<-(starch$C13_ug_D1[15]/10*1440) + (mean(c(starch$C13_ug_D1[15],starch$C13_ug_D3[15]))/10*1440) + (starch$C13_ug_D3[15]/10*1440) + (starch$C13_ug_D4[15]/10*1440) + (starch$C13_ug_D5[15]/10*1440)
+  
+  # Core with day 4 sample missing
+  starch$Total_13C_ug[3]<-(starch$C13_ug_D1[3]/10*1440) + (starch$C13_ug_D2[3]/10*1440) + (starch$C13_ug_D3[3]/10*1440) + (mean(c(starch$C13_ug_D1[15],starch$C13_ug_D3[15]))/10*1440) + (starch$C13_ug_D5[3]/10*1440)
+
+  
 
 
