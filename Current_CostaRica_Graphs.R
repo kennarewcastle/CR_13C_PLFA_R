@@ -98,14 +98,14 @@ library(reshape2)
 
   ## Leaf PLFA figure
   leaf_d13_PLFA<-ggplot(leaf_PLFA,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
-    geom_bar(stat="identity",position="dodge") +
+    geom_boxplot(lwd=1) +
     scale_fill_brewer(palette = "Set1") +
     ylab(label=expression(bold(paste("\u03B4"^{bold("13")}, "C PLFA"," (\u2030)")))) +
     scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
     xlab(label="Rhizosphere Manipulation") +
     ggtitle("Leaf Substrate") +
     labs(fill="Microbial Group") +
-    ylim(-50,275) +
+    #ylim(-25,75) +
     theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
           axis.text.y=element_text(colour="black",size=10),
           axis.text.x=element_text(colour="black",size=14),
@@ -117,7 +117,7 @@ library(reshape2)
   
   ## Starch PLFA figure
   starch_d13_PLFA<-ggplot(starch_PLFA,aes(x=Rhizosphere_Manipulation,y=d13,fill=Microbial_Group)) +
-    geom_bar(stat="identity",position="dodge") +
+    geom_boxplot(lwd=1) +
     scale_fill_brewer(palette = "Set1") +
     ylab(label=expression(bold(paste("\u03B4"^{bold("13")}, "C PLFA"," (\u2030)")))) +
     scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
