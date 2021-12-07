@@ -20,8 +20,7 @@ data<-read.csv("FINAL_PLFA_with_metadata.csv")
 data<-data[,2:15] # Gets rid of ID column
 data<-filter(data,Microbial_Group!="standard")
 data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
-umol_FAME<-data$nmol_FAME_per_g_soil/1000
-data<-cbind(data,umol_FAME)
+data$umol_FAME<-data$nmol_FAME_per_g_soil/1000
 
 master<-read.csv("Costa Rica Master sheet annotated.csv")
 

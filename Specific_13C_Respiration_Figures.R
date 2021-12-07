@@ -9,7 +9,6 @@ library(dplyr)
 library(ggplot2)
 library(gridExtra)
 
-
 # Read in data ------------------------------------------------------------
 
 CO2<-read.csv("13C_CO2_Final_Calculations.csv")
