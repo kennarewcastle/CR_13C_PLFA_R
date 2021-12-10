@@ -156,3 +156,41 @@ library(car)
   ## Panneled figure
   grid.arrange(leaf_d13_PLFA,starch_d13_PLFA,ncol=2)
   
+
+# Respiration (non-labelled) ----------------------------------------------
+
+  ## Read in data
+  data<-read.csv("Costa Rica Master sheet annotated.csv")
+  data<-filter(data,Exclusion!="NA") # Several mislabeled cores for which we can't determine rhizosphere treatment; exclude these
+  data$Exclusion<-as.factor(data$Exclusion)
+  
+  ## Create Mean_Respiration variable that averages respiration rates across the 9 sample days (different cores measured respiration on different days, averaging would even out some of the differences in respiration due to the sampling schedule)
+  for (i in 1:nrow(data)) {
+    data$Mean_Respiration[i]<-mean(c(data$Efflux_d1[i],data$Efflux_d2[i],data$Efflux_d3[i],data$Efflux_d4[i],data$Efflux_d5[i],data$Efflux_d6[i],data$Efflux_d7[i],data$Efflux_d9[i]),na.rm=TRUE)
+  }
+  
+  data<-filter(data,Mean_Respiration!="NaN") # Remove NaNs produced from entries that have no respiration data
+  
+  ## Respiration figure
+  resp_fig<-ggplot(data=data,aes(x=Exclusion,y=Mean_Respiration)) +
+    geom_boxplot(lwd=1,outlier.shape=NA) +
+    geom_dotplot(binaxis="y",stackdir="center",alpha=0.7) +
+    labs(x=expression(bold("Rhizosphere Manipulation")),y=expression(bold(paste("Respiration Rate (",mu,"g C",O[2]," kg soi",l^-1,h^-1,")"))),title = expression(bold("Soil Respiration"))) +
+    annotate("text", x = 1, y = 7, label = "A", size=8, color="red") +
+    annotate("text", x = 2, y = 7, label = "A", size=8, color="red") +
+    annotate("text", x = 3, y = 7, label = "B", size=8, color="red") +
+    scale_x_discrete(labels=c("1"="-R-M","2"="-R+M","3"="+R+M")) +
+    theme(panel.grid.minor=element_blank(),panel.grid.major=element_blank(),
+          axis.text.y=element_text(colour="black",size=10),
+          axis.text.x=element_text(colour="black",size=14),
+          axis.title=element_text(size=14,face="bold"),
+          panel.border=element_rect(fill=NA,colour="black",size=1.5),
+          panel.background=element_rect(fill=NA))
+  
+  ## ANOVA for soil respiration
+  resp_mod<-lm(data=data,Mean_Respiration~Exclusion)
+  Anova(resp_mod,type="II") # Exclusion highly significant, p = 0.006)
+  TukeyHSD(aov(resp_mod)) # 3 is different from 1 and 2
+  
+
+  
