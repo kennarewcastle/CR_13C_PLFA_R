@@ -29,9 +29,10 @@ cores<-data.frame("PLFA_Cores"=PLFA_Cores,"CO2_Cores"=CO2$Clean_Core_ID)
 data<-data.frame(PLFA,"Total_13C_CO2_ug"=CO2$Total_13C_ug)
 names(data)[4]<-"Total_13C_FAME_ug"
 data$Specific_Respiration_CO2_FAME<-data$Total_13C_CO2_ug/data$Total_13C_FAME_ug
-
+#write.csv(data, file="Final_Specific_Respiration_Data.csv", row.names=FALSE)
 
 # Create figures for specific respiration — leaf --------------------------
+data<-read.csv("Final_Specific_Respiration_Data.csv")
 leaf<-filter(data,Label_Type=="L")
 leaf$Mesh_Type<-as.factor(leaf$Mesh_Type)
 
