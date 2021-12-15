@@ -13,6 +13,8 @@ library(reshape2)
 library(viridis)
 library(car)
 library(agricolae)
+library(vegan)
+library(MASS)
 
 # Color pallette for all 2 fill figures -----------------------------------
 
@@ -410,9 +412,3 @@ my_cols<-viridis(n=4)[2:3]
   grid.arrange(leaf_d13,starch_d13,resp_fig,nrow=1) # CO2
   grid.arrange(leaf_d13_PLFA,starch_d13_PLFA,reg_PLFA_fig,nrow=1) # PLFA
   grid.arrange(leaf_spec_resp,starch_spec_resp,unlab_spec_resp,nrow=1) # Specific respiration
-  
-  
-
-  
-  
-  
