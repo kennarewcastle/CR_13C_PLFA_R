@@ -13,8 +13,6 @@ library(reshape2)
 library(viridis)
 library(car)
 library(agricolae)
-library(vegan)
-library(MASS)
 
 # Color pallette for all 2 fill figures -----------------------------------
 
