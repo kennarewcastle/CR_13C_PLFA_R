@@ -9,14 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Delta 13C-CO2 Models
-
 ```{r, include=FALSE}
 library(dplyr)
 library(MASS)
 library(car)
 library(agricolae)
+library(tidyr)
+library(reshape2)
+```
 
+
+# Delta 13C-CO2 Models
+
+```{r, include=FALSE}
   ## Read in data
   dat<-read.csv("Costa Rica Master sheet annotated.csv")
   dat<-filter(dat,dat$Exclusion!="NA")
@@ -27,9 +32,9 @@ library(agricolae)
   leaf_CO2<-filter(dat,dat$Isotope_label=="L")
 ```
 
-## **Leaf substrate**: Step-wise AIC Model Selection
+## **Leaf Substrate**: Step-wise AIC Model Selection for 13C-CO2
 ```{r, include=FALSE}
-leaf_d13<-leaf_CO2$d13_d9
+    leaf_d13<-leaf_CO2$d13_d9
     Exclusion<-leaf_CO2$Exclusion
     Tree_Species<-leaf_CO2$Tree_species
 ```
@@ -57,9 +62,9 @@ leafMod<-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2)
   leaf_CO2_Tukey<-HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
-## **Starch substrate**: Step-wise AIC Model Selection
+## **Starch Substrate**: Step-wise AIC Model Selection for 13C-CO2
 ```{r, include=FALSE}
-starch_d13<-starch_CO2$d13_d2
+    starch_d13<-starch_CO2$d13_d2
     Exclusion<-starch_CO2$Exclusion
     Tree_Species<-starch_CO2$Tree_species
 ```
@@ -78,7 +83,7 @@ print(extractAIC(aov(lm(starch_d13~Exclusion+Tree_Species))))
 print(extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species))))
 ```
 
-Model selection indicates that **rhizosphere exclusion and tree species should be included in model explaining **13C-CO2 efflux** from cores labeled with **starch substrate**. Model with only rhizosphere exclusion and model with rhizosphere exclusion and tree species are separated by only 0.7 AIC points, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of leaf models.
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-CO2 efflux** from cores labeled with **starch substrate**. Model with only rhizosphere exclusion and model with rhizosphere exclusion and tree species are separated by only 0.7 AIC points, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of leaf models.
 
 ### Type II ANOVA Results
 ```{r}
@@ -93,4 +98,109 @@ starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
   HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
+# Delta 13C-PLFA Models
+```{r, include=FALSE}
+  ## Read in data
+  data<-read.csv("FINAL_PLFA_with_metadata.csv")
+  data<-data[,2:15] # Gets rid of ID column
+  data<-filter(data,Microbial_Group!="standard")
+  data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
+  data$umol_FAME<-data$nmol_FAME_per_g_soil/1000
+  
+  ## Simplify the microbial groupings
+  data_trim<-data.frame("Sample_Name"=data[,1],"Tree"=data[,2],"Rhizosphere_Manipulation"=data[,3],"Substrate_Type"=data[,4],"Microbial_Group"=data[,14],"d13"=data[,9])
+  
+  data_wide<-dcast(data_trim,Sample_Name+Tree+Rhizosphere_Manipulation+Substrate_Type ~ Microbial_Group, value.var="d13", fun.aggregate=mean, na.rm=TRUE)
+  
+  is.nan.data.frame <- function(x)
+    do.call(cbind, lapply(x, is.nan))
+  data_wide[is.nan(data_wide)] <- NA
+  
+      ### Take mean of narrow groups to yield FUNGI, BACTERIA, ALL_MICROBE groups
+      for (i in 1:nrow(data_wide)) {
+        data_wide$BACTERIA[i]<-mean(c(data_wide$bacteria[i],data_wide$`gram+bacteria`[i],data_wide$`gram-bacteria`[i]),na.rm=TRUE)
+        data_wide$FUNGI[i]<-mean(c(data_wide$AMF[i],data_wide$fungi[i]),na.rm=TRUE)
+        data_wide$ALL_MICROBES[i]<-mean(c(data_wide$AMF[i],data_wide$bacteria[i],data_wide$fungi[i],data_wide$general[i],data_wide$`gram-bacteria`[i],data_wide$`gram+bacteria`[i],data_wide$protozoa[i]),na.rm=TRUE)
+      }
 
+  data_wide<-data_wide[,c(1,2,3,4,5,12,13,14)] # Trim down to broader groups
+  
+  data<-melt(data_wide,value.name="d13",id.vars=c("Sample_Name","Rhizosphere_Manipulation","Tree","Substrate_Type"))
+  names(data)[5]<-"Microbial_Group"
+  
+  ## Separate leaf and starch datasets
+  leaf_PLFA<-filter(data,Substrate_Type=="L")
+  starch_PLFA<-filter(data,Substrate_Type=="S")  
+```
+
+## **Starch Substrate**: Step-wise AIC Model Selection for 13C-PLFA
+```{r, include=FALSE}
+  starch_13C_PLFA<-starch_PLFA$d13
+  Exclusion<-starch_PLFA$Rhizosphere_Manipulation
+  Tree<-starch_PLFA$Tree
+  Microbe_Group<-starch_PLFA$Microbial_Group
+```
+
+```{r}
+starch_13CPLFA_AIC<-stepAIC(object=aov(lm(starch_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
+```
+
+```{r}
+starch_13CPLFA_AIC$anova
+```
+
+```{r}
+print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group))))
+print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group+Tree))))
+```
+
+Model selection indicates that **rhizosphere exclusion, microbial group, and tree species** should be included in model explaining **13C-PLFA** in cores labeled with **starch substrate**. Model with only rhizosphere exclusion and microbial group and model with rhizosphere exclusion, microbial group, and tree species are separated by only 1 AIC point, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of CO2 Analyses.
+
+### Type II ANOVA Results
+```{r}
+starchMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,data=starch_PLFA)
+Anova(starchMod_13CPLFA,type="II") 
+```
+
+### Tukey's HSD Results
+```{r}
+tx<-with(starch_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
+amod<-aov(d13 ~ tx, data=starch_PLFA)
+HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
+
+## **Leaf Substrate**: Step-wise AIC Model Selection for 13C-PLFA
+```{r, include=FALSE}
+  leaf_13C_PLFA<-leaf_PLFA$d13
+  Exclusion<-leaf_PLFA$Rhizosphere_Manipulation
+  Tree<-leaf_PLFA$Tree
+  Microbe_Group<-leaf_PLFA$Microbial_Group
+```
+
+```{r}
+leaf_13CPLFA_AIC<-stepAIC(object=aov(lm(leaf_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
+```
+
+```{r}
+leaf_13CPLFA_AIC$anova
+```
+
+```{r}
+print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree))))
+print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree+Microbe_Group))))
+```
+
+Model selection indicates that **rhizosphere exclusion, tree species, and exclusion x tree interaction** should be included in model explaining **13C-PLFA** in cores labeled with **leaf substrate**. Model that included microbial group was ~6 AIC points greater than the final model, so microbial group was not included in final analyses.
+
+### Type II ANOVA Results
+```{r}
+leafMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA)
+Anova(leafMod_13CPLFA,type="II") 
+```
+
+### Tukey's HSD Results
+```{r}
+tx<-with(leaf_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
+amod<-aov(d13 ~ tx, data=leaf_PLFA)
+HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
