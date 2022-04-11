@@ -3,18 +3,20 @@
 #### Created on: 07 December 2021
 #### Last modified:
 ####          10 December 2021: Modified figures to include tree differences
+####          11 April 2022: Added step-wise model selection to eliminate unnecessary interaction terms
 
 # Load packages -----------------------------------------------------------
 
-library(dplyr)
-library(ggplot2)
-library(gridExtra)
-library(reshape2)
-library(viridis)
-library(car)
-library(agricolae)
+library(dplyr) # Dataframe manipulation
+library(ggplot2) # Data plotting
+library(gridExtra) # Data plotting
+library(reshape2) # Dataframe manipulation
+library(viridis) # Colors for data plotting
+library(car) # Type II and III Anova stats
+library(agricolae) # Output for TukeyHSD results
+library(MASS) # Step-wise model selection functionality
 
-# Color pallette for all 2 fill figures -----------------------------------
+# Color palette for all 2 fill figures ------------------------------------
 
 my_cols<-viridis(n=4)[2:3]
 
@@ -55,6 +57,15 @@ my_cols<-viridis(n=4)[2:3]
   amod<-aov(d13_d9 ~ tx, data=leaf_CO2)
   HSD.test(amod, "tx", group=TRUE, console=TRUE)
   
+  ## Leaf CO2 step-wise AIC analysis
+  
+    ### Have to turn columns into objects for stepwise AIC
+    leaf_d13<-leaf_CO2$d13_d9
+    Exclusion<-leaf_CO2$Exclusion
+    Tree_Species<-leaf_CO2$Tree_species
+      
+  leaf_CO2_AIC<-stepAIC(object=aov(lm(leaf_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
+  
   ## Starch d13 figure
   starch_d13<-ggplot(data=starch_CO2,aes(x=Exclusion,y=d13_d2,fill=Tree_species)) +
     geom_dotplot(binaxis="y",stackdir="center",alpha=0.7,position=position_dodge(0.8)) +
@@ -74,14 +85,25 @@ my_cols<-viridis(n=4)[2:3]
           legend.position="none")
 
   ## 13C CO2 starch anova and TukeyHSD
-  starchMod<-lm(d13_d2~Exclusion*Tree_species,data=starch_CO2) # super super significant p < 0.001
+  starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2) # super super significant p < 0.001
   Anova(starchMod,type="II") # Significant rhizosphere manipulation
   TukeyHSD(aov(starchMod))
   tx<-with(starch_CO2, interaction(Exclusion, Tree_species))
   amod<-aov(d13_d2 ~ tx, data=starch_CO2)
   HSD.test(amod, "tx", group=TRUE, console=TRUE)
+  
+  ## Starch CO2 step-wise AIC analysis
+    
+    ### Have to turn columns into objects for stepwise AIC
+    starch_d13<-starch_CO2$d13_d2
+    Exclusion<-starch_CO2$Exclusion
+    Tree_Species<-starch_CO2$Tree_species
+    
+  starch_CO2_AIC<-stepAIC(object=aov(lm(starch_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
+  
+  extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species)))
 
-  ## Panelled figure
+  ## Paneled figure
   grid.arrange(leaf_d13,starch_d13,nrow=1)
 
 

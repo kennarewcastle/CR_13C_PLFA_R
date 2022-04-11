@@ -1,0 +1,96 @@
+---
+title: "Costa Rica Carbon Stats Output"
+author: "Kenna Rewcastle"
+date: "4/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Delta 13C-CO2 Models
+
+```{r, include=FALSE}
+library(dplyr)
+library(MASS)
+library(car)
+library(agricolae)
+
+  ## Read in data
+  dat<-read.csv("Costa Rica Master sheet annotated.csv")
+  dat<-filter(dat,dat$Exclusion!="NA")
+  dat$Exclusion<-as.factor(dat$Exclusion)
+
+  ## Separate starch and leaf data
+  starch_CO2<-filter(dat,dat$Isotope_label=="S") 
+  leaf_CO2<-filter(dat,dat$Isotope_label=="L")
+```
+
+## **Leaf substrate**: Step-wise AIC Model Selection
+```{r, include=FALSE}
+leaf_d13<-leaf_CO2$d13_d9
+    Exclusion<-leaf_CO2$Exclusion
+    Tree_Species<-leaf_CO2$Tree_species
+```
+
+```{r}
+leaf_CO2_AIC<-stepAIC(object=aov(lm(leaf_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
+```
+
+```{r}
+leaf_CO2_AIC$anova
+```
+
+Model selection indicates that **rhizosphere exclusion, tree species, and exclusion x tree species** should all be included in model explaining **13C-CO2 efflux** from cores labeled with **leaf substrate**.
+
+### Type II ANOVA Results
+```{r}
+leafMod<-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2)
+  Anova(leafMod,type="II") 
+```
+
+### Tukey's HSD Results
+```{r}
+ tx<-with(leaf_CO2, interaction(Exclusion, Tree_species))
+  amod<-aov(d13_d9 ~ tx, data=leaf_CO2)
+  leaf_CO2_Tukey<-HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
+
+## **Starch substrate**: Step-wise AIC Model Selection
+```{r, include=FALSE}
+starch_d13<-starch_CO2$d13_d2
+    Exclusion<-starch_CO2$Exclusion
+    Tree_Species<-starch_CO2$Tree_species
+```
+
+```{r}
+starch_CO2_AIC<-stepAIC(object=aov(lm(starch_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
+```
+
+```{r}
+starch_CO2_AIC$anova
+```
+
+```{r}
+print(extractAIC(aov(lm(starch_d13~Exclusion))))
+print(extractAIC(aov(lm(starch_d13~Exclusion+Tree_Species))))
+print(extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species should be included in model explaining **13C-CO2 efflux** from cores labeled with **starch substrate**. Model with only rhizosphere exclusion and model with rhizosphere exclusion and tree species are separated by only 0.7 AIC points, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of leaf models.
+
+### Type II ANOVA Results
+```{r}
+starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
+  Anova(starchMod,type="II") 
+```
+
+### Tukey's HSD Results
+```{r}
+  tx<-with(starch_CO2, interaction(Exclusion, Tree_species))
+  amod<-aov(d13_d2 ~ tx, data=starch_CO2)
+  HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
+
+
