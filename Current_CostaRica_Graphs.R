@@ -273,7 +273,7 @@ my_cols<-viridis(n=4)[2:3]
           legend.position="none")
   
   ## Starch specific respiration ANOVA and TukeyHSD
-  starch_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=starch)
+  starch_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type+Tree_Species,data=starch)
   Anova(starch_mod,type="II") # No significant differences
   TukeyHSD(aov(starch_mod))
   tx<-with(starch, interaction(Mesh_Type,Tree_Species))
