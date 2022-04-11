@@ -175,7 +175,7 @@ my_cols<-viridis(n=4)[2:3]
           legend.position="none")
   
   ## Leaf PLFA ANOVA and Tukey's HSD
-  leaf_PLFA_mod<-lm(data=leaf_PLFA,d13~Rhizosphere_Manipulation*Microbial_Group*Tree)
+  leaf_PLFA_mod<-lm(data=leaf_PLFA,d13~Rhizosphere_Manipulation*Tree+Rhizosphere_Manipulation+Tree)
   Anova(leaf_PLFA_mod,type="II") # Rhizosphere manipulation significant (p < 0.001), rhizosphere x tree significant
   TukeyHSD(aov(leaf_PLFA_mod))
   tx<-with(leaf_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
@@ -210,7 +210,7 @@ my_cols<-viridis(n=4)[2:3]
           legend.position="none")
   
   ## Starch PLFA ANOVA and Tukey's HSD
-  starch_PLFA_mod<-lm(data=starch_PLFA,d13~Rhizosphere_Manipulation*Microbial_Group*Tree)
+  starch_PLFA_mod<-lm(data=starch_PLFA,d13~Rhizosphere_Manipulation+Microbial_Group+Tree)
   Anova(starch_PLFA_mod,type="II") 
   TukeyHSD(aov(starch_PLFA_mod))
   tx<-with(starch_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
