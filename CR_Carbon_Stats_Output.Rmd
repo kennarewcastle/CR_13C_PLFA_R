@@ -21,7 +21,7 @@ library(reshape2)
 
 # Delta 13C-CO2 Models
 
-```{r, include=FALSE}
+```{r read_13C_CO2_data, include=FALSE}
   ## Read in data
   dat<-read.csv("Costa Rica Master sheet annotated.csv")
   dat<-filter(dat,dat$Exclusion!="NA")
@@ -33,51 +33,51 @@ library(reshape2)
 ```
 
 ## **Leaf Substrate**: Step-wise AIC Model Selection for 13C-CO2
-```{r, include=FALSE}
+```{r leaf_13C_CO2_variables, include=FALSE}
     leaf_d13<-leaf_CO2$d13_d9
     Exclusion<-leaf_CO2$Exclusion
     Tree_Species<-leaf_CO2$Tree_species
 ```
 
-```{r}
+```{r leaf_13C_CO2_stepAIC}
 leaf_CO2_AIC<-stepAIC(object=aov(lm(leaf_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r leaf_13C_CO2_AIC_anova_table}
 leaf_CO2_AIC$anova
 ```
 
 Model selection indicates that **rhizosphere exclusion, tree species, and exclusion x tree species** should all be included in model explaining **13C-CO2 efflux** from cores labeled with **leaf substrate**.
 
 ### Type II ANOVA Results
-```{r}
+```{r leaf_13C_CO2_ANOVA}
 leafMod<-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2)
   Anova(leafMod,type="II") 
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r leaf_13C_CO2_TukeyHSD}
  tx<-with(leaf_CO2, interaction(Exclusion, Tree_species))
   amod<-aov(d13_d9 ~ tx, data=leaf_CO2)
   leaf_CO2_Tukey<-HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 ## **Starch Substrate**: Step-wise AIC Model Selection for 13C-CO2
-```{r, include=FALSE}
+```{r starch_13C_CO2_variables, include=FALSE}
     starch_d13<-starch_CO2$d13_d2
     Exclusion<-starch_CO2$Exclusion
     Tree_Species<-starch_CO2$Tree_species
 ```
 
-```{r}
+```{r starch_13C_CO2_stepAIC}
 starch_CO2_AIC<-stepAIC(object=aov(lm(starch_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r starch_13C_CO2_AIC_anova_table}
 starch_CO2_AIC$anova
 ```
 
-```{r}
+```{r starch_13C_CO2_AIC_extraction}
 print(extractAIC(aov(lm(starch_d13~Exclusion))))
 print(extractAIC(aov(lm(starch_d13~Exclusion+Tree_Species))))
 print(extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species))))
@@ -86,20 +86,20 @@ print(extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species))))
 Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-CO2 efflux** from cores labeled with **starch substrate**. Model with only rhizosphere exclusion and model with rhizosphere exclusion and tree species are separated by only 0.7 AIC points, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of leaf models.
 
 ### Type II ANOVA Results
-```{r}
+```{r starch_13C_CO2_ANOVA}
 starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
   Anova(starchMod,type="II") 
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r starch_13C_CO2_TukeyHSD}
   tx<-with(starch_CO2, interaction(Exclusion, Tree_species))
   amod<-aov(d13_d2 ~ tx, data=starch_CO2)
   HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 # Delta 13C-PLFA Models
-```{r, include=FALSE}
+```{r read_13C_PLFA_data, include=FALSE}
   ## Read in data
   data<-read.csv("FINAL_PLFA_with_metadata.csv")
   data<-data[,2:15] # Gets rid of ID column
@@ -134,22 +134,22 @@ starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
 ```
 
 ## **Leaf Substrate**: Step-wise AIC Model Selection for 13C-PLFA
-```{r, include=FALSE}
+```{r leaf_13C_PLFA_variables, include=FALSE}
   leaf_13C_PLFA<-leaf_PLFA$d13
   Exclusion<-leaf_PLFA$Rhizosphere_Manipulation
   Tree<-leaf_PLFA$Tree
   Microbe_Group<-leaf_PLFA$Microbial_Group
 ```
 
-```{r}
+```{r leaf_13C_PLFA_stepAIC}
 leaf_13CPLFA_AIC<-stepAIC(object=aov(lm(leaf_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r leaf_13C_PLFA_AIC_anova_table}
 leaf_13CPLFA_AIC$anova
 ```
 
-```{r}
+```{r leaf_13C_PLFA_AIC_extraction}
 print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree))))
 print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree+Microbe_Group))))
 ```
@@ -157,35 +157,35 @@ print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree+Microbe_Grou
 Model selection indicates that **rhizosphere exclusion, tree species, and exclusion x tree interaction** should be included in model explaining **13C-PLFA** in cores labeled with **leaf substrate**. Model that included microbial group was ~6 AIC points greater than the final model, so microbial group was not included in final analyses.
 
 ### Type II ANOVA Results
-```{r}
+```{r leaf_13C_PLFA_ANOVA}
 leafMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA)
 Anova(leafMod_13CPLFA,type="II") 
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r leaf_13C_PLFA_TukeyHSD}
 tx<-with(leaf_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
 amod<-aov(d13 ~ tx, data=leaf_PLFA)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 ## **Starch Substrate**: Step-wise AIC Model Selection for 13C-PLFA
-```{r, include=FALSE}
+```{r starch_13C_PLFA_variables, include=FALSE}
   starch_13C_PLFA<-starch_PLFA$d13
   Exclusion<-starch_PLFA$Rhizosphere_Manipulation
   Tree<-starch_PLFA$Tree
   Microbe_Group<-starch_PLFA$Microbial_Group
 ```
 
-```{r}
+```{r starch_13C_PLFA_stepAIC}
 starch_13CPLFA_AIC<-stepAIC(object=aov(lm(starch_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r starch_13C_PLFA_AIC_anova_table}
 starch_13CPLFA_AIC$anova
 ```
 
-```{r}
+```{r starch_13C_PLFA_AIC_extraction}
 print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group))))
 print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group+Tree))))
 ```
@@ -193,20 +193,20 @@ print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group+Tree))))
 Model selection indicates that **rhizosphere exclusion, microbial group, and tree species** should be included in model explaining **13C-PLFA** in cores labeled with **starch substrate**. Model with only rhizosphere exclusion and microbial group and model with rhizosphere exclusion, microbial group, and tree species are separated by only 1 AIC point, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of CO2 Analyses.
 
 ### Type II ANOVA Results
-```{r}
+```{r starch_13C_PLFA_ANOVA}
 starchMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,data=starch_PLFA)
 Anova(starchMod_13CPLFA,type="II") 
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r starch_13C_PLFA_TukeyHSD}
 tx<-with(starch_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
 amod<-aov(d13 ~ tx, data=starch_PLFA)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 # 13C Specific Respiration Models
-```{r, include=FALSE}
+```{r read_13C_specResp_data, include=FALSE}
   ## Read in data
   data<-read.csv("Final_Specific_Respiration_Data.csv")
   data$Mesh_Type<-as.factor(data$Mesh_Type)
@@ -215,55 +215,55 @@ HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 ## **Leaf Substrate**: Step-wise AIC Model Selection for 13C Specific Respiration
-```{r, include=FALSE}
+```{r leaf_13C_specResp_variables, include=FALSE}
   leaf_13C_specresp<-leaf$Specific_Respiration_CO2_FAME
   Exclusion<-leaf$Mesh_Type
   Tree<-leaf$Tree_Species
 ```
 
-```{r}
+```{r leaf_13C_specResp_stepAIC}
 leaf_13C_specresp_AIC<-stepAIC(object=aov(lm(leaf_13C_specresp~Exclusion*Tree+Exclusion+Tree)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r leaf_13C_specResp_AIC_anova_table}
 leaf_13C_specresp_AIC$anova
 ```
 
-```{r}
+```{r leaf_13C_specResp_AIC_extraction}
 print(extractAIC(aov(lm(leaf_13C_specresp~Exclusion*Tree))))
 ```
 
 Model selection indicates that all parameters, i.e. **rhizosphere exclusion, tree species, and exclusion x tree interaction** should be included in model explaining **13C-specific respiration** in cores labeled with **leaf substrate**. 
 
 ### Type II ANOVA Results
-```{r}
+```{r leaf_13C_specResp_ANOVA}
 leaf_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=leaf)
 Anova(leaf_mod,type="II")
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r leaf_13C_specResp_TukeyHSD}
 tx<-with(leaf, interaction(Mesh_Type,Tree_Species))
 amod<-aov(Specific_Respiration_CO2_FAME ~ tx, data=leaf)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 ## **Starch Substrate**: Step-wise AIC Model Selection for 13C Specific Respiration
-```{r, include=FALSE}
+```{r starch_13C_specResp_variables, include=FALSE}
   starch_13C_specresp<-starch$Specific_Respiration_CO2_FAME
   Exclusion<-starch$Mesh_Type
   Tree<-starch$Tree_Species
 ```
 
-```{r}
+```{r starch_13C_specResp_stepAIC}
 starch_13C_specresp_AIC<-stepAIC(object=aov(lm(starch_13C_specresp~Exclusion+Tree+Exclusion*Tree)),direction="both",na.rm=TRUE)
 ```
 
-```{r}
+```{r starch_13C_specResp_AIC_anova_table}
 starch_13C_specresp_AIC$anova
 ```
 
-```{r}
+```{r starch_13C_specResp_AIC_extraction}
 print(extractAIC(aov(lm(starch_13C_specresp~Exclusion+Tree))))
 print(extractAIC(aov(lm(starch_13C_specresp~Exclusion))))
 print(extractAIC(aov(lm(starch_13C_specresp~Tree))))
@@ -273,14 +273,56 @@ print(extractAIC(aov(lm(starch_13C_specresp~1))))
 Model selection indicates that the best model for **13C-specific respiration of starch substrate** includes **only the intercept**, but the model including **tree species** as a parameter is within the family of best models. 
 
 ### Type II ANOVA Results
-```{r}
+```{r starch_13C_specResp_ANOVA}
 starch_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type+Tree_Species,data=starch)
 Anova(starch_mod,type="II")
 ```
 
 ### Tukey's HSD Results
-```{r}
+```{r starch_13C_specResp_TukeyHSD}
 tx<-with(starch, interaction(Mesh_Type,Tree_Species))
 amod<-aov(Specific_Respiration_CO2_FAME ~ tx, data=starch)
+HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
+
+# Background Respiration Models
+
+## Step-wise AIC Model Selection for Background Respiration
+```{r read_back_resp_data, include=FALSE}
+data<-read.csv("Resp_Data_for_Spec_Resp.csv")
+```
+
+```{r back_resp_variables}
+Resp<-data$Mean_Respiration
+Tree<-data$Tree_species
+Exclusion<-data$Exclusion
+```
+
+```{r back_resp_stepAIC}
+back_resp_AIC<-stepAIC(object=aov(lm(Resp~Exclusion+Tree+Exclusion*Tree)),direction="both",na.rm=TRUE)
+```
+
+```{r back_resp_AIC_anova_table}
+back_resp_AIC$anova
+```
+
+```{r back_resp_AIC_extraction}
+print(extractAIC(aov(lm(Resp~Exclusion))))
+print(extractAIC(aov(lm(Resp~Tree))))
+print(extractAIC(aov(lm(Resp~Exclusion+Tree))))
+```
+
+Model selection indicates that the best model for **background respiration** includes **rhizosphere exclusion and tree species**. Model containing only rhizosphere exclusion is technically the best model, but the model containing both rhizosphere exclusion and tree species falls within the "family of best models".
+
+### Type II ANOVA Results
+```{r back_resp_ANOVA}
+resp_mod<-lm(Mean_Respiration~Exclusion+Tree_species,data=data)
+Anova(resp_mod,type="II")
+```
+
+### Tukey's HSD Results
+```{r back_resp_TukeyHSD}
+tx<-with(data, interaction(Exclusion,Tree_species))
+amod<-aov(Mean_Respiration ~ tx, data=data)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```

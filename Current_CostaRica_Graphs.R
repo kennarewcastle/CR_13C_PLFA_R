@@ -313,7 +313,7 @@ my_cols<-viridis(n=4)[2:3]
           legend.position="none")
   
   ## Soil respiration ANOVA and Tukey HSD
-  resp_mod<-lm(data=data,Mean_Respiration~Exclusion*Tree_species)
+  resp_mod<-lm(data=data,Mean_Respiration~Exclusion+Tree_species)
   Anova(resp_mod,type="II") # Exclusion significant
   TukeyHSD(aov(resp_mod))
   tx<-with(data, interaction(Exclusion,Tree_species))
