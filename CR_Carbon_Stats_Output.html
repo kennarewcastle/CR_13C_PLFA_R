@@ -880,6 +880,369 @@ HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
 </div>
 </div>
 </div>
+<div id="background-respiration-models" class="section level1">
+<h1>Background Respiration Models</h1>
+<div id="step-wise-aic-model-selection-for-background-respiration" class="section level2">
+<h2>Step-wise AIC Model Selection for Background Respiration</h2>
+<pre class="r"><code>Resp&lt;-data$Mean_Respiration
+Tree&lt;-data$Tree_species
+Exclusion&lt;-data$Exclusion</code></pre>
+<pre class="r"><code>back_resp_AIC&lt;-stepAIC(object=aov(lm(Resp~Exclusion+Tree+Exclusion*Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
+<pre><code>## Start:  AIC=52.38
+## Resp ~ Exclusion + Tree + Exclusion * Tree
+## 
+##                  Df Sum of Sq    RSS    AIC
+## - Exclusion:Tree  1  0.066463 190.41 50.426
+## &lt;none&gt;                        190.34 52.378
+## 
+## Step:  AIC=50.43
+## Resp ~ Exclusion + Tree
+## 
+##                  Df Sum of Sq    RSS    AIC
+## - Tree            1    0.0639 190.47 48.472
+## &lt;none&gt;                        190.41 50.426
+## + Exclusion:Tree  1    0.0665 190.34 52.378
+## - Exclusion       1   13.0995 203.51 57.607
+## 
+## Step:  AIC=48.47
+## Resp ~ Exclusion
+## 
+##             Df Sum of Sq    RSS    AIC
+## &lt;none&gt;                   190.47 48.472
+## + Tree       1    0.0639 190.41 50.426
+## - Exclusion  1   13.0995 203.57 55.651</code></pre>
+<pre class="r"><code>back_resp_AIC$anova</code></pre>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## Resp ~ Exclusion + Tree + Exclusion * Tree
+## 
+## Final Model:
+## Resp ~ Exclusion
+## 
+## 
+##               Step Df   Deviance Resid. Df Resid. Dev      AIC
+## 1                                      134   190.3434 52.37752
+## 2 - Exclusion:Tree  1 0.06646282       135   190.4099 50.42570
+## 3           - Tree  1 0.06389017       136   190.4738 48.47199</code></pre>
+<pre class="r"><code>print(extractAIC(aov(lm(Resp~Exclusion))))</code></pre>
+<pre><code>## [1]  2.00000 48.47199</code></pre>
+<pre class="r"><code>print(extractAIC(aov(lm(Resp~Tree))))</code></pre>
+<pre><code>## [1]  2.00000 57.60723</code></pre>
+<pre class="r"><code>print(extractAIC(aov(lm(Resp~Exclusion+Tree))))</code></pre>
+<pre><code>## [1]  3.0000 50.4257</code></pre>
+<p>Model selection indicates that the best model for <strong>background respiration</strong> includes <strong>rhizosphere exclusion and tree species</strong>. Model containing only rhizosphere exclusion is technically the best model, but the model containing both rhizosphere exclusion and tree species falls within the “family of best models”.</p>
+<div id="type-ii-anova-results-6" class="section level3">
+<h3>Type II ANOVA Results</h3>
+<pre class="r"><code>resp_mod&lt;-lm(Mean_Respiration~Exclusion+Tree_species,data=data)
+Anova(resp_mod,type=&quot;II&quot;)</code></pre>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: Mean_Respiration
+##               Sum Sq  Df F value   Pr(&gt;F)   
+## Exclusion     13.099   1  9.2875 0.002776 **
+## Tree_species   0.064   1  0.0453 0.831778   
+## Residuals    190.410 135                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="tukeys-hsd-results-6" class="section level3">
+<h3>Tukey’s HSD Results</h3>
+<pre class="r"><code>tx&lt;-with(data, interaction(Exclusion,Tree_species))
+amod&lt;-aov(Mean_Respiration ~ tx, data=data)
+HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
+<pre><code>## 
+## Study: amod ~ &quot;tx&quot;
+## 
+## HSD Test for Mean_Respiration 
+## 
+## Mean Square Error:  1.423452 
+## 
+## tx,  means
+## 
+##         Mean_Respiration       std  r       Min      Max
+## 1.Goeth         2.000955 0.7161925 23 0.8616442 3.588006
+## 1.Penta         2.113810 1.2056780 23 0.6282719 5.542718
+## 2.Goeth         2.320995 1.1638293 23 1.2290539 6.530824
+## 2.Penta         2.073695 0.7755245 23 0.9878789 3.969292
+## 3.Goeth         2.809391 1.4437907 23 1.0167119 5.587059
+## 3.Penta         2.814734 1.5917451 23 1.0546594 6.418242
+## 
+## Alpha: 0.05 ; DF Error: 132 
+## Critical Value of Studentized Range: 4.089943 
+## 
+## Minimun Significant Difference: 1.017477 
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##         Mean_Respiration groups
+## 3.Penta         2.814734      a
+## 3.Goeth         2.809391      a
+## 2.Goeth         2.320995      a
+## 1.Penta         2.113810      a
+## 2.Penta         2.073695      a
+## 1.Goeth         2.000955      a</code></pre>
+</div>
+</div>
+</div>
+<div id="background-plfa-models" class="section level1">
+<h1>Background PLFA Models</h1>
+<div id="step-wise-aic-model-selection-for-background-plfa" class="section level2">
+<h2>Step-wise AIC Model Selection for Background PLFA</h2>
+<pre class="r"><code>data$ln_FAME&lt;-log(data$umol_FAME+1) # Add 1 before log transformation to elimanate -Inf values
+FAME&lt;-data$ln_FAME
+Tree&lt;-data$Tree
+Exclusion&lt;-data$Rhizosphere_Manipulation
+Microbe&lt;-data$Microbial_Group</code></pre>
+<pre class="r"><code>back_PLFA_AIC&lt;-stepAIC(object=aov(lm(FAME~Exclusion*Tree*Microbe)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
+<pre><code>## Start:  AIC=-433.48
+## FAME ~ Exclusion * Tree * Microbe
+## 
+##                          Df Sum of Sq    RSS     AIC
+## - Exclusion:Tree:Microbe  3  0.071632 68.024 -439.15
+## &lt;none&gt;                                67.952 -433.48
+## 
+## Step:  AIC=-439.15
+## FAME ~ Exclusion + Tree + Microbe + Exclusion:Tree + Exclusion:Microbe + 
+##     Tree:Microbe
+## 
+##                          Df Sum of Sq    RSS     AIC
+## - Tree:Microbe            3  0.030432 68.054 -445.02
+## - Exclusion:Microbe       3  0.202402 68.226 -444.24
+## - Exclusion:Tree          1  0.004529 68.028 -441.13
+## &lt;none&gt;                                68.024 -439.15
+## + Exclusion:Tree:Microbe  3  0.071632 67.952 -433.48
+## 
+## Step:  AIC=-445.02
+## FAME ~ Exclusion + Tree + Microbe + Exclusion:Tree + Exclusion:Microbe
+## 
+##                     Df Sum of Sq    RSS     AIC
+## - Exclusion:Microbe  3  0.204070 68.258 -450.09
+## - Exclusion:Tree     1  0.004529 68.059 -447.00
+## &lt;none&gt;                           68.054 -445.02
+## + Tree:Microbe       3  0.030432 68.024 -439.15
+## 
+## Step:  AIC=-450.09
+## FAME ~ Exclusion + Tree + Microbe + Exclusion:Tree
+## 
+##                     Df Sum of Sq    RSS     AIC
+## - Exclusion:Tree     1      0.00  68.26 -452.07
+## &lt;none&gt;                            68.26 -450.09
+## + Exclusion:Microbe  3      0.20  68.05 -445.02
+## + Tree:Microbe       3      0.03  68.23 -444.24
+## - Microbe            3    492.14 560.40  192.35
+## 
+## Step:  AIC=-452.07
+## FAME ~ Exclusion + Tree + Microbe
+## 
+##                     Df Sum of Sq    RSS     AIC
+## &lt;none&gt;                            68.26 -452.07
+## - Exclusion          1      0.65  68.91 -451.18
+## + Exclusion:Tree     1      0.00  68.26 -450.09
+## + Exclusion:Microbe  3      0.20  68.06 -447.00
+## + Tree:Microbe       3      0.03  68.23 -446.22
+## - Tree               1      5.45  73.72 -430.40
+## - Microbe            3    492.14 560.41  190.36</code></pre>
+<pre class="r"><code>back_PLFA_AIC$anova</code></pre>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## FAME ~ Exclusion * Tree * Microbe
+## 
+## Final Model:
+## FAME ~ Exclusion + Tree + Microbe
+## 
+## 
+##                       Step Df    Deviance Resid. Df Resid. Dev       AIC
+## 1                                               292   67.95214 -433.4792
+## 2 - Exclusion:Tree:Microbe  3 0.071631871       295   68.02377 -439.1547
+## 3           - Tree:Microbe  3 0.030431891       298   68.05420 -445.0169
+## 4      - Exclusion:Microbe  3 0.204070258       301   68.25827 -450.0947
+## 5         - Exclusion:Tree  1 0.004528591       302   68.26280 -452.0743</code></pre>
+<p>Model selection indicates that the best model for <strong>background PLFA</strong> includes <strong>rhizosphere exclusion, tree species, and microbial group</strong>, but no interaction terms.</p>
+<div id="type-ii-anova-results-7" class="section level3">
+<h3>Type II ANOVA Results</h3>
+<pre class="r"><code>PLFA_mod&lt;-lm(FAME~Exclusion+Tree+Microbe,data=data)
+Anova(PLFA_mod,type=&quot;II&quot;)</code></pre>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: FAME
+##           Sum Sq  Df  F value    Pr(&gt;F)    
+## Exclusion   0.65   1   2.8555   0.09209 .  
+## Tree        5.45   1  24.1241 1.482e-06 ***
+## Microbe   492.14   3 725.7589 &lt; 2.2e-16 ***
+## Residuals  68.26 302                       
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="tukeys-hsd-results-7" class="section level3">
+<h3>Tukey’s HSD Results</h3>
+<pre class="r"><code>tx&lt;-with(data, interaction(Exclusion,Tree,Microbe))
+amod&lt;-aov(FAME ~ tx, data=data)
+HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
+<pre><code>## 
+## Study: amod ~ &quot;tx&quot;
+## 
+## HSD Test for FAME 
+## 
+## Mean Square Error:  0.2358156 
+## 
+## tx,  means
+## 
+##                      FAME       std  r       Min      Max
+## 1.G.ALL_MICROBES 4.025553 0.4659406 13 3.4254811 5.043691
+## 1.G.AMF          1.135095 0.4175651 13 0.6054847 1.958266
+## 1.G.BACTERIA     3.381161 0.4395293 13 2.7813713 4.413777
+## 1.G.FUNGI        1.392806 0.3322218 13 0.9201672 2.037147
+## 1.P.ALL_MICROBES 3.845336 0.3993946 10 3.3367289 4.709300
+## 1.P.AMF          0.994853 0.2917036 10 0.6953298 1.758106
+## 1.P.BACTERIA     3.197957 0.4487621 10 2.4982168 4.099731
+## 1.P.FUNGI        1.122984 0.2800290 10 0.8966430 1.825030
+## 2.G.ALL_MICROBES 4.174211 0.3419745 10 3.6325985 4.800909
+## 2.G.AMF          1.242054 0.2843516 10 0.8664490 1.712893
+## 2.G.BACTERIA     3.501424 0.3930852 10 2.9662365 4.201014
+## 2.G.FUNGI        1.444404 0.2260407 10 1.0411315 1.797276
+## 2.P.ALL_MICROBES 3.709426 0.6418128 16 2.5059495 4.786388
+## 2.P.AMF          0.875308 0.4619337 16 0.0000000 1.641741
+## 2.P.BACTERIA     3.123014 0.6178799 16 1.9829224 4.175502
+## 2.P.FUNGI        1.090724 0.5779869 16 0.1202688 2.030612
+## 3.G.ALL_MICROBES 4.191897 0.7387634 16 2.9470813 5.737913
+## 3.G.AMF          1.282463 0.4974481 16 0.5493634 2.030870
+## 3.G.BACTERIA     3.551314 0.7200854 16 2.3507798 5.109444
+## 3.G.FUNGI        1.338799 0.5108365 16 0.5493634 2.079198
+## 3.P.ALL_MICROBES 3.992651 0.4038679 12 3.3265309 4.814426
+## 3.P.AMF          1.087343 0.3320671 12 0.6250289 1.819913
+## 3.P.BACTERIA     3.323847 0.4107955 12 2.6009934 4.189712
+## 3.P.FUNGI        1.206932 0.3942497 12 0.6495401 1.873619
+## 
+## Alpha: 0.05 ; DF Error: 284 
+## Critical Value of Studentized Range: 5.195422 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##                      FAME groups
+## 3.G.ALL_MICROBES 4.191897      a
+## 2.G.ALL_MICROBES 4.174211     ab
+## 1.G.ALL_MICROBES 4.025553    abc
+## 3.P.ALL_MICROBES 3.992651    abc
+## 1.P.ALL_MICROBES 3.845336   abcd
+## 2.P.ALL_MICROBES 3.709426  abcde
+## 3.G.BACTERIA     3.551314   bcde
+## 2.G.BACTERIA     3.501424   bcde
+## 1.G.BACTERIA     3.381161    cde
+## 3.P.BACTERIA     3.323847    cde
+## 1.P.BACTERIA     3.197957     de
+## 2.P.BACTERIA     3.123014      e
+## 2.G.FUNGI        1.444404      f
+## 1.G.FUNGI        1.392806      f
+## 3.G.FUNGI        1.338799      f
+## 3.G.AMF          1.282463      f
+## 2.G.AMF          1.242054      f
+## 3.P.FUNGI        1.206932      f
+## 1.G.AMF          1.135095      f
+## 1.P.FUNGI        1.122984      f
+## 2.P.FUNGI        1.090724      f
+## 3.P.AMF          1.087343      f
+## 1.P.AMF          0.994853      f
+## 2.P.AMF          0.875308      f</code></pre>
+</div>
+</div>
+</div>
+<div id="background-specific-respiration-models" class="section level1">
+<h1>Background Specific Respiration Models</h1>
+<div id="step-wise-aic-model-selection-for-background-specific-respiration" class="section level2">
+<h2>Step-wise AIC Model Selection for Background Specific Respiration</h2>
+<pre class="r"><code>specResp&lt;-data$Specific_Respiration_CO2_FAME
+Exclusion&lt;-data$Rhizosphere_Manipulation
+Tree&lt;-data$Tree</code></pre>
+<pre class="r"><code>back_specresp_AIC&lt;-stepAIC(object=aov(lm(specResp~Exclusion*Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
+<pre><code>## Start:  AIC=-536.02
+## specResp ~ Exclusion * Tree
+## 
+##                  Df  Sum of Sq      RSS     AIC
+## - Exclusion:Tree  1 1.7011e-06 0.065784 -538.02
+## &lt;none&gt;                         0.065783 -536.02
+## 
+## Step:  AIC=-538.02
+## specResp ~ Exclusion + Tree
+## 
+##                  Df Sum of Sq      RSS     AIC
+## &lt;none&gt;                        0.065784 -538.02
+## - Exclusion       1 0.0032721 0.069056 -536.28
+## - Tree            1 0.0033975 0.069182 -536.14
+## + Exclusion:Tree  1 0.0000017 0.065783 -536.02</code></pre>
+<pre class="r"><code>back_specresp_AIC$anova</code></pre>
+<pre><code>## Stepwise Model Path 
+## Analysis of Deviance Table
+## 
+## Initial Model:
+## specResp ~ Exclusion * Tree
+## 
+## Final Model:
+## specResp ~ Exclusion + Tree
+## 
+## 
+##               Step Df     Deviance Resid. Df Resid. Dev       AIC
+## 1                                         73 0.06578268 -536.0207
+## 2 - Exclusion:Tree  1 1.701137e-06        74 0.06578438 -538.0187</code></pre>
+<p>Model selection indicates that the best model for <strong>background specific respiration</strong> includes <strong>rhizosphere exclusion and tree species</strong> (no interaction term).</p>
+<div id="type-ii-anova-results-8" class="section level3">
+<h3>Type II ANOVA Results</h3>
+<pre class="r"><code>back_specresp_mod&lt;-lm(specResp~Exclusion+Tree,data=data)
+Anova(back_specresp_mod,type=&quot;II&quot;)</code></pre>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: specResp
+##             Sum Sq Df F value  Pr(&gt;F)  
+## Exclusion 0.003272  1  3.6807 0.05890 .
+## Tree      0.003398  1  3.8218 0.05437 .
+## Residuals 0.065784 74                  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="tukeys-hsd-results-8" class="section level3">
+<h3>Tukey’s HSD Results</h3>
+<pre class="r"><code>tx&lt;-with(data, interaction(Exclusion,Tree))
+amod&lt;-aov(specResp ~ tx, data=data)
+HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
+<pre><code>## 
+## Study: amod ~ &quot;tx&quot;
+## 
+## HSD Test for specResp 
+## 
+## Mean Square Error:  0.0008804842 
+## 
+## tx,  means
+## 
+##       specResp        std  r         Min        Max
+## 1.G 0.03551566 0.01447721 13 0.010866228 0.06704673
+## 1.P 0.03788433 0.02016513 10 0.010296575 0.07881230
+## 2.G 0.03001729 0.01068668 10 0.011767246 0.04139836
+## 2.P 0.06145461 0.04364625 16 0.010342135 0.16537613
+## 3.G 0.05057222 0.03532483 16 0.005001819 0.11501395
+## 3.P 0.05551240 0.02700032 12 0.021969160 0.10600128
+## 
+## Alpha: 0.05 ; DF Error: 71 
+## Critical Value of Studentized Range: 4.142208 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##       specResp groups
+## 2.P 0.06145461      a
+## 3.P 0.05551240      a
+## 3.G 0.05057222      a
+## 1.P 0.03788433      a
+## 1.G 0.03551566      a
+## 2.G 0.03001729      a</code></pre>
+</div>
+</div>
+</div>
 
 
 

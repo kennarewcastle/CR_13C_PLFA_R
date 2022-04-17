@@ -401,6 +401,8 @@ my_cols<-viridis(n=4)[2:3]
   unlab_data$Specific_Respiration_CO2_FAME<-unlab_data$Mean_Respiration/unlab_data$umol_FAME
   unlab_data$Rhizosphere_Manipulation<-as.factor(unlab_data$Rhizosphere_Manipulation)
   
+  #write.csv(unlab_data,file="Unlab_Spec_Resp_CO2_and_PLFA_Data.csv",row.names=FALSE)
+  
   ## Unlabelled specific respiration figure
   unlab_spec_resp<-ggplot(data=unlab_data,aes(x=Rhizosphere_Manipulation,y=Specific_Respiration_CO2_FAME,fill=Tree)) +
     geom_dotplot(binaxis="y",stackdir="center",alpha=0.7,position=position_dodge(0.8)) +

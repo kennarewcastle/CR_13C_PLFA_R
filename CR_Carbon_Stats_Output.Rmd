@@ -335,39 +335,68 @@ data<-read.csv("Unlab_PLFA_for_Spec_Resp.csv")
 ```
 
 ```{r back_PLFA_variables}
-umolFAME<-log(data$umol_FAME) # FAME ln transformed
+data$ln_FAME<-log(data$umol_FAME+1) # Add 1 before log transformation to elimanate -Inf values
+FAME<-data$ln_FAME
+Tree<-data$Tree
 Exclusion<-data$Rhizosphere_Manipulation
 Microbe<-data$Microbial_Group
-Tree<-data$Tree
 ```
 
 ```{r back_PLFA_stepAIC}
-back_PLFA_AIC<-stepAIC(object=aov(lm(umolFAME~Exclusion*Tree*Microbe)),direction="both",na.rm=TRUE)
+back_PLFA_AIC<-stepAIC(object=aov(lm(FAME~Exclusion*Tree*Microbe)),direction="both",na.rm=TRUE)
 ```
 
-```{r back_resp_AIC_anova_table}
-back_resp_AIC$anova
+```{r back_PLFA_AIC_anova_table}
+back_PLFA_AIC$anova
 ```
 
-```{r back_resp_AIC_extraction}
-print(extractAIC(aov(lm(Resp~Exclusion))))
-print(extractAIC(aov(lm(Resp~Tree))))
-print(extractAIC(aov(lm(Resp~Exclusion+Tree))))
-```
-
-Model selection indicates that the best model for **background respiration** includes **rhizosphere exclusion and tree species**. Model containing only rhizosphere exclusion is technically the best model, but the model containing both rhizosphere exclusion and tree species falls within the "family of best models".
+Model selection indicates that the best model for **background PLFA** includes **rhizosphere exclusion, tree species, and microbial group**, but no interaction terms.
 
 ### Type II ANOVA Results
-```{r back_resp_ANOVA}
-resp_mod<-lm(Mean_Respiration~Exclusion+Tree_species,data=data)
-Anova(resp_mod,type="II")
+```{r back_PLFA_ANOVA}
+PLFA_mod<-lm(FAME~Exclusion+Tree+Microbe,data=data)
+Anova(PLFA_mod,type="II")
 ```
 
 ### Tukey's HSD Results
-```{r back_resp_TukeyHSD}
-tx<-with(data, interaction(Exclusion,Tree_species))
-amod<-aov(Mean_Respiration ~ tx, data=data)
+```{r back_PLFA_TukeyHSD}
+tx<-with(data, interaction(Exclusion,Tree,Microbe))
+amod<-aov(FAME ~ tx, data=data)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
+# Background Specific Respiration Models
 
+## Step-wise AIC Model Selection for Background Specific Respiration
+```{r read_back_specresp_data, include=FALSE}
+data<-read.csv("Unlab_Spec_Resp_CO2_and_PLFA_Data.csv")
+```
+
+```{r back_specresp_variables}
+specResp<-data$Specific_Respiration_CO2_FAME
+Exclusion<-data$Rhizosphere_Manipulation
+Tree<-data$Tree
+```
+
+```{r back_specresp_stepAIC}
+back_specresp_AIC<-stepAIC(object=aov(lm(specResp~Exclusion*Tree)),direction="both",na.rm=TRUE)
+```
+
+```{r back_specresp_AIC_anova_table}
+back_specresp_AIC$anova
+```
+
+Model selection indicates that the best model for **background specific respiration** includes **rhizosphere exclusion and tree species** (no interaction term).
+
+### Type II ANOVA Results
+```{r back_specresp_ANOVA}
+back_specresp_mod<-lm(specResp~Exclusion+Tree,data=data)
+Anova(back_specresp_mod,type="II")
+```
+
+### Tukey's HSD Results
+```{r back_specresp_TukeyHSD}
+tx<-with(data, interaction(Exclusion,Tree))
+amod<-aov(specResp ~ tx, data=data)
+HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
