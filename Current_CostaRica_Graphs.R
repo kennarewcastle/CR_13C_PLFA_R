@@ -349,7 +349,7 @@ my_cols<-viridis(n=4)[2:3]
   
   data<-melt(data_wide,value.name="umol_FAME",id.vars=c("Sample_Name","Tree","Rhizosphere_Manipulation"))
   names(data)[4]<-"Microbial_Group"
-  data$ln_FAME<-log(data$umol_FAME)
+  data$ln_FAME<-log(data$umol_FAME+1)
   #write.csv(data,file="Unlab_PLFA_for_Spec_Resp.csv",row.names=FALSE)
   
   ## Un-labelled PLFA figure

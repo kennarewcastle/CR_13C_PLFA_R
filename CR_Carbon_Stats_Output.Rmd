@@ -335,7 +335,6 @@ data<-read.csv("Unlab_PLFA_for_Spec_Resp.csv")
 ```
 
 ```{r back_PLFA_variables}
-data$ln_FAME<-log(data$umol_FAME+1) # Add 1 before log transformation to elimanate -Inf values
 FAME<-data$ln_FAME
 Tree<-data$Tree
 Exclusion<-data$Rhizosphere_Manipulation
