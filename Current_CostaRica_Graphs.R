@@ -432,5 +432,8 @@ my_cols<-viridis(n=4)[2:3]
 # Pannels of figures with labelled leaf and starch, unlabelled C ----------
 
   grid.arrange(leaf_d13,starch_d13,resp_fig,nrow=1) # CO2
-  grid.arrange(leaf_d13_PLFA,starch_d13_PLFA,reg_PLFA_fig,nrow=1) # PLFA
+  PLFA_figs<-grid.arrange(leaf_d13_PLFA,starch_d13_PLFA,reg_PLFA_fig,nrow=1) # PLFA
   grid.arrange(leaf_spec_resp,starch_spec_resp,unlab_spec_resp,nrow=1) # Specific respiration
+  
+  ggsave(PLFA_figs,file="~/Desktop/PLFA_figs_test.jpeg",device="jpeg",height=10,width=13,units="in",dpi=300)
+  

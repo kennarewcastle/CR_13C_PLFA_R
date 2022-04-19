@@ -327,6 +327,13 @@ amod<-aov(Mean_Respiration ~ tx, data=data)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
+```{r back_resp_TukeyHSD_Exclusion}
+
+amod<-aov(data$Mean_Respiration~as.factor(data$Exclusion))
+TukeyHSD(amod)
+```
+
+
 # Background PLFA Models
 
 ## Step-wise AIC Model Selection for Background PLFA
