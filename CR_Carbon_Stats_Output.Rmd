@@ -16,6 +16,7 @@ library(car)
 library(agricolae)
 library(tidyr)
 library(reshape2)
+library(nlme)
 ```
 
 
@@ -26,6 +27,7 @@ library(reshape2)
   dat<-read.csv("Costa Rica Master sheet annotated.csv")
   dat<-filter(dat,dat$Exclusion!="NA")
   dat$Exclusion<-as.factor(dat$Exclusion)
+  dat$Tree_ID<-substr(dat$core_ID,1,5)
 
   ## Separate starch and leaf data
   starch_CO2<-filter(dat,dat$Isotope_label=="S") 
@@ -51,9 +53,17 @@ Model selection indicates that **rhizosphere exclusion, tree species, and exclus
 
 ### Type II ANOVA Results
 ```{r leaf_13C_CO2_ANOVA}
-leafMod<-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2)
-  Anova(leafMod,type="II") 
+leafMod<-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2,na.action=na.omit)
+leaf_CO2_fixed<-Anova(leafMod,type="II") 
 ```
+
+### Compare Nested Model to Fixed Effects Model
+```{r leaf_nested_13CO2}
+leaf_CO2_mixed_mod<-lme(d13_d9~Exclusion*Tree_species,random=~1|Tree_ID/Exclusion,data=leaf_CO2,na.action=na.omit)
+leaf_CO2_mixed<-Anova(leaf_CO2_mixed_mod)
+anova(leaf_CO2_fixed,leaf_CO2_mixed,test="F")
+```
+
 
 ### Tukey's HSD Results
 ```{r leaf_13C_CO2_TukeyHSD}
