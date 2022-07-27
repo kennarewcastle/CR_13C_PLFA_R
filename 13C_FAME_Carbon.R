@@ -4,6 +4,8 @@
 ### Last modified:
 ###         30 November 2021: Summed 13C-PLFA mass across all FAME compounds per sample
 ###         30 November 2021: Added analysis for total 13C-CO2 for each core
+###         26 July 2021: Corrected 13C-CO2 data to only be for "peak day" included in CO2 analyses
+
 # Load packages -----------------------------------------------------------
 
 library(plyr)
@@ -16,7 +18,7 @@ library(gridExtra)
 
 #########################################################################################################
 # FUNCTION: ug_C_FAME
-# Appends column with Peak Area:C standard ratio for each compound to data frame, uses this value to calcualte ugC of each fame compound, and appends to final data set.
+# Appends column with Peak Area:C standard ratio for each compound to data frame, uses this value to calculate ugC of each fame compound, and appends to final data set.
 # input: data = data frame where column 2= SampleName, column 6 = Peak_Area
 #        stdRatio =  2-column data frame, column 1= sample name, column 2= standard PeakArea:C ratio for #        each sample.
 #        molecular_mass = data frame with molecular mass for each FAME compound
@@ -357,7 +359,7 @@ grid.arrange(starch_rhizo_13C,leaf_rhizo_13C,ncol=2)
 
 # Calculate mass 13C-CO2 per core -----------------------------------------
 
-### This conversion is kind of tricky... First use the ideal gas law with the following variables to solve for the number of moles of gas total in each core (volume changes for each core with the depth of the headspace in teh cores). P = atmospheric pressure at 35 m above sea level (from La Selva website) = 345.39 Pa, T= 298.91 K (average of all temperatures taken inside each core in the field notes spreadsheet), V = units are m3, calculated by multiplying the area of the cores given the cores' radii (2.5 cm) by the depth of soil from the top of the cores (field notes spreadsheet), R = gas constant (8.314510).
+### This conversion is kind of tricky... First use the ideal gas law with the following variables to solve for the number of moles of gas total in each core (volume changes for each core with the depth of the headspace in the cores). P = atmospheric pressure at 35 m above sea level (from La Selva website) = 345.39 Pa, T= 298.91 K (average of all temperatures taken inside each core in the field notes spreadsheet), V = units are m3, calculated by multiplying the area of the cores given the cores' radii (2.5 cm) by the depth of soil from the top of the cores (field notes spreadsheet), R = gas constant (8.314510).
 
 CO2<-read.csv("CR2016_13CO2_Gas_Samples.csv")
 
@@ -435,6 +437,24 @@ leaf$Total_13C_ug<-(leaf$C13_ug_D1/10*1440) + (leaf$C13_ug_D4/10*4320) + (leaf$C
   
   leaf$Total_13C_ug[3]<-(leaf$C13_ug_D1[3]/10*1440) + (leaf$C13_ug_D4[3]/10*4320) + (leaf$C13_ug_D6[3]/10*2880) + (mean(c(leaf$C13_ug_D6[3],leaf$C13_ug_D9[3]))/10*1440) + (leaf$C13_ug_D9[3]/10*2880)
   
-outCO2<-rbind(starch,leaf)
+# Total 13C CO2 calculated for only peak day ------------------------------
+
+  ## Starch -- check for missing samples on Day 2 (peak day)
+  length(starch$ppmv_day2[is.na(starch$ppmv_day2)]) # Missing 2 samples (6 and 15)
+  starch[c(6,15),] # Missing samples are 10.2.3 and 17.1.3 (will take average of Day 1 and Day 3 13C values
+
+  starch$PeakDay_13C_CO2_ug<-(starch$C13_ug_D2/10*1440) # 10 minute capping period during gas collection, 1440 = number of minutes in 24 hours
   
-#write.csv(outCO2,file="13C_CO2_Final_Calculations.csv",row.names=FALSE)
+  ## Correct missing starch Day 2 samples (average day 1 and day 3 efflux rates)
+  starch$PeakDay_13C_CO2_ug[6]<-mean(starch$C13_ug_D1[6],starch$C13_ug_D3[6])/10*1440
+  
+  starch$PeakDay_13C_CO2_ug[15]<-mean(starch$C13_ug_D1[15],starch$C13_ug_D3[15])/10*1440
+  
+  ## Leaf -- check for missing samples on Day 9 (peak day)
+  length(leaf$ppmv_day9[is.na(leaf$ppmv_day9)]) # All samples present
+  
+  leaf$PeakDay_13C_CO2_ug<-(leaf$C13_ug_D9/10*1440) # 10 minute capping period during gas collection, 1440 = number of minutes in 24 hours
+  
+
+outCO2<-rbind(starch,leaf)
+write.csv(outCO2,file="13C_CO2_Final_Calculations.csv",row.names=FALSE)

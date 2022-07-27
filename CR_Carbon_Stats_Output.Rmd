@@ -67,6 +67,14 @@ anova(leaf_CO2_mixed_mod,leaf_CO2_fixed_mod)
 
 This output indicates that the AIC score for the mixed model is ~1.5 points lower than the fixed effects model, while BIC is virtually identical, and the p-value is 0.0639.TL;DR: Unclear whether tree ID random intercept is necessary. Evaluate other models first.
 
+```{r leaf_CO2_mixed_mod}
+summary(leaf_CO2_mixed_mod)
+```
+
+```{r leaf_CO2_fixed_mod}
+summary(leaf_CO2_fixed_mod)
+```
+
 ### Tukey's HSD Results
 ```{r leaf_13C_CO2_TukeyHSD}
  tx<-with(leaf_CO2, interaction(Exclusion, Tree_species))
@@ -105,12 +113,21 @@ starchMod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
 
 ### Compare Nested Model to Fixed Effects Model
 ```{r starch_nested_13CO2}
-starch_CO2_mixed_mod<-lme(d13_d2~Exclusion*Tree_species,random=~1|Tree_ID,data=starch_CO2,na.action=na.omit,method="ML")
-starch_CO2_fixed_mod<-lm(d13_d2~Exclusion*Tree_species,data=starch_CO2,na.action=na.omit)
+starch_CO2_mixed_mod<-lme(d13_d2~Exclusion+Tree_species,random=~1|Tree_ID,data=starch_CO2,na.action=na.omit,method="ML")
+starch_CO2_fixed_mod<-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2,na.action=na.omit)
 anova(starch_CO2_mixed_mod,starch_CO2_fixed_mod)
 ```
 
-This output indicates that the AIC score for the mixed model is ~3.2 points lower than the fixed effects model, while BIC scores are only 1 point apart, and the p-value is 0.0231.TL;DR: Slightly more decisive that the mixed effects model is best.
+This output indicates that the AIC score for the mixed model is ~2.6 points lower than the fixed effects model, while BIC scores are only 1 point apart, and the p-value is 0.0305.TL;DR: Slightly more decisive that the mixed effects model is best.
+
+```{r starch_CO2_mixed_mod}
+summary(starch_CO2_mixed_mod)
+```
+
+```{r starch_CO2_fixed_mod}
+summary(starch_CO2_fixed_mod)
+```
+
 
 ### Tukey's HSD Results
 ```{r starch_13C_CO2_TukeyHSD}
@@ -149,6 +166,9 @@ This output indicates that the AIC score for the mixed model is ~3.2 points lowe
   data<-melt(data_wide,value.name="d13",id.vars=c("Sample_Name","Rhizosphere_Manipulation","Tree","Substrate_Type"))
   names(data)[5]<-"Microbial_Group"
   
+  ## Add a column for tree ID
+  data$Tree_ID<-substr(data$Sample_Name,1,5)
+  
   ## Separate leaf and starch datasets
   leaf_PLFA<-filter(data,Substrate_Type=="L")
   starch_PLFA<-filter(data,Substrate_Type=="S")  
@@ -181,6 +201,19 @@ Model selection indicates that **rhizosphere exclusion, tree species, and exclus
 ```{r leaf_13C_PLFA_ANOVA}
 leafMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA)
 Anova(leafMod_13CPLFA,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r leaf_nested_13C_PLFA}
+leaf_PLFA_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,random=~1|Tree_ID,data=leaf_PLFA,na.action=na.omit,method="ML")
+leaf_PLFA_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA,na.action=na.omit)
+anova(leaf_PLFA_mixed_mod,leaf_PLFA_fixed_mod)
+```
+
+This output indicates that the AIC score for the mixed model is ~30 points lower, with a p-value of < 0.0001, a clear indicator that the mixed model is without a doubt the best model (tree ID explains a substantial amount of variation).
+
+```{r leaf_PLFA_mixed_mod}
+summary(leaf_PLFA_mixed_mod)
 ```
 
 ### Tukey's HSD Results
@@ -217,6 +250,19 @@ Model selection indicates that **rhizosphere exclusion, microbial group, and tre
 ```{r starch_13C_PLFA_ANOVA}
 starchMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,data=starch_PLFA)
 Anova(starchMod_13CPLFA,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r starch_nested_13C_PLFA}
+starch_PLFA_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,random=~1|Tree_ID,data=starch_PLFA,na.action=na.omit,method="ML")
+starch_PLFA_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=starch_PLFA,na.action=na.omit)
+anova(starch_PLFA_mixed_mod,starch_PLFA_fixed_mod)
+```
+
+This output indicates that the AIC score for the mixed model is ~30 points lower, with a p-value of < 0.0001, a clear indicator that the mixed model is without a doubt the best model (tree ID explains a substantial amount of variation).
+
+```{r leaf_PLFA_mixed_mod}
+summary(leaf_PLFA_mixed_mod)
 ```
 
 ### Tukey's HSD Results
