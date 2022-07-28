@@ -28,7 +28,7 @@ cores<-data.frame("PLFA_Cores"=PLFA_Cores,"CO2_Cores"=CO2$Clean_Core_ID)
 
 # Combined PLFA, CO2 dataframe --------------------------------------------
 
-data<-data.frame(PLFA,"Total_13C_CO2_ug"=CO2$PeakDay_13C_CO2_ug)
+data<-data.frame(PLFA,"Total_13C_CO2_ug"=CO2$Total_13C_ug)
 names(data)[4]<-"Total_13C_FAME_ug"
 data$Specific_Respiration_CO2_FAME<-data$Total_13C_CO2_ug/data$Total_13C_FAME_ug
 #write.csv(data, file="Final_Specific_Respiration_Data.csv", row.names=FALSE)
@@ -54,7 +54,7 @@ leaf_spec_resp<-ggplot(data=leaf,aes(x=Mesh_Type,y=Specific_Respiration_CO2_FAME
         panel.border=element_rect(fill=NA,colour="black",size=1.5),
         panel.background=element_rect(fill=NA)) # This plot eliminates one crazy -R+M data point             
 
-# Create figres for specific respiration — starch -------------------------
+# Create figures for specific respiration — starch -------------------------
 starch<-filter(data,Label_Type=="S")
 starch$Mesh_Type<-as.factor(starch$Mesh_Type)
 
