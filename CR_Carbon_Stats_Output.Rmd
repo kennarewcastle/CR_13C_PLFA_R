@@ -680,42 +680,189 @@ AIC output for fixed and mixed models practically identical; random effect does 
 summary(resp_fixed_mod)
 ```
 
-# Background PLFA Models
+# Background AMF FAME Models
 
-## Step-wise AIC Model Selection for Background PLFA
+## Step-wise AIC Model Selection for Background AMF
 ```{r read_back_PLFA_data, include=FALSE}
 data<-read.csv("Unlab_PLFA_for_Spec_Resp.csv")
 data$Tree_ID<-substring(data$Sample_Name,1,5)
+data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
 ```
 
-```{r back_PLFA_variables}
-FAME<-data$ln_FAME
-Tree<-data$Tree
-Exclusion<-data$Rhizosphere_Manipulation
-Microbe<-data$Microbial_Group
+```{r back_AMF_variables, include=FALSE}
+AMF_PLFA<-filter(data,Microbial_Group=="AMF")
+FAME_AMF<-AMF_PLFA$ln_FAME
+Tree_AMF<-AMF_PLFA$Tree
+Exclusion_AMF<-AMF_PLFA$Rhizosphere_Manipulation
 ```
 
-```{r back_PLFA_stepAIC}
-back_PLFA_AIC<-stepAIC(object=aov(lm(FAME~Exclusion*Tree*Microbe)),direction="both",na.rm=TRUE)
+```{r back_AMF_stepAIC}
+back_AMF_AIC<-stepAIC(object=aov(lm(FAME_AMF~Exclusion_AMF*Tree_AMF)),direction="both",na.rm=TRUE)
 ```
 
-```{r back_PLFA_AIC_anova_table}
-back_PLFA_AIC$anova
+```{r back_AMF_AIC_anova_table}
+back_AMF_AIC$anova
 ```
 
-Model selection indicates that the best model for **background PLFA** includes **rhizosphere exclusion, tree species, and microbial group**, but no interaction terms.
+```{r back_AMF_AIC_extraction}
+print(extractAIC(aov(lm(FAME_AMF~Exclusion_AMF+Tree_AMF))))
+print(extractAIC(aov(lm(FAME_AMF~Exclusion_AMF))))
+print(extractAIC(aov(lm(FAME_AMF~Tree_AMF))))
+```
+
+Model selection indicates that the best model for **background AMF FAME** includes **rhizosphere exclusion and tree species**, but no interaction terms. Technically, the model that includes only tree species as a fixed effect is the best model, but the model including tree species and rhizosphere exclusion as fixed effects is only ~2 AIC points higher, and is therefore included in the family of best models.
 
 ### Type II ANOVA Results
-```{r back_PLFA_ANOVA}
-PLFA_mod<-lm(FAME~Exclusion+Tree+Microbe,data=data)
-Anova(PLFA_mod,type="II")
+```{r back_AMF_ANOVA}
+back_AMF_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=AMF_PLFA)
+Anova(back_AMF_mod,type="II")
 ```
 
-### Tukey's HSD Results
-```{r back_PLFA_TukeyHSD}
-tx<-with(data, interaction(Exclusion,Tree,Microbe))
-amod<-aov(FAME ~ tx, data=data)
-HSD.test(amod, "tx", group=TRUE, console=TRUE)
+### Compare Nested Model to Fixed Effects Model
+```{r back_AMF_nested}
+back_AMF_mixed_mod<-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=AMF_PLFA,na.action=na.omit,method="ML")
+back_AMF_fixed_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=AMF_PLFA,na.action=na.omit)
+anova(back_AMF_mixed_mod,back_AMF_fixed_mod)
+```
+
+Mixed effects model is ~3 AIC points lower than the fixed effects model, with a p-value of 0.019, so the **mixed effects model is superior** and there is significant variation attributed to individual trees across the field site.
+
+```{r back_AMF_mixed_mod}
+summary(back_AMF_mixed_mod)
+```
+
+# Background Fungi FAME Models
+
+## Step-wise AIC Model Selection for Background Fungi
+```{r back_fungi_variables, include=FALSE}
+fungi_PLFA<-filter(data,Microbial_Group=="FUNGI")
+FAME_fungi<-fungi_PLFA$ln_FAME
+Tree_fungi<-fungi_PLFA$Tree
+Exclusion_fungi<-fungi_PLFA$Rhizosphere_Manipulation
+```
+
+```{r back_fungi_stepAIC}
+back_fungi_AIC<-stepAIC(object=aov(lm(FAME_fungi~Exclusion_fungi*Tree_fungi)),direction="both",na.rm=TRUE)
+```
+
+```{r back_fungi_AIC_anova_table}
+back_fungi_AIC$anova
+```
+
+```{r back_fungi_AIC_extraction}
+print(extractAIC(aov(lm(FAME_fungi~Exclusion_fungi+Tree_fungi))))
+print(extractAIC(aov(lm(FAME_fungi~Exclusion_fungi))))
+print(extractAIC(aov(lm(FAME_fungi~Tree_fungi))))
+```
+
+Model selection indicates that the best model for **background fungi FAME** includes **just tree species**, and no interaction terms. The model that includes both tree species and rhizosphere exclusion as fixed effects is ~4 AIC points higher, indicating that the model with only tree species as a fixed effect is superior.
+
+### Type II ANOVA Results
+```{r back_fungi_ttest}
+t.test(ln_FAME~Tree,data=fungi_PLFA,alternative="two.sided")
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r back_fungi_nested}
+back_fungi_mixed_mod<-lme(ln_FAME~Tree,random=~1|Tree_ID,data=fungi_PLFA,na.action=na.omit,method="ML")
+back_fungi_fixed_mod<-lm(ln_FAME~Tree,data=fungi_PLFA,na.action=na.omit)
+anova(back_fungi_mixed_mod,back_fungi_fixed_mod)
+```
+
+Fixed effects model is ~1.5 AIC points lower than the mixed effects model, with a p-value of 0.4371, so the **fixed effects model is superior**.
+
+```{r back_fungi_fixed_mod}
+summary(back_fungi_fixed_mod) # T-test results from above are the more appropriate test.
+```
+
+# Background Bacteria FAME Models
+
+## Step-wise AIC Model Selection for Background Bacteria
+```{r back_bact_variables, include=FALSE}
+bact_PLFA<-filter(data,Microbial_Group=="BACTERIA")
+FAME_bact<-bact_PLFA$ln_FAME
+Tree_bact<-bact_PLFA$Tree
+Exclusion_bact<-bact_PLFA$Rhizosphere_Manipulation
+```
+
+```{r back_bact_stepAIC}
+back_bact_AIC<-stepAIC(object=aov(lm(FAME_bact~Exclusion_bact*Tree_bact)),direction="both",na.rm=TRUE)
+```
+
+```{r back_bact_AIC_anova_table}
+back_bact_AIC$anova
+```
+
+```{r back_bact_AIC_extraction}
+print(extractAIC(aov(lm(FAME_bact~Exclusion_bact+Tree_bact))))
+print(extractAIC(aov(lm(FAME_bact~Exclusion_bact))))
+print(extractAIC(aov(lm(FAME_bact~Tree_bact))))
+```
+
+Model selection indicates that the best model for **background bacteria FAME** includes **rhizosphere exclusion and tree species**, but no interaction terms. Technically, the model that includes only tree species as a fixed effect is the best model, but the model including tree species and rhizosphere exclusion as fixed effects is only ~1.5 AIC points higher, and is therefore included in the family of best models.
+
+### Type II ANOVA Results
+```{r back_bact_ANOVA}
+back_bact_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=bact_PLFA)
+Anova(back_bact_mod,type="II")
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r back_bact_nested}
+back_bact_mixed_mod<-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=bact_PLFA,na.action=na.omit,method="ML")
+back_bact_fixed_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=bact_PLFA,na.action=na.omit)
+anova(back_bact_mixed_mod,back_bact_fixed_mod)
+```
+
+These models are very close in there AIC scores; the mixed effects model is ~0.9 AIC points lower than the fixed effects model, with a p-value of 0.090, meaning that either model is valid. I will therefore select the more simple, fixed effects model as the superior model.
+
+```{r back_bact_fixed_mod}
+summary(back_bact_fixed_mod)
+```
+
+# Background All Microbes FAME Models
+
+## Step-wise AIC Model Selection for Background FAME Abundance of All Microbes
+```{r back_allmicro_variables, include=FALSE}
+allmicro_PLFA<-filter(data,Microbial_Group=="ALL_MICROBES")
+FAME_allmicro<-allmicro_PLFA$ln_FAME
+Tree_allmicro<-allmicro_PLFA$Tree
+Exclusion_allmicro<-allmicro_PLFA$Rhizosphere_Manipulation
+```
+
+```{r back_allmicro_stepAIC}
+back_allmicro_AIC<-stepAIC(object=aov(lm(FAME_allmicro~Exclusion_allmicro*Tree_allmicro)),direction="both",na.rm=TRUE)
+```
+
+```{r back_allmicro_AIC_anova_table}
+back_allmicro_AIC$anova
+```
+
+```{r back_allmicro_AIC_extraction}
+print(extractAIC(aov(lm(FAME_allmicro~Exclusion_allmicro+Tree_allmicro))))
+print(extractAIC(aov(lm(FAME_allmicro~Exclusion_allmicro))))
+print(extractAIC(aov(lm(FAME_allmicro~Tree_allmicro))))
+```
+
+Model selection indicates that the best model for **background FAME for all microbes** includes **rhizosphere exclusion and tree species**, but no interaction terms. Technically, the model that includes only tree species as a fixed effect is the best model, but the model including tree species and rhizosphere exclusion as fixed effects is only ~2 AIC points higher, and is therefore included in the family of best models.
+
+### Type II ANOVA Results
+```{r back_allmicro_ANOVA}
+back_allmicro_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=allmicro_PLFA)
+Anova(back_allmicro_mod,type="II")
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r back_allmicro_nested}
+back_allmicro_mixed_mod<-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=allmicro_PLFA,na.action=na.omit,method="ML")
+back_allmicro_fixed_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=allmicro_PLFA,na.action=na.omit)
+anova(back_allmicro_mixed_mod,back_allmicro_fixed_mod)
+```
+
+These models are very close in there AIC scores; the mixed effects model is ~0.8 AIC points lower than the fixed effects model, with a p-value of 0.099, meaning that either model is valid. I will therefore select the more simple, fixed effects model as the superior model.
+
+```{r back_allmicro_fixed_mod}
+summary(back_allmicro_fixed_mod)
 ```
 
 # Background Specific Respiration Models
