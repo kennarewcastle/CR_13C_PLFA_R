@@ -174,102 +174,340 @@ summary(starch_CO2_fixed_mod)
   starch_PLFA<-filter(data,Substrate_Type=="S")  
 ```
 
-## **Leaf Substrate**: Step-wise AIC Model Selection for 13C-PLFA
-```{r leaf_13C_PLFA_variables, include=FALSE}
-  leaf_13C_PLFA<-leaf_PLFA$d13
-  Exclusion<-leaf_PLFA$Rhizosphere_Manipulation
-  Tree<-leaf_PLFA$Tree
-  Microbe_Group<-leaf_PLFA$Microbial_Group
+## **Leaf/AMF**: Step-wise AIC Model Selection for 13C-PLFA
+```{r leaf_AMF_variables, include=FALSE}
+  leaf_AMF<-filter(leaf_PLFA,Microbial_Group=="AMF")
+  leaf_AMF_13C<-leaf_AMF$d13
+  Exclusion_AMF<-leaf_AMF$Rhizosphere_Manipulation
+  Tree_AMF<-leaf_AMF$Tree
 ```
 
-```{r leaf_13C_PLFA_stepAIC}
-leaf_13CPLFA_AIC<-stepAIC(object=aov(lm(leaf_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
+```{r leaf_AMF_stepAIC}
+leaf_AMF_AIC<-stepAIC(object=aov(lm(leaf_AMF_13C~Exclusion_AMF*Tree_AMF)),direction="both",na.rm=TRUE)
 ```
 
-```{r leaf_13C_PLFA_AIC_anova_table}
-leaf_13CPLFA_AIC$anova
+```{r leaf_AMF_AIC_anova_table}
+leaf_AMF_AIC$anova
 ```
 
-```{r leaf_13C_PLFA_AIC_extraction}
-print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree))))
-print(extractAIC(aov(lm(leaf_13C_PLFA~Exclusion+Tree+Exclusion*Tree+Microbe_Group))))
+```{r leaf_AMF_AIC_extraction}
+print(extractAIC(aov(lm(leaf_AMF_13C~Exclusion_AMF+Tree_AMF))))
+print(extractAIC(aov(lm(leaf_AMF_13C~Exclusion_AMF))))
 ```
 
-Model selection indicates that **rhizosphere exclusion, tree species, and exclusion x tree interaction** should be included in model explaining **13C-PLFA** in cores labeled with **leaf substrate**. Model that included microbial group was ~6 AIC points greater than the final model, so microbial group was not included in final analyses.
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **AMF** microbes inhabiting cores labeled with **leaf substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
 
 ### Type II ANOVA Results
-```{r leaf_13C_PLFA_ANOVA}
-leafMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA)
-Anova(leafMod_13CPLFA,type="II") 
+```{r leaf_AMF_ANOVA}
+leafMod_AMF<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_AMF)
+Anova(leafMod_AMF,type="II") 
 ```
 
 ### Compare Nested Model to Fixed Effects Model
-```{r leaf_nested_13C_PLFA}
-leaf_PLFA_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,random=~1|Tree_ID,data=leaf_PLFA,na.action=na.omit,method="ML")
-leaf_PLFA_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=leaf_PLFA,na.action=na.omit)
-anova(leaf_PLFA_mixed_mod,leaf_PLFA_fixed_mod)
+```{r leaf_AMF_nested}
+leaf_AMF_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_AMF,na.action=na.omit,method="ML")
+leaf_AMF_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_AMF,na.action=na.omit)
+anova(leaf_AMF_mixed_mod,leaf_AMF_fixed_mod)
 ```
 
-This output indicates that the AIC score for the mixed model is ~30 points lower, with a p-value of < 0.0001, a clear indicator that the mixed model is without a doubt the best model (tree ID explains a substantial amount of variation).
+Fixed model has lower AIC score than fixed model, with p-value of 0.95. Fixed model is clearly the superior model.
 
-```{r leaf_PLFA_mixed_mod}
-summary(leaf_PLFA_mixed_mod)
+```{r leaf_AMF_fixed_mod}
+summary(leaf_AMF_fixed_mod)
 ```
 
-### Tukey's HSD Results
-```{r leaf_13C_PLFA_TukeyHSD}
-tx<-with(leaf_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
-amod<-aov(d13 ~ tx, data=leaf_PLFA)
-HSD.test(amod, "tx", group=TRUE, console=TRUE)
+## **Leaf/Fungi**: Step-wise AIC Model Selection for 13C-PLFA
+```{r leaf_fungi_variables, include=FALSE}
+  leaf_fungi<-filter(leaf_PLFA,Microbial_Group=="FUNGI")
+  leaf_fungi_13C<-leaf_fungi$d13
+  Exclusion_fungi<-leaf_fungi$Rhizosphere_Manipulation
+  Tree_fungi<-leaf_fungi$Tree
 ```
 
-## **Starch Substrate**: Step-wise AIC Model Selection for 13C-PLFA
-```{r starch_13C_PLFA_variables, include=FALSE}
-  starch_13C_PLFA<-starch_PLFA$d13
-  Exclusion<-starch_PLFA$Rhizosphere_Manipulation
-  Tree<-starch_PLFA$Tree
-  Microbe_Group<-starch_PLFA$Microbial_Group
+```{r leaf_fungi_stepAIC}
+leaf_fungi_AIC<-stepAIC(object=aov(lm(leaf_fungi_13C~Exclusion_fungi*Tree_fungi)),direction="both",na.rm=TRUE)
 ```
 
-```{r starch_13C_PLFA_stepAIC}
-starch_13CPLFA_AIC<-stepAIC(object=aov(lm(starch_13C_PLFA~Exclusion*Tree*Microbe_Group)),direction="both",na.rm=TRUE)
+```{r leaf_fungi_AIC_anova_table}
+leaf_fungi_AIC$anova
 ```
 
-```{r starch_13C_PLFA_AIC_anova_table}
-starch_13CPLFA_AIC$anova
+```{r leaf_fungi_AIC_extraction}
+print(extractAIC(aov(lm(leaf_fungi_13C~Exclusion_fungi+Tree_fungi))))
+print(extractAIC(aov(lm(leaf_fungi_13C~Exclusion_fungi))))
 ```
 
-```{r starch_13C_PLFA_AIC_extraction}
-print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group))))
-print(extractAIC(aov(lm(starch_13C_PLFA~Exclusion+Microbe_Group+Tree))))
-```
-
-Model selection indicates that **rhizosphere exclusion, microbial group, and tree species** should be included in model explaining **13C-PLFA** in cores labeled with **starch substrate**. Model with only rhizosphere exclusion and microbial group and model with rhizosphere exclusion, microbial group, and tree species are separated by only 1 AIC point, so both models are included in "best family" of models. Will choose to include tree species as a parameter to match structure of CO2 Analyses.
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **fungi** microbes inhabiting cores labeled with **leaf substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
 
 ### Type II ANOVA Results
-```{r starch_13C_PLFA_ANOVA}
-starchMod_13CPLFA<-lm(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,data=starch_PLFA)
-Anova(starchMod_13CPLFA,type="II") 
+```{r leaf_fungi_ANOVA}
+leafMod_fungi<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_fungi)
+Anova(leafMod_fungi,type="II") 
 ```
 
 ### Compare Nested Model to Fixed Effects Model
-```{r starch_nested_13C_PLFA}
-starch_PLFA_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Microbial_Group+Tree,random=~1|Tree_ID,data=starch_PLFA,na.action=na.omit,method="ML")
-starch_PLFA_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree+Rhizosphere_Manipulation*Tree,data=starch_PLFA,na.action=na.omit)
-anova(starch_PLFA_mixed_mod,starch_PLFA_fixed_mod)
+```{r leaf_nested_fungi}
+leaf_fungi_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_fungi,na.action=na.omit,method="ML")
+leaf_fungi_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_fungi,na.action=na.omit)
+anova(leaf_fungi_mixed_mod,leaf_fungi_fixed_mod)
 ```
 
-This output indicates that the AIC score for the mixed model is ~30 points lower, with a p-value of < 0.0001, a clear indicator that the mixed model is without a doubt the best model (tree ID explains a substantial amount of variation).
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.971, indicating that the fixed effects model is superior.
 
-```{r leaf_PLFA_mixed_mod}
-summary(leaf_PLFA_mixed_mod)
+```{r leaf_fungi_fixed_mod}
+summary(leaf_fungi_fixed_mod)
 ```
 
-### Tukey's HSD Results
-```{r starch_13C_PLFA_TukeyHSD}
-tx<-with(starch_PLFA, interaction(Rhizosphere_Manipulation,Microbial_Group,Tree))
-amod<-aov(d13 ~ tx, data=starch_PLFA)
-HSD.test(amod, "tx", group=TRUE, console=TRUE)
+## **Leaf/Bacteria**: Step-wise AIC Model Selection for 13C-PLFA
+```{r leaf_bact_variables, include=FALSE}
+  leaf_bact<-filter(leaf_PLFA,Microbial_Group=="BACTERIA")
+  leaf_bact_13C<-leaf_bact$d13
+  Exclusion_bact<-leaf_bact$Rhizosphere_Manipulation
+  Tree_bact<-leaf_bact$Tree
+```
+
+```{r leaf_bact_stepAIC}
+leaf_bact_AIC<-stepAIC(object=aov(lm(leaf_bact_13C~Exclusion_bact*Tree_bact)),direction="both",na.rm=TRUE)
+```
+
+```{r leaf_bact_AIC_anova_table}
+leaf_bact_AIC$anova
+```
+
+```{r leaf_bact_AIC_extraction}
+print(extractAIC(aov(lm(leaf_bact_13C~Exclusion_bact+Tree_bact))))
+print(extractAIC(aov(lm(leaf_bact_13C~Exclusion_bact))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **bacteria** microbes inhabiting cores labeled with **leaf substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r leaf_bact_ANOVA}
+leafMod_bact<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_bact)
+Anova(leafMod_bact,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r leaf_nested_bact}
+leaf_bact_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_bact,na.action=na.omit,method="ML")
+leaf_bact_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_bact,na.action=na.omit)
+anova(leaf_bact_mixed_mod,leaf_bact_fixed_mod)
+```
+
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.551, indicating that the fixed effects model is superior.
+
+```{r leaf_bact_fixed_mod}
+summary(leaf_bact_fixed_mod)
+```
+
+## **Leaf/All Microbes**: Step-wise AIC Model Selection for 13C-PLFA
+```{r leaf_allmicro_variables, include=FALSE}
+  leaf_allmicro<-filter(leaf_PLFA,Microbial_Group=="ALL_MICROBES")
+  leaf_allmicro_13C<-leaf_allmicro$d13
+  Exclusion_allmicro<-leaf_allmicro$Rhizosphere_Manipulation
+  Tree_allmicro<-leaf_allmicro$Tree
+```
+
+```{r leaf_allmicro_stepAIC}
+leaf_allmicro_AIC<-stepAIC(object=aov(lm(leaf_allmicro_13C~Exclusion_allmicro*Tree_allmicro)),direction="both",na.rm=TRUE)
+```
+
+```{r leaf_allmicro_AIC_anova_table}
+leaf_allmicro_AIC$anova
+```
+
+```{r leaf_allmicro_AIC_extraction}
+print(extractAIC(aov(lm(leaf_allmicro_13C~Exclusion_allmicro+Tree_allmicro))))
+print(extractAIC(aov(lm(leaf_allmicro_13C~Exclusion_allmicro))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **all microbes** inhabiting cores labeled with **leaf substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r leaf_allmicro_ANOVA}
+leafMod_allmicro<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_allmicro)
+Anova(leafMod_allmicro,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r leaf_nested_allmicro}
+leaf_allmicro_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_allmicro,na.action=na.omit,method="ML")
+leaf_allmicro_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_allmicro,na.action=na.omit)
+anova(leaf_allmicro_mixed_mod,leaf_allmicro_fixed_mod)
+```
+
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.688, indicating that the fixed effects model is superior.
+
+```{r leaf_allmicro_fixed_mod}
+summary(leaf_allmicro_fixed_mod)
+```
+
+## **Starch/AMF**: Step-wise AIC Model Selection for 13C-PLFA
+```{r starch_AMF_variables, include=FALSE}
+  starch_AMF<-filter(starch_PLFA,Microbial_Group=="AMF")
+  starch_AMF_13C<-starch_AMF$d13
+  Exclusion_AMF<-starch_AMF$Rhizosphere_Manipulation
+  Tree_AMF<-starch_AMF$Tree
+```
+
+```{r starch_AMF_stepAIC}
+starch_AMF_AIC<-stepAIC(object=aov(lm(starch_AMF_13C~Exclusion_AMF*Tree_AMF)),direction="both",na.rm=TRUE)
+```
+
+```{r leaf_AMF_13C_PLFA_AIC_anova_table}
+starch_AMF_AIC$anova
+```
+
+```{r leaf_AMF_13C_PLFA_AIC_extraction}
+print(extractAIC(aov(lm(starch_AMF_13C~Exclusion_AMF+Tree_AMF))))
+print(extractAIC(aov(lm(starch_AMF_13C~Exclusion_AMF))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **AMF** microbes inhabiting cores labeled with **starch substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r starch_AMF_ANOVA}
+starchMod_AMF<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_AMF)
+Anova(starchMod_AMF,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r starch_AMF_nested}
+starch_AMF_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_AMF,na.action=na.omit,method="ML")
+starch_AMF_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_AMF,na.action=na.omit)
+anova(starch_AMF_mixed_mod,starch_AMF_fixed_mod)
+```
+
+Fixed model has lower AIC score than fixed model, with p-value of 0.783. Fixed model is clearly the superior model.
+
+```{r starch_AMF_fixed_mod}
+summary(starch_AMF_fixed_mod)
+```
+
+## **Starch/Fungi**: Step-wise AIC Model Selection for 13C-PLFA
+```{r starch_fungi_variables, include=FALSE}
+  starch_fungi<-filter(starch_PLFA,Microbial_Group=="FUNGI")
+  starch_fungi_13C<-starch_fungi$d13
+  Exclusion_fungi<-starch_fungi$Rhizosphere_Manipulation
+  Tree_fungi<-starch_fungi$Tree
+```
+
+```{r starch_fungi_stepAIC}
+starch_fungi_AIC<-stepAIC(object=aov(lm(starch_fungi_13C~Exclusion_fungi*Tree_fungi)),direction="both",na.rm=TRUE)
+```
+
+```{r starch_fungi_AIC_anova_table}
+starch_fungi_AIC$anova
+```
+
+```{r starch_fungi_AIC_extraction}
+print(extractAIC(aov(lm(starch_fungi_13C~Exclusion_fungi+Tree_fungi))))
+print(extractAIC(aov(lm(starch_fungi_13C~Exclusion_fungi))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **fungi** microbes inhabiting cores labeled with **starch substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r starch_fungi_ANOVA}
+starchMod_fungi<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_fungi)
+Anova(starchMod_fungi,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r starch_nested_fungi}
+starch_fungi_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_fungi,na.action=na.omit,method="ML")
+starch_fungi_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_fungi,na.action=na.omit)
+anova(starch_fungi_mixed_mod,starch_fungi_fixed_mod)
+```
+
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.9998, indicating that the fixed effects model is superior.
+
+```{r starch_fungi_fixed_mod}
+summary(starch_fungi_fixed_mod)
+```
+
+## **Starch/Bacteria**: Step-wise AIC Model Selection for 13C-PLFA
+```{r starch_bact_variables, include=FALSE}
+  starch_bact<-filter(starch_PLFA,Microbial_Group=="BACTERIA")
+  starch_bact_13C<-starch_bact$d13
+  Exclusion_bact<-starch_bact$Rhizosphere_Manipulation
+  Tree_bact<-starch_bact$Tree
+```
+
+```{r starch_bact_stepAIC}
+starch_bact_AIC<-stepAIC(object=aov(lm(starch_bact_13C~Exclusion_bact*Tree_bact)),direction="both",na.rm=TRUE)
+```
+
+```{r starch_bact_AIC_anova_table}
+starch_bact_AIC$anova
+```
+
+```{r starch_bact_AIC_extraction}
+print(extractAIC(aov(lm(starch_bact_13C~Exclusion_bact+Tree_bact))))
+print(extractAIC(aov(lm(starch_bact_13C~Exclusion_bact))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **bacteria** microbes inhabiting cores labeled with **starch substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r starch_bact_ANOVA}
+starchMod_bact<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_bact)
+Anova(starchMod_bact,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r starch_nested_bact}
+starch_bact_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_bact,na.action=na.omit,method="ML")
+starch_bact_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_bact,na.action=na.omit)
+anova(starch_bact_mixed_mod,starch_bact_fixed_mod)
+```
+
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.797, indicating that the fixed effects model is superior.
+
+```{r starch_bact_fixed_mod}
+summary(starch_bact_fixed_mod)
+```
+
+## **Starch/All Microbes**: Step-wise AIC Model Selection for 13C-PLFA
+```{r starch_allmicro_variables, include=FALSE}
+  starch_allmicro<-filter(starch_PLFA,Microbial_Group=="ALL_MICROBES")
+  starch_allmicro_13C<-starch_allmicro$d13
+  Exclusion_allmicro<-starch_allmicro$Rhizosphere_Manipulation
+  Tree_allmicro<-starch_allmicro$Tree
+```
+
+```{r starch_allmicro_stepAIC}
+starch_allmicro_AIC<-stepAIC(object=aov(lm(starch_allmicro_13C~Exclusion_allmicro*Tree_allmicro)),direction="both",na.rm=TRUE)
+```
+
+```{r starch_allmicro_AIC_anova_table}
+starch_allmicro_AIC$anova
+```
+
+```{r starch_allmicro_AIC_extraction}
+print(extractAIC(aov(lm(starch_allmicro_13C~Exclusion_allmicro+Tree_allmicro))))
+print(extractAIC(aov(lm(starch_allmicro_13C~Exclusion_allmicro))))
+```
+
+Model selection indicates that **rhizosphere exclusion and tree species** should be included in model explaining **13C-PLFA** in **all microbes** inhabiting cores labeled with **starch substrate**. Technically, best model includes on rhizosphere exclusion, but model that also includes tree species is included in the best family of models.
+
+### Type II ANOVA Results
+```{r starch_allmicro_ANOVA}
+starchMod_allmicro<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_allmicro)
+Anova(starchMod_allmicro,type="II") 
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r starch_nested_allmicro}
+starch_allmicro_mixed_mod<-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_allmicro,na.action=na.omit,method="ML")
+starch_allmicro_fixed_mod<-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_allmicro,na.action=na.omit)
+anova(starch_allmicro_mixed_mod,starch_allmicro_fixed_mod)
+```
+
+Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-value of 0.9998, indicating that the fixed effects model is superior.
+
+```{r starch_allmicro_fixed_mod}
+summary(starch_allmicro_fixed_mod)
 ```
 
 # 13C Specific Respiration Models
@@ -277,8 +515,10 @@ HSD.test(amod, "tx", group=TRUE, console=TRUE)
   ## Read in data
   data<-read.csv("Final_Specific_Respiration_Data.csv")
   data$Mesh_Type<-as.factor(data$Mesh_Type)
+  data$Tree_ID<-substring(data$Core_ID,1,5)
   leaf<-filter(data,Label_Type=="L")
   starch<-filter(data,Label_Type=="S")
+  
 ```
 
 ## **Leaf Substrate**: Step-wise AIC Model Selection for 13C Specific Respiration
@@ -313,6 +553,19 @@ Anova(leaf_mod,type="II")
 tx<-with(leaf, interaction(Mesh_Type,Tree_Species))
 amod<-aov(Specific_Respiration_CO2_FAME ~ tx, data=leaf)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
+```
+
+### Compare Nested Model to Fixed Effects Model
+```{r leaf_nested_BSR}
+leaf_BSR_mixed_mod<-lme(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,random=~1|Tree_ID,data=leaf,na.action=na.omit,method="ML")
+leaf_BSR_fixed_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=leaf,na.action=na.omit)
+anova(leaf_BSR_mixed_mod,leaf_BSR_fixed_mod)
+```
+
+This output indicates that the AIC score for the mixed model is ~2 points higher, mixed model does not perform better.
+
+```{r leaf_BSR_fixed_mod}
+summary(leaf_BSR_fixed_mod)
 ```
 
 ## **Starch Substrate**: Step-wise AIC Model Selection for 13C Specific Respiration
@@ -352,11 +605,26 @@ amod<-aov(Specific_Respiration_CO2_FAME ~ tx, data=starch)
 HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
+### Compare Nested Model to Fixed Effects Model
+```{r starch_nested_BSR}
+starch_BSR_mixed_mod<-lme(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,random=~1|Tree_ID,data=starch,na.action=na.omit,method="ML")
+starch_BSR_fixed_mod<-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=starch,na.action=na.omit)
+anova(starch_BSR_mixed_mod,starch_BSR_fixed_mod)
+```
+
+This output indicates that the AIC score for the mixed model is ~2 points higher, mixed model does not perform better.
+
+```{r starch_BSR_fixed_mod}
+summary(starch_BSR_fixed_mod)
+```
+
+
 # Background Respiration Models
 
 ## Step-wise AIC Model Selection for Background Respiration
 ```{r read_back_resp_data, include=FALSE}
 data<-read.csv("Resp_Data_for_Spec_Resp.csv")
+data$Tree_ID<-substring(data$core_ID,1,5)
 ```
 
 ```{r back_resp_variables}
@@ -395,17 +663,29 @@ HSD.test(amod, "tx", group=TRUE, console=TRUE)
 ```
 
 ```{r back_resp_TukeyHSD_Exclusion}
-
 amod<-aov(data$Mean_Respiration~as.factor(data$Exclusion))
 TukeyHSD(amod)
 ```
 
+### Compare Nested Model to Fixed Effects Model
+```{r back_resp_nested}
+resp_mixed_mod<-lme(Mean_Respiration~Exclusion+Tree_species,random=~1|Tree_ID,data=data,na.action=na.omit,method="ML")
+resp_fixed_mod<-lm(Mean_Respiration~Exclusion+Tree_species,data=data,na.action=na.omit)
+anova(resp_mixed_mod,resp_fixed_mod)
+```
+
+AIC output for fixed and mixed models practically identical; random effect does not improve model.
+
+```{r back_resp_fixed_mod}
+summary(resp_fixed_mod)
+```
 
 # Background PLFA Models
 
 ## Step-wise AIC Model Selection for Background PLFA
 ```{r read_back_PLFA_data, include=FALSE}
 data<-read.csv("Unlab_PLFA_for_Spec_Resp.csv")
+data$Tree_ID<-substring(data$Sample_Name,1,5)
 ```
 
 ```{r back_PLFA_variables}
