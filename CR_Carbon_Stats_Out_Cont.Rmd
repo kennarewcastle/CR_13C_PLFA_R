@@ -1,0 +1,158 @@
+---
+title: "Costa Rica Carbon Stats Output Cont."
+author: "Kenna Rewcastle"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(dplyr)
+library(MASS)
+library(car)
+library(agricolae)
+library(tidyr)
+library(reshape2)
+library(nlme)
+library(RLRsim)
+```
+
+```{r read_13C_PLFA_data, include=FALSE}
+  ## Read in data
+  data<-read.csv("FINAL_PLFA_with_metadata.csv")
+  data<-data[,2:15] # Gets rid of ID column
+  data<-filter(data,Microbial_Group!="standard")
+  data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
+  data$umol_FAME<-data$nmol_FAME_per_g_soil/1000
+  
+  ## Simplify the microbial groupings
+  data_trim<-data.frame("Sample_Name"=data[,1],"Tree"=data[,2],"Rhizosphere_Manipulation"=data[,3],"Substrate_Type"=data[,4],"Microbial_Group"=data[,14],"d13"=data[,9])
+  
+  data_wide<-dcast(data_trim,Sample_Name+Tree+Rhizosphere_Manipulation+Substrate_Type ~ Microbial_Group, value.var="d13", fun.aggregate=mean, na.rm=TRUE)
+  
+  is.nan.data.frame <- function(x)
+    do.call(cbind, lapply(x, is.nan))
+  data_wide[is.nan(data_wide)] <- NA
+  
+      ### Take mean of narrow groups to yield FUNGI, BACTERIA, ALL_MICROBE groups
+      for (i in 1:nrow(data_wide)) {
+        data_wide$BACTERIA[i]<-mean(c(data_wide$bacteria[i],data_wide$`gram+bacteria`[i],data_wide$`gram-bacteria`[i]),na.rm=TRUE)
+        data_wide$FUNGI[i]<-mean(c(data_wide$AMF[i],data_wide$fungi[i]),na.rm=TRUE)
+        data_wide$ALL_MICROBES[i]<-mean(c(data_wide$AMF[i],data_wide$bacteria[i],data_wide$fungi[i],data_wide$general[i],data_wide$`gram-bacteria`[i],data_wide$`gram+bacteria`[i],data_wide$protozoa[i]),na.rm=TRUE)
+      }
+
+  data_wide<-data_wide[,c(1,2,3,4,5,12,13,14)] # Trim down to broader groups
+  
+  data<-melt(data_wide,value.name="d13",id.vars=c("Sample_Name","Rhizosphere_Manipulation","Tree","Substrate_Type"))
+  names(data)[5]<-"Microbial_Group"
+  
+  ## Add a column for tree ID
+  data$Tree_ID<-substr(data$Sample_Name,1,5)
+  
+  ## Separate leaf and starch datasets
+  leaf_PLFA<-filter(data,Substrate_Type=="L")
+  starch_PLFA<-filter(data,Substrate_Type=="S")  
+```
+
+# Tukey's HSD Tests for Microbe Models -- LEAF 13C PLFA
+```{r leaf_microbe_dataframes, include=FALSE}
+leaf_AMF<-filter(leaf_PLFA,Microbial_Group=="AMF")
+leaf_fungi<-filter(leaf_PLFA,Microbial_Group=="FUNGI")
+leaf_bact<-filter(leaf_PLFA,Microbial_Group=="BACTERIA")
+leaf_allmicro<-filter(leaf_PLFA,Microbial_Group=="ALL_MICROBES")
+```
+
+## Leaf Substrate | AMF
+```{r leaf_AMF_HSD_ttest}
+AMF_leaf_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_AMF,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=leaf_AMF,alternative="two.sided")
+```
+
+## Leaf Substrate | Fungi
+```{r leaf_fungi_HSD_ttest}
+fungi_leaf_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_fungi,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=leaf_fungi,alternative="two.sided")
+```
+
+## Leaf Substrate | Bacteria
+```{r leaf_bact_HSD_ttest}
+bact_leaf_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_bact,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=leaf_bact,alternative="two.sided")
+```
+
+## Leaf Substrate | All Microbes
+```{r leaf_allmicro_HSD_ttest}
+allmicro_leaf_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_allmicro,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=leaf_allmicro,alternative="two.sided")
+```
+
+# Tukey's HSD Tests for Microbe Models -- STARCH 13C PLFA
+```{r starch_microbe_dataframes, include=FALSE}
+starch_AMF<-filter(starch_PLFA,Microbial_Group=="AMF")
+starch_fungi<-filter(starch_PLFA,Microbial_Group=="FUNGI")
+starch_bact<-filter(starch_PLFA,Microbial_Group=="BACTERIA")
+starch_allmicro<-filter(starch_PLFA,Microbial_Group=="ALL_MICROBES")
+```
+
+## Starch Substrate | AMF
+```{r starch_AMF_HSD_ttest}
+AMF_starch_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_AMF,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=starch_AMF,alternative="two.sided")
+```
+
+## Starch Substrate | Fungi
+```{r starch_fungi_HSD_ttest}
+fungi_starch_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_fungi,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=starch_fungi,alternative="two.sided")
+```
+
+## Starch Substrate | Bacteria
+```{r starch_bact_HSD_ttest}
+bact_starch_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_bact,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=starch_bact,alternative="two.sided")
+```
+
+## Starch Substrate | All Microbes
+```{r starch_allmicro_HSD_ttest}
+allmicro_starch_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_allmicro,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(d13~Tree,data=starch_allmicro,alternative="two.sided")
+```
+
+# Tukey's HSD Tests for Microbe Models -- BACKGROUND PLFA
+```{r read_back_PLFA_data, include=FALSE}
+data<-read.csv("Unlab_PLFA_for_Spec_Resp.csv")
+data$Tree_ID<-substring(data$Sample_Name,1,5)
+data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
+
+AMF_PLFA<-filter(data,Microbial_Group=="AMF")
+fungi_PLFA<-filter(data,Microbial_Group=="FUNGI")
+bact_PLFA<-filter(data,Microbial_Group=="BACTERIA")
+allmicro_PLFA<-filter(data,Microbial_Group=="ALL_MICROBES")
+```
+
+## Background PLFA | AMF
+```{r back_AMF_HSD_ttest}
+back_AMF_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=AMF_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=AMF_PLFA,alternative="two.sided")
+```
+
+## Background PLFA | Fungi
+```{r back_fungi_HSD_ttest}
+back_fungi_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=fungi_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=fungi_PLFA,alternative="two.sided")
+```
+
+## Background PLFA | Bacteria
+```{r back_bact_HSD_ttest}
+back_bact_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=bact_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=bact_PLFA,alternative="two.sided")
+```
+
+## Background PLFA | All Microbes
+```{r back_allmicro_HSD_ttest}
+back_allmicro_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=allmicro_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=allmicro_PLFA,alternative="two.sided")
+```

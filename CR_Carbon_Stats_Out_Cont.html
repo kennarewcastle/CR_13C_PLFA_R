@@ -11,8 +11,9 @@
 
 <meta name="author" content="Kenna Rewcastle" />
 
+<meta name="date" content="2022-08-01" />
 
-<title>Costa Rica Carbon Stats Output</title>
+<title>Costa Rica Carbon Stats Output Cont.</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -362,1742 +363,418 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Costa Rica Carbon Stats Output</h1>
+<h1 class="title toc-ignore">Costa Rica Carbon Stats Output Cont.</h1>
 <h4 class="author">Kenna Rewcastle</h4>
-<h4 class="date">4/11/2022</h4>
+<h4 class="date">2022-08-01</h4>
 
 </div>
 
 
-<div id="delta-13c-co2-models" class="section level1">
-<h1>Delta 13C-CO2 Models</h1>
-<div id="leaf-substrate-step-wise-aic-model-selection-for-13c-co2" class="section level2">
-<h2><strong>Leaf Substrate</strong>: Step-wise AIC Model Selection for
-13C-CO2</h2>
-<pre class="r"><code>leaf_CO2_AIC&lt;-stepAIC(object=aov(lm(leaf_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=274.99
-## leaf_d13 ~ Exclusion + Tree_Species + Exclusion * Tree_Species
-## 
-##                          Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                                11501 274.99
-## - Exclusion:Tree_Species  2      1889 13390 278.29</code></pre>
-<pre class="r"><code>leaf_CO2_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_d13 ~ Exclusion + Tree_Species + Exclusion * Tree_Species
-## 
-## Final Model:
-## leaf_d13 ~ Exclusion + Tree_Species + Exclusion * Tree_Species
-## 
-## 
-##   Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                         42   11500.69 274.9902</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion, tree
-species, and exclusion x tree species</strong> should all be included in
-model explaining <strong>13C-CO2 efflux</strong> from cores labeled with
-<strong>leaf substrate</strong>.</p>
-<div id="type-ii-anova-results" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leafMod&lt;-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2,na.action=na.omit)
-leaf_CO2_fixed&lt;-Anova(leafMod,type=&quot;II&quot;) </code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_CO2_mixed_mod&lt;-lme(d13_d9~Exclusion*Tree_species,random=~1|Tree_ID,data=leaf_CO2,na.action=na.omit,method=&quot;ML&quot;)
-leaf_CO2_fixed_mod&lt;-lm(d13_d9~Exclusion*Tree_species,data=leaf_CO2,na.action=na.omit)
-anova(leaf_CO2_mixed_mod,leaf_CO2_fixed_mod)</code></pre>
-<pre><code>##                    Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-## leaf_CO2_mixed_mod     1  8 411.7747 426.7443 -197.8873                        
-## leaf_CO2_fixed_mod     2  7 413.2083 426.3067 -199.6041 1 vs 2 3.433594  0.0639</code></pre>
-<p>This output indicates that the AIC score for the mixed model is ~1.5
-points lower than the fixed effects model, while BIC is virtually
-identical, and the p-value is 0.0639.TL;DR: Unclear whether tree ID
-random intercept is necessary. Evaluate other models first.</p>
-<pre class="r"><code>summary(leaf_CO2_mixed_mod)</code></pre>
-<pre><code>## Linear mixed-effects model fit by maximum likelihood
-##   Data: leaf_CO2 
-##        AIC      BIC    logLik
-##   411.7747 426.7443 -197.8873
-## 
-## Random effects:
-##  Formula: ~1 | Tree_ID
-##         (Intercept) Residual
-## StdDev:    8.212822 13.12048
-## 
-## Fixed effects:  d13_d9 ~ Exclusion * Tree_species 
-##                                  Value Std.Error DF   t-value p-value
-## (Intercept)                   45.76750  5.850488 28  7.822851  0.0000
-## Exclusion2                   -40.90125  7.013193 28 -5.832044  0.0000
-## Exclusion3                   -50.63250  7.013193 28 -7.219608  0.0000
-## Tree_speciesPenta            -32.42125  8.273840 14 -3.918525  0.0015
-## Exclusion2:Tree_speciesPenta  22.82375  9.918152 28  2.301210  0.0290
-## Exclusion3:Tree_speciesPenta  29.23500  9.918152 28  2.947626  0.0064
-##  Correlation: 
-##                              (Intr) Excls2 Excls3 Tr_spP E2:T_P
-## Exclusion2                   -0.599                            
-## Exclusion3                   -0.599  0.500                     
-## Tree_speciesPenta            -0.707  0.424  0.424              
-## Exclusion2:Tree_speciesPenta  0.424 -0.707 -0.354 -0.599       
-## Exclusion3:Tree_speciesPenta  0.424 -0.354 -0.707 -0.599  0.500
-## 
-## Standardized Within-Group Residuals:
-##        Min         Q1        Med         Q3        Max 
-## -2.1830610 -0.4176049 -0.1108354  0.2360599  3.8668191 
-## 
-## Number of Observations: 48
-## Number of Groups: 16</code></pre>
-<pre class="r"><code>summary(leaf_CO2_fixed_mod)</code></pre>
+<div id="tukeys-hsd-tests-for-microbe-models-leaf-13c-plfa" class="section level1">
+<h1>Tukey’s HSD Tests for Microbe Models – LEAF 13C PLFA</h1>
+<div id="leaf-substrate-amf" class="section level2">
+<h2>Leaf Substrate | AMF</h2>
+<pre class="r"><code>AMF_leaf_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_AMF,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = d13_d9 ~ Exclusion * Tree_species, data = leaf_CO2, 
-##     na.action = na.omit)
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = leaf_AMF, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -39.427  -6.385  -1.892   3.546  62.814 
+## HSD Test for d13 
 ## 
-## Coefficients:
-##                              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                    45.768      5.850   7.823 9.91e-10 ***
-## Exclusion2                    -40.901      8.274  -4.943 1.28e-05 ***
-## Exclusion3                    -50.633      8.274  -6.120 2.67e-07 ***
-## Tree_speciesPenta             -32.421      8.274  -3.919 0.000322 ***
-## Exclusion2:Tree_speciesPenta   22.824     11.701   1.951 0.057800 .  
-## Exclusion3:Tree_speciesPenta   29.235     11.701   2.499 0.016470 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## Mean Square Error:  1676.533 
 ## 
-## Residual standard error: 16.55 on 42 degrees of freedom
-## Multiple R-squared:  0.5877, Adjusted R-squared:  0.5387 
-## F-statistic: 11.98 on 5 and 42 DF,  p-value: 3.091e-07</code></pre>
-</div>
-<div id="tukeys-hsd-results" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code> tx&lt;-with(leaf_CO2, interaction(Exclusion, Tree_species))
-  amod&lt;-aov(d13_d9 ~ tx, data=leaf_CO2)
-  leaf_CO2_Tukey&lt;-HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
-<pre><code>## 
-## Study: amod ~ &quot;tx&quot;
+## Rhizosphere_Manipulation,  means
 ## 
-## HSD Test for d13_d9 
+##         d13      std  r     Min     Max
+## 1  25.25600 30.49289  8  -6.584  76.551
+## 2  29.50808 61.91371 13  -9.350 226.540
+## 3 -12.09336  9.36709 14 -28.845   4.614
 ## 
-## Mean Square Error:  273.8261 
-## 
-## tx,  means
-## 
-##           d13_d9       std r    Min   Max
-## 1.Goeth 45.76750 26.275379 8   6.34 92.36
-## 1.Penta 13.34625 26.334055 8  -4.04 76.16
-## 2.Goeth  4.86625 13.149044 8  -7.14 34.39
-## 2.Penta -4.73125  3.986303 8 -12.10 -0.54
-## 3.Goeth -4.86500  6.871733 8 -13.31  6.44
-## 3.Penta -8.05125  4.803096 8 -13.67  0.05
-## 
-## Alpha: 0.05 ; DF Error: 42 
-## Critical Value of Studentized Range: 4.221779 
-## 
-## Minimun Significant Difference: 24.69949 
-## 
-## Treatments with the same letter are not significantly different.
-## 
-##           d13_d9 groups
-## 1.Goeth 45.76750      a
-## 1.Penta 13.34625      b
-## 2.Goeth  4.86625      b
-## 2.Penta -4.73125      b
-## 3.Goeth -4.86500      b
-## 3.Penta -8.05125      b</code></pre>
-</div>
-</div>
-<div id="starch-substrate-step-wise-aic-model-selection-for-13c-co2" class="section level2">
-<h2><strong>Starch Substrate</strong>: Step-wise AIC Model Selection for
-13C-CO2</h2>
-<pre class="r"><code>starch_CO2_AIC&lt;-stepAIC(object=aov(lm(starch_d13~Exclusion+Tree_Species+Exclusion*Tree_Species)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=380.17
-## starch_d13 ~ Exclusion + Tree_Species + Exclusion * Tree_Species
-## 
-##                          Df Sum of Sq    RSS    AIC
-## - Exclusion:Tree_Species  2      2155 139783 376.88
-## &lt;none&gt;                                137628 380.17
-## 
-## Step:  AIC=376.88
-## starch_d13 ~ Exclusion + Tree_Species
-## 
-##                          Df Sum of Sq    RSS    AIC
-## - Tree_Species            1      4116 143898 376.22
-## &lt;none&gt;                                139783 376.88
-## + Exclusion:Tree_Species  2      2155 137628 380.17
-## - Exclusion               2     58244 198027 388.91
-## 
-## Step:  AIC=376.22
-## starch_d13 ~ Exclusion
-## 
-##                Df Sum of Sq    RSS    AIC
-## &lt;none&gt;                      143898 376.22
-## + Tree_Species  1      4116 139783 376.88
-## - Exclusion     2     57359 201257 387.65</code></pre>
-<pre class="r"><code>starch_CO2_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_d13 ~ Exclusion + Tree_Species + Exclusion * Tree_Species
-## 
-## Final Model:
-## starch_d13 ~ Exclusion
-## 
-## 
-##                       Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                                             40   137627.7 380.1687
-## 2 - Exclusion:Tree_Species  2 2154.983        42   139782.7 376.8833
-## 3           - Tree_Species  1 4115.515        43   143898.2 376.2181</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_d13~Exclusion))))</code></pre>
-<pre><code>## [1]   3.0000 376.2181</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_d13~Exclusion+Tree_Species))))</code></pre>
-<pre><code>## [1]   4.0000 376.8833</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_d13~Exclusion*Tree_Species))))</code></pre>
-<pre><code>## [1]   6.0000 380.1687</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining <strong>13C-CO2
-efflux</strong> from cores labeled with <strong>starch
-substrate</strong>. Model with only rhizosphere exclusion and model with
-rhizosphere exclusion and tree species are separated by only 0.7 AIC
-points, so both models are included in “best family” of models. Will
-choose to include tree species as a parameter to match structure of leaf
-models.</p>
-<div id="type-ii-anova-results-1" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starchMod&lt;-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2)
-  Anova(starchMod,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13_d2
-##              Sum Sq Df F value    Pr(&gt;F)    
-## Exclusion     58244  2  8.7502 0.0006658 ***
-## Tree_species   4116  1  1.2366 0.2724573    
-## Residuals    139783 42                      
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-1" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_CO2_mixed_mod&lt;-lme(d13_d2~Exclusion+Tree_species,random=~1|Tree_ID,data=starch_CO2,na.action=na.omit,method=&quot;ML&quot;)
-starch_CO2_fixed_mod&lt;-lm(d13_d2~Exclusion+Tree_species,data=starch_CO2,na.action=na.omit)
-anova(starch_CO2_mixed_mod,starch_CO2_fixed_mod)</code></pre>
-<pre><code>##                      Model df      AIC      BIC    logLik   Test  L.Ratio
-## starch_CO2_mixed_mod     1  6 506.7447 517.7165 -247.3724                
-## starch_CO2_fixed_mod     2  5 509.4257 518.5689 -249.7128 1 vs 2 4.680995
-##                      p-value
-## starch_CO2_mixed_mod        
-## starch_CO2_fixed_mod  0.0305</code></pre>
-<p>This output indicates that the AIC score for the mixed model is ~2.6
-points lower than the fixed effects model, while BIC scores are only 1
-point apart, and the p-value is 0.0305.TL;DR: Slightly more decisive
-that the mixed effects model is best.</p>
-<pre class="r"><code>summary(starch_CO2_mixed_mod)</code></pre>
-<pre><code>## Linear mixed-effects model fit by maximum likelihood
-##   Data: starch_CO2 
-##        AIC      BIC    logLik
-##   506.7447 517.7165 -247.3723
-## 
-## Random effects:
-##  Formula: ~1 | Tree_ID
-##         (Intercept) Residual
-## StdDev:    32.01515  44.7909
-## 
-## Fixed effects:  d13_d2 ~ Exclusion + Tree_species 
-##                       Value Std.Error DF   t-value p-value
-## (Intercept)        84.96633  18.06177 28  4.704207  0.0001
-## Exclusion2        -75.37750  16.57292 28 -4.548232  0.0001
-## Exclusion3        -76.51602  17.31562 28 -4.418901  0.0001
-## Tree_speciesPenta  20.64985  21.79313 14  0.947539  0.3594
-##  Correlation: 
-##                   (Intr) Excls2 Excls3
-## Exclusion2        -0.459              
-## Exclusion3        -0.412  0.479       
-## Tree_speciesPenta -0.603  0.000 -0.044
-## 
-## Standardized Within-Group Residuals:
-##        Min         Q1        Med         Q3        Max 
-## -1.6580922 -0.3459819 -0.1298098  0.2530300  2.6693003 
-## 
-## Number of Observations: 46
-## Number of Groups: 16</code></pre>
-<pre class="r"><code>summary(starch_CO2_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13_d2 ~ Exclusion + Tree_species, data = starch_CO2, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -104.153  -24.048   -1.365   22.328  168.477 
-## 
-## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)          85.80      16.76   5.120  7.2e-06 ***
-## Exclusion2          -75.38      20.40  -3.696 0.000629 ***
-## Exclusion3          -74.01      21.15  -3.499 0.001117 ** 
-## Tree_speciesPenta    18.98      17.06   1.112 0.272457    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 57.69 on 42 degrees of freedom
-##   (2 observations deleted due to missingness)
-## Multiple R-squared:  0.3055, Adjusted R-squared:  0.2558 
-## F-statistic: 6.157 on 3 and 42 DF,  p-value: 0.001447</code></pre>
-</div>
-<div id="tukeys-hsd-results-1" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code>  tx&lt;-with(starch_CO2, interaction(Exclusion, Tree_species))
-  amod&lt;-aov(d13_d2 ~ tx, data=starch_CO2)
-  HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
-<pre><code>## 
-## Study: amod ~ &quot;tx&quot;
-## 
-## HSD Test for d13_d2 
-## 
-## Mean Square Error:  3440.693 
-## 
-## tx,  means
-## 
-##            d13_d2       std r    Min    Max
-## 1.Goeth  78.26875 107.63965 8 -18.35 254.28
-## 1.Penta 112.31375  73.92844 8  13.13 221.87
-## 2.Goeth  19.15750  25.47065 8 -10.31  55.49
-## 2.Penta  20.67000  21.10000 8 -10.65  49.19
-## 3.Goeth  10.20000  23.65972 6 -12.34  39.88
-## 3.Penta  31.97125  33.40043 8 -12.48  81.06
-## 
-## Alpha: 0.05 ; DF Error: 40 
-## Critical Value of Studentized Range: 4.231644 
+## Alpha: 0.05 ; DF Error: 32 
+## Critical Value of Studentized Range: 3.475248 
 ## 
 ## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
 ## Treatments with the same letter are not significantly different.
 ## 
-##            d13_d2 groups
-## 1.Penta 112.31375      a
-## 1.Goeth  78.26875     ab
-## 3.Penta  31.97125     ab
-## 2.Penta  20.67000      b
-## 2.Goeth  19.15750      b
-## 3.Goeth  10.20000      b</code></pre>
-</div>
-</div>
-</div>
-<div id="delta-13c-plfa-models" class="section level1">
-<h1>Delta 13C-PLFA Models</h1>
-<div id="leafamf-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Leaf/AMF</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>leaf_AMF_AIC&lt;-stepAIC(object=aov(lm(leaf_AMF_13C~Exclusion_AMF*Tree_AMF)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=265.59
-## leaf_AMF_13C ~ Exclusion_AMF * Tree_AMF
-## 
-##                          Df Sum of Sq   RSS    AIC
-## - Exclusion_AMF:Tree_AMF  2    2977.8 52043 263.66
-## &lt;none&gt;                                49065 265.59
-## 
-## Step:  AIC=263.66
-## leaf_AMF_13C ~ Exclusion_AMF + Tree_AMF
-## 
-##                          Df Sum of Sq   RSS    AIC
-## - Tree_AMF                1    1606.4 53649 262.72
-## &lt;none&gt;                                52043 263.66
-## + Exclusion_AMF:Tree_AMF  2    2977.8 49065 265.59
-## - Exclusion_AMF           2   14025.7 66068 268.01
-## 
-## Step:  AIC=262.72
-## leaf_AMF_13C ~ Exclusion_AMF
-## 
-##                 Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                       53649 262.72
-## + Tree_AMF       1    1606.4 52043 263.66
-## - Exclusion_AMF  2   13517.2 67166 266.58</code></pre>
-<pre class="r"><code>leaf_AMF_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_AMF_13C ~ Exclusion_AMF * Tree_AMF
-## 
-## Final Model:
-## leaf_AMF_13C ~ Exclusion_AMF
-## 
-## 
-##                       Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                                             29   49064.81 265.5942
-## 2 - Exclusion_AMF:Tree_AMF  2 2977.799        31   52042.61 263.6564
-## 3               - Tree_AMF  1 1606.442        32   53649.05 262.7205</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_AMF_13C~Exclusion_AMF+Tree_AMF))))</code></pre>
-<pre><code>## [1]   4.0000 263.6564</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_AMF_13C~Exclusion_AMF))))</code></pre>
-<pre><code>## [1]   3.0000 262.7205</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>AMF</strong> microbes inhabiting
-cores labeled with <strong>leaf substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-2" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leafMod_AMF&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_AMF)
-Anova(leafMod_AMF,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                          Sum Sq Df F value  Pr(&gt;F)  
-## Rhizosphere_Manipulation  14026  2  4.1773 0.02476 *
-## Tree                       1606  1  0.9569 0.33554  
-## Residuals                 52043 31                  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-2" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_AMF_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_AMF,na.action=na.omit,method=&quot;ML&quot;)
-leaf_AMF_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_AMF,na.action=na.omit)
-anova(leaf_AMF_mixed_mod,leaf_AMF_fixed_mod)</code></pre>
-<pre><code>##                    Model df      AIC      BIC    logLik   Test     L.Ratio
-## leaf_AMF_mixed_mod     1  6 366.9782 376.3103 -177.4891                   
-## leaf_AMF_fixed_mod     2  5 364.9821 372.7589 -177.4911 1 vs 2 0.003938534
-##                    p-value
-## leaf_AMF_mixed_mod        
-## leaf_AMF_fixed_mod    0.95</code></pre>
-<p>Fixed model has lower AIC score than fixed model, with p-value of
-0.95. Fixed model is clearly the superior model.</p>
-<pre class="r"><code>summary(leaf_AMF_fixed_mod)</code></pre>
+##         d13 groups
+## 2  29.50808      a
+## 1  25.25600     ab
+## 3 -12.09336      b</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=leaf_AMF,alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = leaf_AMF, 
-##     na.action = na.omit)
+##  Welch Two Sample t-test
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -46.246 -17.757  -5.478  11.976 189.644 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)                 30.401     15.411   1.973   0.0575 .
-## Rhizosphere_Manipulation2    6.495     18.554   0.350   0.7287  
-## Rhizosphere_Manipulation3  -36.614     18.175  -2.015   0.0527 .
-## TreeP                      -13.720     14.025  -0.978   0.3355  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 40.97 on 31 degrees of freedom
-##   (1 observation deleted due to missingness)
-## Multiple R-squared:  0.2252, Adjusted R-squared:  0.1502 
-## F-statistic: 3.003 on 3 and 31 DF,  p-value: 0.04537</code></pre>
+## data:  d13 by Tree
+## t = 0.79606, df = 22.138, p-value = 0.4345
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -18.03670  40.52296
+## sample estimates:
+## mean in group G mean in group P 
+##       17.035316        5.792187</code></pre>
 </div>
-</div>
-<div id="leaffungi-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Leaf/Fungi</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>leaf_fungi_AIC&lt;-stepAIC(object=aov(lm(leaf_fungi_13C~Exclusion_fungi*Tree_fungi)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=267.83
-## leaf_fungi_13C ~ Exclusion_fungi * Tree_fungi
-## 
-##                              Df Sum of Sq   RSS    AIC
-## - Exclusion_fungi:Tree_fungi  2    3503.2 47415 266.59
-## &lt;none&gt;                                    43912 267.83
-## 
-## Step:  AIC=266.59
-## leaf_fungi_13C ~ Exclusion_fungi + Tree_fungi
-## 
-##                              Df Sum of Sq   RSS    AIC
-## - Tree_fungi                  1    1289.0 48704 265.56
-## &lt;none&gt;                                    47415 266.59
-## + Exclusion_fungi:Tree_fungi  2    3503.2 43912 267.83
-## - Exclusion_fungi             2   17711.5 65127 274.02
-## 
-## Step:  AIC=265.56
-## leaf_fungi_13C ~ Exclusion_fungi
-## 
-##                   Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                         48704 265.56
-## + Tree_fungi       1      1289 47415 266.59
-## - Exclusion_fungi  2     17341 66045 272.52</code></pre>
-<pre class="r"><code>leaf_fungi_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_fungi_13C ~ Exclusion_fungi * Tree_fungi
-## 
-## Final Model:
-## leaf_fungi_13C ~ Exclusion_fungi
-## 
-## 
-##                           Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                                                 30   43912.02 267.8313
-## 2 - Exclusion_fungi:Tree_fungi  2 3503.228        32   47415.25 266.5945
-## 3                 - Tree_fungi  1 1288.961        33   48704.21 265.5601</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_fungi_13C~Exclusion_fungi+Tree_fungi))))</code></pre>
-<pre><code>## [1]   4.0000 266.5945</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_fungi_13C~Exclusion_fungi))))</code></pre>
-<pre><code>## [1]   3.0000 265.5601</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>fungi</strong> microbes inhabiting
-cores labeled with <strong>leaf substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-3" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leafMod_fungi&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_fungi)
-Anova(leafMod_fungi,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                          Sum Sq Df F value   Pr(&gt;F)   
-## Rhizosphere_Manipulation  17712  2  5.9767 0.006231 **
-## Tree                       1289  1  0.8699 0.357966   
-## Residuals                 47415 32                    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-3" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_fungi_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_fungi,na.action=na.omit,method=&quot;ML&quot;)
-leaf_fungi_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_fungi,na.action=na.omit)
-anova(leaf_fungi_mixed_mod,leaf_fungi_fixed_mod)</code></pre>
-<pre><code>##                      Model df      AIC      BIC    logLik   Test     L.Ratio
-## leaf_fungi_mixed_mod     1  6 372.7567 382.2578 -180.3784                   
-## leaf_fungi_fixed_mod     2  5 370.7581 378.6757 -180.3790 1 vs 2 0.001364586
-##                      p-value
-## leaf_fungi_mixed_mod        
-## leaf_fungi_fixed_mod  0.9705</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.971, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(leaf_fungi_fixed_mod)</code></pre>
+<div id="leaf-substrate-fungi" class="section level2">
+<h2>Leaf Substrate | Fungi</h2>
+<pre class="r"><code>fungi_leaf_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_fungi,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = leaf_fungi, 
-##     na.action = na.omit)
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = leaf_fungi, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -52.105 -17.849  -5.284  10.075 153.901 
+## HSD Test for d13 
 ## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)   
-## (Intercept)                 43.889     14.460   3.035  0.00475 **
-## Rhizosphere_Manipulation2   -9.243     17.251  -0.536  0.59579   
-## Rhizosphere_Manipulation3  -50.867     17.075  -2.979  0.00548 **
-## TreeP                      -12.150     13.026  -0.933  0.35797   
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## Mean Square Error:  1475.885 
 ## 
-## Residual standard error: 38.49 on 32 degrees of freedom
-## Multiple R-squared:  0.2821, Adjusted R-squared:  0.2148 
-## F-statistic: 4.191 on 3 and 32 DF,  p-value: 0.01308</code></pre>
-</div>
-</div>
-<div id="leafbacteria-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Leaf/Bacteria</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>leaf_bact_AIC&lt;-stepAIC(object=aov(lm(leaf_bact_13C~Exclusion_bact*Tree_bact)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=230.45
-## leaf_bact_13C ~ Exclusion_bact * Tree_bact
+## Rhizosphere_Manipulation,  means
 ## 
-##                            Df Sum of Sq   RSS    AIC
-## - Exclusion_bact:Tree_bact  2    1750.8 17296 230.29
-## &lt;none&gt;                                  15545 230.45
+##         d13      std  r      Min      Max
+## 1  39.33306 45.95610  8  -5.3355 123.6773
+## 2  27.70311 49.84860 14 -17.4595 188.5462
+## 3 -12.18527 11.15275 14 -30.4810   8.5665
 ## 
-## Step:  AIC=230.29
-## leaf_bact_13C ~ Exclusion_bact + Tree_bact
-## 
-##                            Df Sum of Sq   RSS    AIC
-## - Tree_bact                 1     189.5 17485 228.68
-## &lt;none&gt;                                  17296 230.29
-## + Exclusion_bact:Tree_bact  2    1750.8 15545 230.45
-## - Exclusion_bact            2   10531.1 27827 243.41
-## 
-## Step:  AIC=228.68
-## leaf_bact_13C ~ Exclusion_bact
-## 
-##                  Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                        17485 228.68
-## + Tree_bact       1     189.5 17296 230.29
-## - Exclusion_bact  2   10474.5 27960 241.58</code></pre>
-<pre class="r"><code>leaf_bact_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_bact_13C ~ Exclusion_bact * Tree_bact
-## 
-## Final Model:
-## leaf_bact_13C ~ Exclusion_bact
-## 
-## 
-##                         Step Df  Deviance Resid. Df Resid. Dev      AIC
-## 1                                                30   15545.00 230.4471
-## 2 - Exclusion_bact:Tree_bact  2 1750.8243        32   17295.83 230.2893
-## 3                - Tree_bact  1  189.4859        33   17485.31 228.6815</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_bact_13C~Exclusion_bact+Tree_bact))))</code></pre>
-<pre><code>## [1]   4.0000 230.2893</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_bact_13C~Exclusion_bact))))</code></pre>
-<pre><code>## [1]   3.0000 228.6815</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>bacteria</strong> microbes
-inhabiting cores labeled with <strong>leaf substrate</strong>.
-Technically, best model includes on rhizosphere exclusion, but model
-that also includes tree species is included in the best family of
-models.</p>
-<div id="type-ii-anova-results-4" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leafMod_bact&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_bact)
-Anova(leafMod_bact,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                           Sum Sq Df F value    Pr(&gt;F)    
-## Rhizosphere_Manipulation 10531.1  2  9.7421 0.0004962 ***
-## Tree                       189.5  1  0.3506 0.5579465    
-## Residuals                17295.8 32                      
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-4" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_bact_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_bact,na.action=na.omit,method=&quot;ML&quot;)
-leaf_bact_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_bact,na.action=na.omit)
-anova(leaf_bact_mixed_mod,leaf_bact_fixed_mod)</code></pre>
-<pre><code>##                     Model df      AIC      BIC    logLik   Test   L.Ratio
-## leaf_bact_mixed_mod     1  6 336.0970 345.5981 -162.0485                 
-## leaf_bact_fixed_mod     2  5 334.4528 342.3704 -162.2264 1 vs 2 0.3558378
-##                     p-value
-## leaf_bact_mixed_mod        
-## leaf_bact_fixed_mod  0.5508</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.551, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(leaf_bact_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = leaf_bact, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -35.634  -9.957  -5.260   6.947  76.065 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                 34.087      8.733   3.903 0.000459 ***
-## Rhizosphere_Manipulation2  -13.258     10.419  -1.273 0.212361    
-## Rhizosphere_Manipulation3  -42.008     10.312  -4.074 0.000285 ***
-## TreeP                       -4.658      7.867  -0.592 0.557946    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 23.25 on 32 degrees of freedom
-## Multiple R-squared:  0.3814, Adjusted R-squared:  0.3234 
-## F-statistic: 6.577 on 3 and 32 DF,  p-value: 0.001371</code></pre>
-</div>
-</div>
-<div id="leafall-microbes-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Leaf/All Microbes</strong>: Step-wise AIC Model Selection
-for 13C-PLFA</h2>
-<pre class="r"><code>leaf_allmicro_AIC&lt;-stepAIC(object=aov(lm(leaf_allmicro_13C~Exclusion_allmicro*Tree_allmicro)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=237.01
-## leaf_allmicro_13C ~ Exclusion_allmicro * Tree_allmicro
-## 
-##                                    Df Sum of Sq   RSS    AIC
-## - Exclusion_allmicro:Tree_allmicro  2    1641.4 20297 236.05
-## &lt;none&gt;                                          18655 237.01
-## 
-## Step:  AIC=236.05
-## leaf_allmicro_13C ~ Exclusion_allmicro + Tree_allmicro
-## 
-##                                    Df Sum of Sq   RSS    AIC
-## - Tree_allmicro                     1     259.5 20556 234.51
-## &lt;none&gt;                                          20297 236.05
-## + Exclusion_allmicro:Tree_allmicro  2    1641.4 18655 237.01
-## - Exclusion_allmicro                2   13752.9 34050 250.67
-## 
-## Step:  AIC=234.51
-## leaf_allmicro_13C ~ Exclusion_allmicro
-## 
-##                      Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                            20556 234.51
-## + Tree_allmicro       1     259.5 20297 236.05
-## - Exclusion_allmicro  2   13617.6 34174 248.81</code></pre>
-<pre class="r"><code>leaf_allmicro_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_allmicro_13C ~ Exclusion_allmicro * Tree_allmicro
-## 
-## Final Model:
-## leaf_allmicro_13C ~ Exclusion_allmicro
-## 
-## 
-##                                 Step Df  Deviance Resid. Df Resid. Dev      AIC
-## 1                                                        30   18655.28 237.0132
-## 2 - Exclusion_allmicro:Tree_allmicro  2 1641.4349        32   20296.72 236.0490
-## 3                    - Tree_allmicro  1  259.4607        33   20556.18 234.5063</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_allmicro_13C~Exclusion_allmicro+Tree_allmicro))))</code></pre>
-<pre><code>## [1]   4.000 236.049</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_allmicro_13C~Exclusion_allmicro))))</code></pre>
-<pre><code>## [1]   3.0000 234.5063</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>all microbes</strong> inhabiting
-cores labeled with <strong>leaf substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-5" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leafMod_allmicro&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_allmicro)
-Anova(leafMod_allmicro,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                           Sum Sq Df F value    Pr(&gt;F)    
-## Rhizosphere_Manipulation 13752.9  2 10.8414 0.0002541 ***
-## Tree                       259.5  1  0.4091 0.5269955    
-## Residuals                20296.7 32                      
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-5" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_allmicro_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=leaf_allmicro,na.action=na.omit,method=&quot;ML&quot;)
-leaf_allmicro_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=leaf_allmicro,na.action=na.omit)
-anova(leaf_allmicro_mixed_mod,leaf_allmicro_fixed_mod)</code></pre>
-<pre><code>##                         Model df      AIC      BIC    logLik   Test   L.Ratio
-## leaf_allmicro_mixed_mod     1  6 342.0518 351.5529 -165.0259                 
-## leaf_allmicro_fixed_mod     2  5 340.2126 348.1302 -165.1063 1 vs 2 0.1608048
-##                         p-value
-## leaf_allmicro_mixed_mod        
-## leaf_allmicro_fixed_mod  0.6884</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.688, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(leaf_allmicro_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = leaf_allmicro, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -38.662 -12.812  -5.816   8.614  72.255 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                 36.753      9.460   3.885 0.000483 ***
-## Rhizosphere_Manipulation2   -8.658     11.287  -0.767 0.448671    
-## Rhizosphere_Manipulation3  -45.082     11.171  -4.036 0.000317 ***
-## TreeP                       -5.451      8.523  -0.640 0.526995    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 25.18 on 32 degrees of freedom
-## Multiple R-squared:  0.4061, Adjusted R-squared:  0.3504 
-## F-statistic: 7.293 on 3 and 32 DF,  p-value: 0.0007348</code></pre>
-</div>
-</div>
-<div id="starchamf-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Starch/AMF</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>starch_AMF_AIC&lt;-stepAIC(object=aov(lm(starch_AMF_13C~Exclusion_AMF*Tree_AMF)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=235.34
-## starch_AMF_13C ~ Exclusion_AMF * Tree_AMF
-## 
-##                          Df Sum of Sq    RSS    AIC
-## - Exclusion_AMF:Tree_AMF  2    340.64 9859.1 232.79
-## &lt;none&gt;                                9518.5 235.34
-## 
-## Step:  AIC=232.79
-## starch_AMF_13C ~ Exclusion_AMF + Tree_AMF
-## 
-##                          Df Sum of Sq     RSS    AIC
-## - Tree_AMF                1     42.88  9902.0 230.96
-## &lt;none&gt;                                 9859.1 232.79
-## - Exclusion_AMF           2   1218.28 11077.4 233.56
-## + Exclusion_AMF:Tree_AMF  2    340.64  9518.5 235.34
-## 
-## Step:  AIC=230.96
-## starch_AMF_13C ~ Exclusion_AMF
-## 
-##                 Df Sum of Sq     RSS    AIC
-## &lt;none&gt;                        9902.0 230.96
-## - Exclusion_AMF  2   1223.27 11125.3 231.74
-## + Tree_AMF       1     42.88  9859.1 232.79</code></pre>
-<pre class="r"><code>starch_AMF_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_AMF_13C ~ Exclusion_AMF * Tree_AMF
-## 
-## Final Model:
-## starch_AMF_13C ~ Exclusion_AMF
-## 
-## 
-##                       Step Df  Deviance Resid. Df Resid. Dev      AIC
-## 1                                              35   9518.496 235.3442
-## 2 - Exclusion_AMF:Tree_AMF  2 340.64074        37   9859.137 232.7859
-## 3               - Tree_AMF  1  42.87814        38   9902.015 230.9638</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_AMF_13C~Exclusion_AMF+Tree_AMF))))</code></pre>
-<pre><code>## [1]   4.0000 232.7859</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_AMF_13C~Exclusion_AMF))))</code></pre>
-<pre><code>## [1]   3.0000 230.9638</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>AMF</strong> microbes inhabiting
-cores labeled with <strong>starch substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-6" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starchMod_AMF&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_AMF)
-Anova(starchMod_AMF,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                          Sum Sq Df F value Pr(&gt;F)
-## Rhizosphere_Manipulation 1218.3  2  2.2860 0.1159
-## Tree                       42.9  1  0.1609 0.6906
-## Residuals                9859.1 37</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-6" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_AMF_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_AMF,na.action=na.omit,method=&quot;ML&quot;)
-starch_AMF_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_AMF,na.action=na.omit)
-anova(starch_AMF_mixed_mod,starch_AMF_fixed_mod)</code></pre>
-<pre><code>##                      Model df      AIC      BIC    logLik   Test    L.Ratio
-## starch_AMF_mixed_mod     1  6 353.0633 363.3447 -170.5316                  
-## starch_AMF_fixed_mod     2  5 351.1388 359.7067 -170.5694 1 vs 2 0.07555215
-##                      p-value
-## starch_AMF_mixed_mod        
-## starch_AMF_fixed_mod  0.7834</code></pre>
-<p>Fixed model has lower AIC score than fixed model, with p-value of
-0.783. Fixed model is clearly the superior model.</p>
-<pre class="r"><code>summary(starch_AMF_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = starch_AMF, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -56.534  -6.257  -2.697   6.647  44.159 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)                 -8.221      4.865  -1.690   0.0995 .
-## Rhizosphere_Manipulation2   -7.723      6.407  -1.205   0.2357  
-## Rhizosphere_Manipulation3  -12.867      6.069  -2.120   0.0408 *
-## TreeP                        2.089      5.207   0.401   0.6906  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 16.32 on 37 degrees of freedom
-## Multiple R-squared:  0.1138, Adjusted R-squared:  0.04196 
-## F-statistic: 1.584 on 3 and 37 DF,  p-value: 0.2097</code></pre>
-</div>
-</div>
-<div id="starchfungi-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Starch/Fungi</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>starch_fungi_AIC&lt;-stepAIC(object=aov(lm(starch_fungi_13C~Exclusion_fungi*Tree_fungi)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=227.75
-## starch_fungi_13C ~ Exclusion_fungi * Tree_fungi
-## 
-##                              Df Sum of Sq     RSS    AIC
-## &lt;none&gt;                                     7909.6 227.75
-## - Exclusion_fungi:Tree_fungi  2    2376.9 10286.5 234.53</code></pre>
-<pre class="r"><code>starch_fungi_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_fungi_13C ~ Exclusion_fungi * Tree_fungi
-## 
-## Final Model:
-## starch_fungi_13C ~ Exclusion_fungi * Tree_fungi
-## 
-## 
-##   Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                         35   7909.635 227.7529</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_fungi_13C~Exclusion_fungi+Tree_fungi))))</code></pre>
-<pre><code>## [1]   4.0000 234.5257</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_fungi_13C~Exclusion_fungi))))</code></pre>
-<pre><code>## [1]   3.0000 232.7577</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>fungi</strong> microbes inhabiting
-cores labeled with <strong>starch substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-7" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starchMod_fungi&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_fungi)
-Anova(starchMod_fungi,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                           Sum Sq Df F value Pr(&gt;F)
-## Rhizosphere_Manipulation  1128.3  2  2.0292 0.1458
-## Tree                        58.4  1  0.2099 0.6495
-## Residuals                10286.5 37</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-7" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_fungi_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_fungi,na.action=na.omit,method=&quot;ML&quot;)
-starch_fungi_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_fungi,na.action=na.omit)
-anova(starch_fungi_mixed_mod,starch_fungi_fixed_mod)</code></pre>
-<pre><code>##                        Model df      AIC      BIC    logLik   Test      L.Ratio
-## starch_fungi_mixed_mod     1  6 354.8787 365.1601 -171.4393                    
-## starch_fungi_fixed_mod     2  5 352.8787 361.4465 -171.4393 1 vs 2 4.892286e-08
-##                        p-value
-## starch_fungi_mixed_mod        
-## starch_fungi_fixed_mod  0.9998</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.9998, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(starch_fungi_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = starch_fungi, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -30.560  -7.048  -3.333   2.600  67.307 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)                 -8.695      4.969  -1.750   0.0885 .
-## Rhizosphere_Manipulation2    2.551      6.545   0.390   0.6989  
-## Rhizosphere_Manipulation3   -9.842      6.199  -1.588   0.1209  
-## TreeP                       -2.437      5.318  -0.458   0.6495  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 16.67 on 37 degrees of freedom
-## Multiple R-squared:  0.09943,    Adjusted R-squared:  0.02641 
-## F-statistic: 1.362 on 3 and 37 DF,  p-value: 0.2696</code></pre>
-</div>
-</div>
-<div id="starchbacteria-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Starch/Bacteria</strong>: Step-wise AIC Model Selection for
-13C-PLFA</h2>
-<pre class="r"><code>starch_bact_AIC&lt;-stepAIC(object=aov(lm(starch_bact_13C~Exclusion_bact*Tree_bact)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=345.97
-## starch_bact_13C ~ Exclusion_bact * Tree_bact
-## 
-##                            Df Sum of Sq    RSS    AIC
-## - Exclusion_bact:Tree_bact  2    877.23 142264 342.23
-## &lt;none&gt;                                  141387 345.97
-## 
-## Step:  AIC=342.23
-## starch_bact_13C ~ Exclusion_bact + Tree_bact
-## 
-##                            Df Sum of Sq    RSS    AIC
-## - Tree_bact                 1    2165.4 144430 340.85
-## - Exclusion_bact            2   13690.4 155954 341.99
-## &lt;none&gt;                                  142264 342.23
-## + Exclusion_bact:Tree_bact  2     877.2 141387 345.97
-## 
-## Step:  AIC=340.85
-## starch_bact_13C ~ Exclusion_bact
-## 
-##                  Df Sum of Sq    RSS    AIC
-## &lt;none&gt;                        144430 340.85
-## - Exclusion_bact  2   15169.9 159599 340.94
-## + Tree_bact       1    2165.4 142264 342.23</code></pre>
-<pre class="r"><code>starch_bact_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_bact_13C ~ Exclusion_bact * Tree_bact
-## 
-## Final Model:
-## starch_bact_13C ~ Exclusion_bact
-## 
-## 
-##                         Step Df  Deviance Resid. Df Resid. Dev      AIC
-## 1                                                35   141386.9 345.9730
-## 2 - Exclusion_bact:Tree_bact  2  877.2302        37   142264.1 342.2266
-## 3                - Tree_bact  1 2165.4370        38   144429.5 340.8460</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_bact_13C~Exclusion_bact+Tree_bact))))</code></pre>
-<pre><code>## [1]   4.0000 342.2266</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_bact_13C~Exclusion_bact))))</code></pre>
-<pre><code>## [1]   3.000 340.846</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>bacteria</strong> microbes
-inhabiting cores labeled with <strong>starch substrate</strong>.
-Technically, best model includes on rhizosphere exclusion, but model
-that also includes tree species is included in the best family of
-models.</p>
-<div id="type-ii-anova-results-8" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starchMod_bact&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_bact)
-Anova(starchMod_bact,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                          Sum Sq Df F value Pr(&gt;F)
-## Rhizosphere_Manipulation  13690  2  1.7803 0.1827
-## Tree                       2165  1  0.5632 0.4577
-## Residuals                142264 37</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-8" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_bact_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_bact,na.action=na.omit,method=&quot;ML&quot;)
-starch_bact_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_bact,na.action=na.omit)
-anova(starch_bact_mixed_mod,starch_bact_fixed_mod)</code></pre>
-<pre><code>##                       Model df      AIC      BIC    logLik   Test    L.Ratio
-## starch_bact_mixed_mod     1  6 462.5130 472.7945 -225.2565                  
-## starch_bact_fixed_mod     2  5 460.5796 469.1474 -225.2898 1 vs 2 0.06652049
-##                       p-value
-## starch_bact_mixed_mod        
-## starch_bact_fixed_mod  0.7965</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.797, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(starch_bact_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = starch_bact, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -58.90 -33.57 -18.54  10.04 272.74 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)                 34.993     18.480   1.894   0.0661 .
-## Rhizosphere_Manipulation2   -3.076     24.339  -0.126   0.9001  
-## Rhizosphere_Manipulation3  -40.046     23.055  -1.737   0.0907 .
-## TreeP                       14.843     19.779   0.750   0.4577  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 62.01 on 37 degrees of freedom
-## Multiple R-squared:  0.1086, Adjusted R-squared:  0.03634 
-## F-statistic: 1.503 on 3 and 37 DF,  p-value: 0.2298</code></pre>
-</div>
-</div>
-<div id="starchall-microbes-step-wise-aic-model-selection-for-13c-plfa" class="section level2">
-<h2><strong>Starch/All Microbes</strong>: Step-wise AIC Model Selection
-for 13C-PLFA</h2>
-<pre class="r"><code>starch_allmicro_AIC&lt;-stepAIC(object=aov(lm(starch_allmicro_13C~Exclusion_allmicro*Tree_allmicro)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=290.65
-## starch_allmicro_13C ~ Exclusion_allmicro * Tree_allmicro
-## 
-##                                    Df Sum of Sq   RSS    AIC
-## - Exclusion_allmicro:Tree_allmicro  2    509.96 37189 287.22
-## &lt;none&gt;                                          36679 290.65
-## 
-## Step:  AIC=287.22
-## starch_allmicro_13C ~ Exclusion_allmicro + Tree_allmicro
-## 
-##                                    Df Sum of Sq   RSS    AIC
-## - Tree_allmicro                     1     543.1 37732 285.81
-## &lt;none&gt;                                          37189 287.22
-## - Exclusion_allmicro                2    4451.1 41640 287.85
-## + Exclusion_allmicro:Tree_allmicro  2     510.0 36679 290.65
-## 
-## Step:  AIC=285.81
-## starch_allmicro_13C ~ Exclusion_allmicro
-## 
-##                      Df Sum of Sq   RSS    AIC
-## &lt;none&gt;                            37732 285.81
-## - Exclusion_allmicro  2    4870.4 42602 286.79
-## + Tree_allmicro       1     543.1 37189 287.22</code></pre>
-<pre class="r"><code>starch_allmicro_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_allmicro_13C ~ Exclusion_allmicro * Tree_allmicro
-## 
-## Final Model:
-## starch_allmicro_13C ~ Exclusion_allmicro
-## 
-## 
-##                                 Step Df Deviance Resid. Df Resid. Dev      AIC
-## 1                                                       35   36678.70 290.6516
-## 2 - Exclusion_allmicro:Tree_allmicro  2  509.957        37   37188.66 287.2177
-## 3                    - Tree_allmicro  1  543.149        38   37731.81 285.8122</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_allmicro_13C~Exclusion_allmicro+Tree_allmicro))))</code></pre>
-<pre><code>## [1]   4.0000 287.2177</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_allmicro_13C~Exclusion_allmicro))))</code></pre>
-<pre><code>## [1]   3.0000 285.8122</code></pre>
-<p>Model selection indicates that <strong>rhizosphere exclusion and tree
-species</strong> should be included in model explaining
-<strong>13C-PLFA</strong> in <strong>all microbes</strong> inhabiting
-cores labeled with <strong>starch substrate</strong>. Technically, best
-model includes on rhizosphere exclusion, but model that also includes
-tree species is included in the best family of models.</p>
-<div id="type-ii-anova-results-9" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starchMod_allmicro&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_allmicro)
-Anova(starchMod_allmicro,type=&quot;II&quot;) </code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: d13
-##                          Sum Sq Df F value Pr(&gt;F)
-## Rhizosphere_Manipulation   4451  2  2.2142 0.1235
-## Tree                        543  1  0.5404 0.4669
-## Residuals                 37189 37</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-9" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_allmicro_mixed_mod&lt;-lme(d13~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=starch_allmicro,na.action=na.omit,method=&quot;ML&quot;)
-starch_allmicro_fixed_mod&lt;-lm(d13~Rhizosphere_Manipulation+Tree,data=starch_allmicro,na.action=na.omit)
-anova(starch_allmicro_mixed_mod,starch_allmicro_fixed_mod)</code></pre>
-<pre><code>##                           Model df      AIC      BIC    logLik   Test
-## starch_allmicro_mixed_mod     1  6 407.5706 417.8521 -197.7853       
-## starch_allmicro_fixed_mod     2  5 405.5706 414.1385 -197.7853 1 vs 2
-##                               L.Ratio p-value
-## starch_allmicro_mixed_mod                    
-## starch_allmicro_fixed_mod 6.20268e-08  0.9998</code></pre>
-<p>Fixed model AIC score is ~2 points lower than mixed model AIC score,
-with p-value of 0.9998, indicating that the fixed effects model is
-superior.</p>
-<pre class="r"><code>summary(starch_allmicro_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = d13 ~ Rhizosphere_Manipulation + Tree, data = starch_allmicro, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -32.410 -16.207 -10.215   1.386 111.958 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)  
-## (Intercept)                  8.762      9.449   0.927   0.3598  
-## Rhizosphere_Manipulation2   -1.992     12.444  -0.160   0.8737  
-## Rhizosphere_Manipulation3  -22.921     11.788  -1.945   0.0595 .
-## TreeP                        7.434     10.113   0.735   0.4669  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 31.7 on 37 degrees of freedom
-## Multiple R-squared:  0.1271, Adjusted R-squared:  0.05629 
-## F-statistic: 1.795 on 3 and 37 DF,  p-value: 0.165</code></pre>
-</div>
-</div>
-</div>
-<div id="c-specific-respiration-models" class="section level1">
-<h1>13C Specific Respiration Models</h1>
-<div id="leaf-substrate-step-wise-aic-model-selection-for-13c-specific-respiration" class="section level2">
-<h2><strong>Leaf Substrate</strong>: Step-wise AIC Model Selection for
-13C Specific Respiration</h2>
-<pre class="r"><code>leaf_13C_specresp_AIC&lt;-stepAIC(object=aov(lm(leaf_13C_specresp~Exclusion*Tree+Exclusion+Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-461.34
-## leaf_13C_specresp ~ Exclusion * Tree + Exclusion + Tree
-## 
-##                  Df  Sum of Sq        RSS     AIC
-## &lt;none&gt;                         7.0148e-05 -461.34
-## - Exclusion:Tree  2 1.2384e-05 8.2533e-05 -459.49</code></pre>
-<pre class="r"><code>leaf_13C_specresp_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## leaf_13C_specresp ~ Exclusion * Tree + Exclusion + Tree
-## 
-## Final Model:
-## leaf_13C_specresp ~ Exclusion * Tree + Exclusion + Tree
-## 
-## 
-##   Step Df Deviance Resid. Df   Resid. Dev      AIC
-## 1                         30 7.014833e-05 -461.343</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(leaf_13C_specresp~Exclusion*Tree))))</code></pre>
-<pre><code>## [1]    6.000 -461.343</code></pre>
-<p>Model selection indicates that all parameters,
-i.e. <strong>rhizosphere exclusion, tree species, and exclusion x tree
-interaction</strong> should be included in model explaining
-<strong>13C-specific respiration</strong> in cores labeled with
-<strong>leaf substrate</strong>.</p>
-<div id="type-ii-anova-results-10" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>leaf_mod&lt;-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=leaf)
-Anova(leaf_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: Specific_Respiration_CO2_FAME
-##                            Sum Sq Df F value  Pr(&gt;F)   
-## Mesh_Type              7.9420e-06  2  1.6983 0.20013   
-## Tree_Species           1.9249e-05  1  8.2319 0.00747 **
-## Mesh_Type:Tree_Species 1.2384e-05  2  2.6482 0.08727 . 
-## Residuals              7.0148e-05 30                   
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="tukeys-hsd-results-2" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code>tx&lt;-with(leaf, interaction(Mesh_Type,Tree_Species))
-amod&lt;-aov(Specific_Respiration_CO2_FAME ~ tx, data=leaf)
-HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
-<pre><code>## 
-## Study: amod ~ &quot;tx&quot;
-## 
-## HSD Test for Specific_Respiration_CO2_FAME 
-## 
-## Mean Square Error:  2.338278e-06 
-## 
-## tx,  means
-## 
-##     Specific_Respiration_CO2_FAME          std r          Min         Max
-## 1.G                   0.002053130 0.0011471114 5 0.0008472934 0.003953386
-## 1.P                   0.002982131 0.0017814039 3 0.0013616954 0.004889637
-## 2.G                   0.001362228 0.0004239857 6 0.0008450844 0.002060940
-## 2.P                   0.004302147 0.0025262256 8 0.0013144316 0.008861662
-## 3.G                   0.001629278 0.0011247931 8 0.0005202476 0.003826287
-## 3.P                   0.001962655 0.0009066895 6 0.0007904524 0.002941023
-## 
-## Alpha: 0.05 ; DF Error: 30 
-## Critical Value of Studentized Range: 4.301464 
+## Alpha: 0.05 ; DF Error: 33 
+## Critical Value of Studentized Range: 3.470189 
 ## 
 ## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
 ## Treatments with the same letter are not significantly different.
 ## 
-##     Specific_Respiration_CO2_FAME groups
-## 2.P                   0.004302147      a
-## 1.P                   0.002982131     ab
-## 1.G                   0.002053130     ab
-## 3.P                   0.001962655     ab
-## 3.G                   0.001629278      b
-## 2.G                   0.001362228      b</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-10" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>leaf_BSR_mixed_mod&lt;-lme(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,random=~1|Tree_ID,data=leaf,na.action=na.omit,method=&quot;ML&quot;)
-leaf_BSR_fixed_mod&lt;-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=leaf,na.action=na.omit)
-anova(leaf_BSR_mixed_mod,leaf_BSR_fixed_mod)</code></pre>
-<pre><code>##                    Model df       AIC       BIC   logLik   Test   L.Ratio
-## leaf_BSR_mixed_mod     1  8 -355.3101 -342.6420 185.6551                 
-## leaf_BSR_fixed_mod     2  7 -357.1795 -346.0948 185.5897 1 vs 2 0.1306619
-##                    p-value
-## leaf_BSR_mixed_mod        
-## leaf_BSR_fixed_mod  0.7177</code></pre>
-<p>This output indicates that the AIC score for the mixed model is ~2
-points higher, mixed model does not perform better.</p>
-<pre class="r"><code>summary(leaf_BSR_fixed_mod)</code></pre>
+##         d13 groups
+## 1  39.33306      a
+## 2  27.70311      a
+## 3 -12.18527      b</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=leaf_fungi,alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = Specific_Respiration_CO2_FAME ~ Mesh_Type * Tree_Species, 
-##     data = leaf, na.action = na.omit)
+##  Welch Two Sample t-test
 ## 
-## Residuals:
-##        Min         1Q     Median         3Q        Max 
-## -0.0029877 -0.0006952 -0.0002326  0.0006992  0.0045595 
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)   
-## (Intercept)               0.0020531  0.0006839   3.002  0.00536 **
-## Mesh_Type2               -0.0006909  0.0009259  -0.746  0.46138   
-## Mesh_Type3               -0.0004239  0.0008717  -0.486  0.63035   
-## Tree_SpeciesP             0.0009290  0.0011167   0.832  0.41204   
-## Mesh_Type2:Tree_SpeciesP  0.0020109  0.0013889   1.448  0.15803   
-## Mesh_Type3:Tree_SpeciesP -0.0005956  0.0013889  -0.429  0.67110   
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.001529 on 30 degrees of freedom
-## Multiple R-squared:  0.3796, Adjusted R-squared:  0.2762 
-## F-statistic: 3.671 on 5 and 30 DF,  p-value: 0.01038</code></pre>
+## data:  d13 by Tree
+## t = 0.72489, df = 22.262, p-value = 0.4761
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -18.80526  39.03676
+## sample estimates:
+## mean in group G mean in group P 
+##       19.552276        9.436529</code></pre>
 </div>
-</div>
-<div id="starch-substrate-step-wise-aic-model-selection-for-13c-specific-respiration" class="section level2">
-<h2><strong>Starch Substrate</strong>: Step-wise AIC Model Selection for
-13C Specific Respiration</h2>
-<pre class="r"><code>starch_13C_specresp_AIC&lt;-stepAIC(object=aov(lm(starch_13C_specresp~Exclusion+Tree+Exclusion*Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-599.49
-## starch_13C_specresp ~ Exclusion + Tree + Exclusion * Tree
-## 
-##                  Df  Sum of Sq        RSS     AIC
-## - Exclusion:Tree  2 5.4353e-07 1.4206e-05 -601.89
-## &lt;none&gt;                         1.3662e-05 -599.49
-## 
-## Step:  AIC=-601.89
-## starch_13C_specresp ~ Exclusion + Tree
-## 
-##                  Df  Sum of Sq        RSS     AIC
-## - Exclusion       2 3.6713e-07 1.4573e-05 -604.85
-## - Tree            1 4.7400e-09 1.4211e-05 -603.88
-## &lt;none&gt;                         1.4206e-05 -601.89
-## + Exclusion:Tree  2 5.4353e-07 1.3662e-05 -599.49
-## 
-## Step:  AIC=-604.85
-## starch_13C_specresp ~ Tree
-## 
-##             Df  Sum of Sq        RSS     AIC
-## - Tree       1 1.5490e-08 1.4589e-05 -606.80
-## &lt;none&gt;                    1.4573e-05 -604.85
-## + Exclusion  2 3.6713e-07 1.4206e-05 -601.89
-## 
-## Step:  AIC=-606.8
-## starch_13C_specresp ~ 1
-## 
-##             Df  Sum of Sq        RSS     AIC
-## &lt;none&gt;                    1.4589e-05 -606.80
-## + Tree       1 1.5490e-08 1.4573e-05 -604.85
-## + Exclusion  2 3.7788e-07 1.4211e-05 -603.88</code></pre>
-<pre class="r"><code>starch_13C_specresp_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## starch_13C_specresp ~ Exclusion + Tree + Exclusion * Tree
-## 
-## Final Model:
-## starch_13C_specresp ~ 1
-## 
-## 
-##               Step Df     Deviance Resid. Df   Resid. Dev       AIC
-## 1                                         35 1.366244e-05 -599.4917
-## 2 - Exclusion:Tree  2 5.435304e-07        37 1.420597e-05 -601.8922
-## 3      - Exclusion  2 3.671318e-07        39 1.457311e-05 -604.8461
-## 4           - Tree  1 1.548803e-08        40 1.458859e-05 -606.8025</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_13C_specresp~Exclusion+Tree))))</code></pre>
-<pre><code>## [1]    4.0000 -601.8922</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_13C_specresp~Exclusion))))</code></pre>
-<pre><code>## [1]    3.0000 -603.8785</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_13C_specresp~Tree))))</code></pre>
-<pre><code>## [1]    2.0000 -604.8461</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(starch_13C_specresp~1))))</code></pre>
-<pre><code>## [1]    1.0000 -606.8025</code></pre>
-<p>Model selection indicates that the best model for
-<strong>13C-specific respiration of starch substrate</strong> includes
-<strong>only the intercept</strong>, but the model including
-<strong>tree species</strong> as a parameter is within the family of
-best models.</p>
-<div id="type-ii-anova-results-11" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>starch_mod&lt;-lm(Specific_Respiration_CO2_FAME~Mesh_Type+Tree_Species,data=starch)
-Anova(starch_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: Specific_Respiration_CO2_FAME
-##                  Sum Sq Df F value Pr(&gt;F)
-## Mesh_Type    3.6710e-07  2  0.4781 0.6237
-## Tree_Species 4.7000e-09  1  0.0123 0.9121
-## Residuals    1.4206e-05 37</code></pre>
-</div>
-<div id="tukeys-hsd-results-3" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code>tx&lt;-with(starch, interaction(Mesh_Type,Tree_Species))
-amod&lt;-aov(Specific_Respiration_CO2_FAME ~ tx, data=starch)
-HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
+<div id="leaf-substrate-bacteria" class="section level2">
+<h2>Leaf Substrate | Bacteria</h2>
+<pre class="r"><code>bact_leaf_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_bact,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
 <pre><code>## 
-## Study: amod ~ &quot;tx&quot;
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = leaf_bact, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## HSD Test for Specific_Respiration_CO2_FAME 
+## HSD Test for d13 
 ## 
-## Mean Square Error:  3.903555e-07 
+## Mean Square Error:  529.858 
 ## 
-## tx,  means
+## Rhizosphere_Manipulation,  means
 ## 
-##     Specific_Respiration_CO2_FAME          std r          Min         Max
-## 1.G                   0.001495367 0.0007970185 7 0.0003577041 0.002571904
-## 1.P                   0.001191351 0.0003594875 7 0.0007707159 0.001896626
-## 2.G                   0.001112808 0.0004923557 5 0.0005271623 0.001863264
-## 2.P                   0.001102748 0.0007476887 8 0.0004709782 0.002798938
-## 3.G                   0.001116674 0.0005372346 8 0.0002052354 0.002071173
-## 3.P                   0.001372544 0.0006591439 6 0.0006446299 0.002530331
+##         d13      std  r        Min       Max
+## 1 32.339854 35.38039  8  -1.547167 110.15217
+## 2 18.166464 22.81671 14 -12.908667  59.49517
+## 3 -9.917548 12.26339 14 -30.044167  12.78383
 ## 
-## Alpha: 0.05 ; DF Error: 35 
-## Critical Value of Studentized Range: 4.261401 
+## Alpha: 0.05 ; DF Error: 33 
+## Critical Value of Studentized Range: 3.470189 
 ## 
 ## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
 ## Treatments with the same letter are not significantly different.
 ## 
-##     Specific_Respiration_CO2_FAME groups
-## 1.G                   0.001495367      a
-## 3.P                   0.001372544      a
-## 1.P                   0.001191351      a
-## 3.G                   0.001116674      a
-## 2.G                   0.001112808      a
-## 2.P                   0.001102748      a</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-11" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>starch_BSR_mixed_mod&lt;-lme(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,random=~1|Tree_ID,data=starch,na.action=na.omit,method=&quot;ML&quot;)
-starch_BSR_fixed_mod&lt;-lm(Specific_Respiration_CO2_FAME~Mesh_Type*Tree_Species,data=starch,na.action=na.omit)
-anova(starch_BSR_mixed_mod,starch_BSR_fixed_mod)</code></pre>
-<pre><code>##                      Model df       AIC       BIC   logLik   Test   L.Ratio
-## starch_BSR_mixed_mod     1  8 -479.9295 -466.2209 247.9648                 
-## starch_BSR_fixed_mod     2  7 -481.1387 -469.1437 247.5694 1 vs 2 0.7907694
-##                      p-value
-## starch_BSR_mixed_mod        
-## starch_BSR_fixed_mod  0.3739</code></pre>
-<p>This output indicates that the AIC score for the mixed model is ~2
-points higher, mixed model does not perform better.</p>
-<pre class="r"><code>summary(starch_BSR_fixed_mod)</code></pre>
+##         d13 groups
+## 1 32.339854      a
+## 2 18.166464      a
+## 3 -9.917548      b</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=leaf_bact,alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = Specific_Respiration_CO2_FAME ~ Mesh_Type * Tree_Species, 
-##     data = starch, na.action = na.omit)
+##  Welch Two Sample t-test
 ## 
-## Residuals:
-##        Min         1Q     Median         3Q        Max 
-## -1.138e-03 -3.686e-04 -5.039e-05  2.156e-04  1.696e-03 
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)               0.0014954  0.0002361   6.332 2.82e-07 ***
-## Mesh_Type2               -0.0003826  0.0003658  -1.046    0.303    
-## Mesh_Type3               -0.0003787  0.0003234  -1.171    0.249    
-## Tree_SpeciesP            -0.0003040  0.0003340  -0.910    0.369    
-## Mesh_Type2:Tree_SpeciesP  0.0002940  0.0004883   0.602    0.551    
-## Mesh_Type3:Tree_SpeciesP  0.0005599  0.0004747   1.179    0.246    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.0006248 on 35 degrees of freedom
-## Multiple R-squared:  0.06348,    Adjusted R-squared:  -0.0703 
-## F-statistic: 0.4745 on 5 and 35 DF,  p-value: 0.7927</code></pre>
+## data:  d13 by Tree
+## t = 0.41327, df = 30.589, p-value = 0.6823
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -15.15817  22.85711
+## sample estimates:
+## mean in group G mean in group P 
+##       12.212351        8.362882</code></pre>
 </div>
-</div>
-</div>
-<div id="background-respiration-models" class="section level1">
-<h1>Background Respiration Models</h1>
-<div id="step-wise-aic-model-selection-for-background-respiration" class="section level2">
-<h2>Step-wise AIC Model Selection for Background Respiration</h2>
-<pre class="r"><code>Resp&lt;-data$Mean_Respiration
-Tree&lt;-data$Tree_species
-Exclusion&lt;-data$Exclusion</code></pre>
-<pre class="r"><code>back_resp_AIC&lt;-stepAIC(object=aov(lm(Resp~Exclusion+Tree+Exclusion*Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=52.38
-## Resp ~ Exclusion + Tree + Exclusion * Tree
-## 
-##                  Df Sum of Sq    RSS    AIC
-## - Exclusion:Tree  1  0.066463 190.41 50.426
-## &lt;none&gt;                        190.34 52.378
-## 
-## Step:  AIC=50.43
-## Resp ~ Exclusion + Tree
-## 
-##                  Df Sum of Sq    RSS    AIC
-## - Tree            1    0.0639 190.47 48.472
-## &lt;none&gt;                        190.41 50.426
-## + Exclusion:Tree  1    0.0665 190.34 52.378
-## - Exclusion       1   13.0995 203.51 57.607
-## 
-## Step:  AIC=48.47
-## Resp ~ Exclusion
-## 
-##             Df Sum of Sq    RSS    AIC
-## &lt;none&gt;                   190.47 48.472
-## + Tree       1    0.0639 190.41 50.426
-## - Exclusion  1   13.0995 203.57 55.651</code></pre>
-<pre class="r"><code>back_resp_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## Resp ~ Exclusion + Tree + Exclusion * Tree
-## 
-## Final Model:
-## Resp ~ Exclusion
-## 
-## 
-##               Step Df   Deviance Resid. Df Resid. Dev      AIC
-## 1                                      134   190.3434 52.37752
-## 2 - Exclusion:Tree  1 0.06646282       135   190.4099 50.42570
-## 3           - Tree  1 0.06389017       136   190.4738 48.47199</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(Resp~Exclusion))))</code></pre>
-<pre><code>## [1]  2.00000 48.47199</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(Resp~Tree))))</code></pre>
-<pre><code>## [1]  2.00000 57.60723</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(Resp~Exclusion+Tree))))</code></pre>
-<pre><code>## [1]  3.0000 50.4257</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-respiration</strong> includes <strong>rhizosphere exclusion and tree
-species</strong>. Model containing only rhizosphere exclusion is
-technically the best model, but the model containing both rhizosphere
-exclusion and tree species falls within the “family of best models”.</p>
-<div id="type-ii-anova-results-12" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>resp_mod&lt;-lm(Mean_Respiration~Exclusion+Tree_species,data=data)
-Anova(resp_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: Mean_Respiration
-##               Sum Sq  Df F value   Pr(&gt;F)   
-## Exclusion     13.099   1  9.2875 0.002776 **
-## Tree_species   0.064   1  0.0453 0.831778   
-## Residuals    190.410 135                    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="tukeys-hsd-results-4" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code>tx&lt;-with(data, interaction(Exclusion,Tree_species))
-amod&lt;-aov(Mean_Respiration ~ tx, data=data)
-HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
+<div id="leaf-substrate-all-microbes" class="section level2">
+<h2>Leaf Substrate | All Microbes</h2>
+<pre class="r"><code>allmicro_leaf_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_allmicro,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
 <pre><code>## 
-## Study: amod ~ &quot;tx&quot;
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = leaf_allmicro, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## HSD Test for Mean_Respiration 
+## HSD Test for d13 
 ## 
-## Mean Square Error:  1.423452 
+## Mean Square Error:  622.9145 
 ## 
-## tx,  means
+## Rhizosphere_Manipulation,  means
 ## 
-##         Mean_Respiration       std  r       Min      Max
-## 1.Goeth         2.000955 0.7161925 23 0.8616442 3.588006
-## 1.Penta         2.113810 1.2056780 23 0.6282719 5.542718
-## 2.Goeth         2.320995 1.1638293 23 1.2290539 6.530824
-## 2.Penta         2.073695 0.7755245 23 0.9878789 3.969292
-## 3.Goeth         2.809391 1.4437907 23 1.0167119 5.587059
-## 3.Penta         2.814734 1.5917451 23 1.0546594 6.418242
+##         d13      std  r        Min        Max
+## 1  34.70843 35.56328  8  -1.909619 109.007814
+## 2  24.98010 27.67897 14 -14.705889  84.314000
+## 3 -10.66590 11.58023 14 -30.766524   9.731738
 ## 
-## Alpha: 0.05 ; DF Error: 132 
-## Critical Value of Studentized Range: 4.089943 
+## Alpha: 0.05 ; DF Error: 33 
+## Critical Value of Studentized Range: 3.470189 
 ## 
-## Minimun Significant Difference: 1.017477 
+## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
 ## Treatments with the same letter are not significantly different.
 ## 
-##         Mean_Respiration groups
-## 3.Penta         2.814734      a
-## 3.Goeth         2.809391      a
-## 2.Goeth         2.320995      a
-## 1.Penta         2.113810      a
-## 2.Penta         2.073695      a
-## 1.Goeth         2.000955      a</code></pre>
-<pre class="r"><code>amod&lt;-aov(data$Mean_Respiration~as.factor(data$Exclusion))
-TukeyHSD(amod)</code></pre>
-<pre><code>##   Tukey multiple comparisons of means
-##     95% family-wise confidence level
-## 
-## Fit: aov(formula = data$Mean_Respiration ~ as.factor(data$Exclusion))
-## 
-## $`as.factor(data$Exclusion)`
-##          diff         lwr       upr     p adj
-## 2-1 0.1399622 -0.44432706 0.7242515 0.8375151
-## 3-1 0.7546798  0.17039056 1.3389691 0.0074607
-## 3-2 0.6147176  0.03042836 1.1990069 0.0367029</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-12" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>resp_mixed_mod&lt;-lme(Mean_Respiration~Exclusion+Tree_species,random=~1|Tree_ID,data=data,na.action=na.omit,method=&quot;ML&quot;)
-resp_fixed_mod&lt;-lm(Mean_Respiration~Exclusion+Tree_species,data=data,na.action=na.omit)
-anova(resp_mixed_mod,resp_fixed_mod)</code></pre>
-<pre><code>##                Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-## resp_mixed_mod     1  5 444.8108 459.4471 -217.4054                        
-## resp_fixed_mod     2  4 444.0527 455.7617 -218.0264 1 vs 2 1.241925  0.2651</code></pre>
-<p>AIC output for fixed and mixed models practically identical; random
-effect does not improve model.</p>
-<pre class="r"><code>summary(resp_fixed_mod)</code></pre>
+##         d13 groups
+## 1  34.70843      a
+## 2  24.98010      a
+## 3 -10.66590      b</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=leaf_allmicro,alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = Mean_Respiration ~ Exclusion + Tree_species, data = data, 
-##     na.action = na.omit)
+##  Welch Two Sample t-test
 ## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -1.7377 -0.8248 -0.3360  0.4304  4.1537 
-## 
-## Coefficients:
-##                   Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)        1.62243    0.28595   5.674 8.16e-08 ***
-## Exclusion          0.37734    0.12382   3.048  0.00278 ** 
-## Tree_speciesPenta -0.04303    0.20219  -0.213  0.83178    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 1.188 on 135 degrees of freedom
-## Multiple R-squared:  0.06466,    Adjusted R-squared:  0.0508 
-## F-statistic: 4.666 on 2 and 135 DF,  p-value: 0.01097</code></pre>
+## data:  d13 by Tree
+## t = 0.36276, df = 28.92, p-value = 0.7194
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -17.25809  24.69920
+## sample estimates:
+## mean in group G mean in group P 
+##        15.03655        11.31599</code></pre>
 </div>
 </div>
+<div id="tukeys-hsd-tests-for-microbe-models-starch-13c-plfa" class="section level1">
+<h1>Tukey’s HSD Tests for Microbe Models – STARCH 13C PLFA</h1>
+<div id="starch-substrate-amf" class="section level2">
+<h2>Starch Substrate | AMF</h2>
+<pre class="r"><code>AMF_starch_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_AMF,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = starch_AMF, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
+## 
+## HSD Test for d13 
+## 
+## Mean Square Error:  260.5793 
+## 
+## Rhizosphere_Manipulation,  means
+## 
+##          d13      std  r     Min    Max
+## 1  -7.245867 13.55327 15 -35.947 15.096
+## 2 -14.551500 21.04817 12 -70.389 14.124
+## 3 -20.192786 13.74789 14 -29.584 25.160
+## 
+## Alpha: 0.05 ; DF Error: 38 
+## Critical Value of Studentized Range: 3.449021 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##          d13 groups
+## 1  -7.245867      a
+## 2 -14.551500      a
+## 3 -20.192786      a</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=starch_AMF,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  d13 by Tree
+## t = -0.41398, df = 36.013, p-value = 0.6813
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -12.751632   8.428279
+## sample estimates:
+## mean in group G mean in group P 
+##       -14.91220       -12.75052</code></pre>
 </div>
-<div id="background-amf-fame-models" class="section level1">
-<h1>Background AMF FAME Models</h1>
-<div id="step-wise-aic-model-selection-for-background-amf" class="section level2">
-<h2>Step-wise AIC Model Selection for Background AMF</h2>
-<pre class="r"><code>back_AMF_AIC&lt;-stepAIC(object=aov(lm(FAME_AMF~Exclusion_AMF*Tree_AMF)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-133.01
-## FAME_AMF ~ Exclusion_AMF * Tree_AMF
+<div id="starch-substrate-fungi" class="section level2">
+<h2>Starch Substrate | Fungi</h2>
+<pre class="r"><code>fungi_starch_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_fungi,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = starch_fungi, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-##                          Df Sum of Sq    RSS     AIC
-## - Exclusion_AMF:Tree_AMF  2   0.16847 11.880 -135.91
-## &lt;none&gt;                                11.711 -133.01
+## HSD Test for d13 
 ## 
-## Step:  AIC=-135.91
-## FAME_AMF ~ Exclusion_AMF + Tree_AMF
+## Mean Square Error:  272.2336 
 ## 
-##                          Df Sum of Sq    RSS     AIC
-## - Exclusion_AMF           2   0.30654 12.186 -137.95
-## &lt;none&gt;                                11.880 -135.91
-## + Exclusion_AMF:Tree_AMF  2   0.16847 11.711 -133.01
-## - Tree_AMF                1   1.03147 12.911 -131.50
+## Rhizosphere_Manipulation,  means
 ## 
-## Step:  AIC=-137.95
-## FAME_AMF ~ Tree_AMF
+##          d13      std  r      Min      Max
+## 1  -9.832100 11.51862 15 -35.9150 14.62250
+## 2  -7.767938 23.84624 12 -39.1400 61.16375
+## 3 -19.581036 13.10403 14 -29.3285 23.36350
 ## 
-##                 Df Sum of Sq    RSS     AIC
-## &lt;none&gt;                       12.186 -137.95
-## + Exclusion_AMF  2   0.30654 11.880 -135.91
-## - Tree_AMF       1   1.19575 13.382 -132.74</code></pre>
-<pre class="r"><code>back_AMF_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
+## Alpha: 0.05 ; DF Error: 38 
+## Critical Value of Studentized Range: 3.449021 
 ## 
-## Initial Model:
-## FAME_AMF ~ Exclusion_AMF * Tree_AMF
+## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
-## Final Model:
-## FAME_AMF ~ Tree_AMF
+## Treatments with the same letter are not significantly different.
 ## 
+##          d13 groups
+## 2  -7.767938      a
+## 1  -9.832100      a
+## 3 -19.581036      a</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=starch_fungi,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
 ## 
-##                       Step Df  Deviance Resid. Df Resid. Dev       AIC
-## 1                                              71   11.71136 -133.0099
-## 2 - Exclusion_AMF:Tree_AMF  2 0.1684694        73   11.87983 -135.9102
-## 3          - Exclusion_AMF  2 0.3065390        75   12.18637 -137.9485</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_AMF~Exclusion_AMF+Tree_AMF))))</code></pre>
-<pre><code>## [1]    4.0000 -135.9102</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_AMF~Exclusion_AMF))))</code></pre>
-<pre><code>## [1]    3.0000 -131.4991</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_AMF~Tree_AMF))))</code></pre>
-<pre><code>## [1]    2.0000 -137.9485</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-AMF FAME</strong> includes <strong>rhizosphere exclusion and tree
-species</strong>, but no interaction terms. Technically, the model that
-includes only tree species as a fixed effect is the best model, but the
-model including tree species and rhizosphere exclusion as fixed effects
-is only ~2 AIC points higher, and is therefore included in the family of
-best models.</p>
-<div id="type-ii-anova-results-13" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>back_AMF_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=AMF_PLFA)
-Anova(back_AMF_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: ln_FAME
-##                           Sum Sq Df F value  Pr(&gt;F)  
-## Rhizosphere_Manipulation  0.3065  2  0.9418 0.39460  
-## Tree                      1.0315  1  6.3382 0.01401 *
-## Residuals                11.8798 73                  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+## data:  d13 by Tree
+## t = 0.15767, df = 33.662, p-value = 0.8757
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -10.11261  11.81302
+## sample estimates:
+## mean in group G mean in group P 
+##       -12.12139       -12.97160</code></pre>
 </div>
-<div id="compare-nested-model-to-fixed-effects-model-13" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>back_AMF_mixed_mod&lt;-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=AMF_PLFA,na.action=na.omit,method=&quot;ML&quot;)
-back_AMF_fixed_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=AMF_PLFA,na.action=na.omit)
-anova(back_AMF_mixed_mod,back_AMF_fixed_mod)</code></pre>
-<pre><code>##                    Model df      AIC      BIC    logLik   Test  L.Ratio p-value
-## back_AMF_mixed_mod     1  6 81.10826 95.17110 -34.55413                        
-## back_AMF_fixed_mod     2  5 84.60636 96.32539 -37.30318 1 vs 2 5.498101   0.019</code></pre>
-<p>Mixed effects model is ~3 AIC points lower than the fixed effects
-model, with a p-value of 0.019, so the <strong>mixed effects model is
-superior</strong> and there is significant variation attributed to
-individual trees across the field site.</p>
-<pre class="r"><code>summary(back_AMF_mixed_mod)</code></pre>
-<pre><code>## Linear mixed-effects model fit by maximum likelihood
-##   Data: AMF_PLFA 
-##        AIC     BIC    logLik
-##   81.10826 95.1711 -34.55413
+<div id="starch-substrate-bacteria" class="section level2">
+<h2>Starch Substrate | Bacteria</h2>
+<pre class="r"><code>bact_starch_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_bact,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = starch_bact, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## Random effects:
-##  Formula: ~1 | Tree_ID
-##         (Intercept)  Residual
-## StdDev:   0.2275441 0.3224694
+## HSD Test for d13 
 ## 
-## Fixed effects:  ln_FAME ~ Rhizosphere_Manipulation + Tree 
-##                                Value  Std.Error DF   t-value p-value
-## (Intercept)                1.1815324 0.09835364 43 12.013102  0.0000
-## Rhizosphere_Manipulation2 -0.0263322 0.10043007 43 -0.262194  0.7944
-## Rhizosphere_Manipulation3  0.1221950 0.09586026 43  1.274720  0.2093
-## TreeP                     -0.2519942 0.11406824 30 -2.209153  0.0349
-##  Correlation: 
-##                           (Intr) Rhz_M2 Rhz_M3
-## Rhizosphere_Manipulation2 -0.483              
-## Rhizosphere_Manipulation3 -0.551  0.549       
-## TreeP                     -0.531 -0.117  0.002
+## Mean Square Error:  3800.777 
 ## 
-## Standardized Within-Group Residuals:
-##         Min          Q1         Med          Q3         Max 
-## -1.86987047 -0.54643998 -0.07830257  0.45499906  1.83300318 
+## Rhizosphere_Manipulation,  means
 ## 
-## Number of Observations: 77
-## Number of Groups: 32</code></pre>
+##         d13      std  r        Min      Max
+## 1 41.919644 44.92642 15  -3.569167 134.5270
+## 2 41.812104 92.58614 12 -12.138667 319.5015
+## 3  1.308226 41.02346 14 -28.547500 130.3620
+## 
+## Alpha: 0.05 ; DF Error: 38 
+## Critical Value of Studentized Range: 3.449021 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##         d13 groups
+## 1 41.919644      a
+## 2 41.812104      a
+## 3  1.308226      a</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=starch_bact,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  d13 by Tree
+## t = -0.96738, df = 31.63, p-value = 0.3407
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -58.60035  20.87387
+## sample estimates:
+## mean in group G mean in group P 
+##        18.35920        37.22244</code></pre>
+</div>
+<div id="starch-substrate-all-microbes" class="section level2">
+<h2>Starch Substrate | All Microbes</h2>
+<pre class="r"><code>allmicro_starch_HSD&lt;-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=starch_allmicro,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(d13 ~ Rhizosphere_Manipulation, data = starch_allmicro, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
+## 
+## HSD Test for d13 
+## 
+## Mean Square Error:  992.9423 
+## 
+## Rhizosphere_Manipulation,  means
+## 
+##         d13      std  r       Min       Max
+## 1  12.23133 24.83261 15 -13.29048  68.34519
+## 2  11.72655 41.68018 12 -18.20507 126.16255
+## 3 -10.97315 27.71973 14 -30.36626  79.11336
+## 
+## Alpha: 0.05 ; DF Error: 38 
+## Critical Value of Studentized Range: 3.449021 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##         d13 groups
+## 1  12.23133      a
+## 2  11.72655      a
+## 3 -10.97315      a</code></pre>
+<pre class="r"><code>t.test(d13~Tree,data=starch_allmicro,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  d13 by Tree
+## t = -0.95814, df = 35.428, p-value = 0.3445
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -30.22180  10.83569
+## sample estimates:
+## mean in group G mean in group P 
+##      -0.8046273       8.8884294</code></pre>
 </div>
 </div>
+<div id="tukeys-hsd-tests-for-microbe-models-background-plfa" class="section level1">
+<h1>Tukey’s HSD Tests for Microbe Models – BACKGROUND PLFA</h1>
+<div id="background-plfa-amf" class="section level2">
+<h2>Background PLFA | AMF</h2>
+<pre class="r"><code>back_AMF_HSD&lt;-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=AMF_PLFA,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(ln_FAME ~ Rhizosphere_Manipulation, data = AMF_PLFA, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
+## 
+## HSD Test for ln_FAME 
+## 
+## Mean Square Error:  0.174477 
+## 
+## Rhizosphere_Manipulation,  means
+## 
+##    ln_FAME       std  r       Min      Max
+## 1 1.074120 0.3673809 23 0.6054847 1.958266
+## 2 1.016364 0.4361720 26 0.0000000 1.712893
+## 3 1.198840 0.4382557 28 0.5493634 2.030870
+## 
+## Alpha: 0.05 ; DF Error: 74 
+## Critical Value of Studentized Range: 3.382467 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##    ln_FAME groups
+## 3 1.198840      a
+## 1 1.074120      a
+## 2 1.016364      a</code></pre>
+<pre class="r"><code>t.test(ln_FAME~Tree,data=AMF_PLFA,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  ln_FAME by Tree
+## t = 2.7158, df = 74.741, p-value = 0.008208
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.06641059 0.43209592
+## sample estimates:
+## mean in group G mean in group P 
+##       1.2229790       0.9737257</code></pre>
 </div>
-<div id="background-fungi-fame-models" class="section level1">
-<h1>Background Fungi FAME Models</h1>
-<div id="step-wise-aic-model-selection-for-background-fungi" class="section level2">
-<h2>Step-wise AIC Model Selection for Background Fungi</h2>
-<pre class="r"><code>back_fungi_AIC&lt;-stepAIC(object=aov(lm(FAME_fungi~Exclusion_fungi*Tree_fungi)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-124.23
-## FAME_fungi ~ Exclusion_fungi * Tree_fungi
+<div id="background-plfa-fungi" class="section level2">
+<h2>Background PLFA | Fungi</h2>
+<pre class="r"><code>back_fungi_HSD&lt;-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=fungi_PLFA,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(ln_FAME ~ Rhizosphere_Manipulation, data = fungi_PLFA, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-##                              Df Sum of Sq    RSS     AIC
-## - Exclusion_fungi:Tree_fungi  2   0.16387 13.289 -127.28
-## &lt;none&gt;                                    13.125 -124.23
+## HSD Test for ln_FAME 
 ## 
-## Step:  AIC=-127.28
-## FAME_fungi ~ Exclusion_fungi + Tree_fungi
+## Mean Square Error:  0.1949416 
 ## 
-##                              Df Sum of Sq    RSS     AIC
-## - Exclusion_fungi             2   0.00118 13.290 -131.27
-## &lt;none&gt;                                    13.289 -127.28
-## + Exclusion_fungi:Tree_fungi  2   0.16387 13.125 -124.23
-## - Tree_fungi                  1   1.13665 14.426 -122.96
+## Rhizosphere_Manipulation,  means
 ## 
-## Step:  AIC=-131.27
-## FAME_fungi ~ Tree_fungi
+##    ln_FAME       std  r       Min      Max
+## 1 1.275492 0.3331463 23 0.8966430 2.037147
+## 2 1.226754 0.4996264 26 0.1202688 2.030612
+## 3 1.282285 0.4612105 28 0.5493634 2.079198
 ## 
-##                   Df Sum of Sq    RSS     AIC
-## &lt;none&gt;                         13.290 -131.27
-## + Exclusion_fungi  2   0.00118 13.289 -127.28
-## - Tree_fungi       1   1.18345 14.474 -126.70</code></pre>
-<pre class="r"><code>back_fungi_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
+## Alpha: 0.05 ; DF Error: 74 
+## Critical Value of Studentized Range: 3.382467 
 ## 
-## Initial Model:
-## FAME_fungi ~ Exclusion_fungi * Tree_fungi
+## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
-## Final Model:
-## FAME_fungi ~ Tree_fungi
+## Treatments with the same letter are not significantly different.
 ## 
-## 
-##                           Step Df    Deviance Resid. Df Resid. Dev       AIC
-## 1                                                    71   13.12516 -124.2342
-## 2 - Exclusion_fungi:Tree_fungi  2 0.163874019        73   13.28903 -127.2787
-## 3            - Exclusion_fungi  2 0.001179616        75   13.29021 -131.2719</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_fungi~Exclusion_fungi+Tree_fungi))))</code></pre>
-<pre><code>## [1]    4.0000 -127.2787</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_fungi~Exclusion_fungi))))</code></pre>
-<pre><code>## [1]    3.0000 -122.9593</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_fungi~Tree_fungi))))</code></pre>
-<pre><code>## [1]    2.0000 -131.2719</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-fungi FAME</strong> includes <strong>just tree species</strong>, and no
-interaction terms. The model that includes both tree species and
-rhizosphere exclusion as fixed effects is ~4 AIC points higher,
-indicating that the model with only tree species as a fixed effect is
-superior.</p>
-<div id="type-ii-anova-results-14" class="section level3">
-<h3>Type II ANOVA Results</h3>
+##    ln_FAME groups
+## 3 1.282285      a
+## 1 1.275492      a
+## 2 1.226754      a</code></pre>
 <pre class="r"><code>t.test(ln_FAME~Tree,data=fungi_PLFA,alternative=&quot;two.sided&quot;)</code></pre>
 <pre><code>## 
 ##  Welch Two Sample t-test
@@ -2111,356 +788,87 @@ superior.</p>
 ## mean in group G mean in group P 
 ##        1.383879        1.135911</code></pre>
 </div>
-<div id="compare-nested-model-to-fixed-effects-model-14" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>back_fungi_mixed_mod&lt;-lme(ln_FAME~Tree,random=~1|Tree_ID,data=fungi_PLFA,na.action=na.omit,method=&quot;ML&quot;)
-back_fungi_fixed_mod&lt;-lm(ln_FAME~Tree,data=fungi_PLFA,na.action=na.omit)
-anova(back_fungi_mixed_mod,back_fungi_fixed_mod)</code></pre>
-<pre><code>##                      Model df      AIC       BIC    logLik   Test   L.Ratio
-## back_fungi_mixed_mod     1  4 90.64065 100.01587 -41.32033                 
-## back_fungi_fixed_mod     2  3 89.24464  96.27606 -41.62232 1 vs 2 0.6039902
-##                      p-value
-## back_fungi_mixed_mod        
-## back_fungi_fixed_mod  0.4371</code></pre>
-<p>Fixed effects model is ~1.5 AIC points lower than the mixed effects
-model, with a p-value of 0.4371, so the <strong>fixed effects model is
-superior</strong>.</p>
-<pre class="r"><code>summary(back_fungi_fixed_mod) # T-test results from above are the more appropriate test.</code></pre>
+<div id="background-plfa-bacteria" class="section level2">
+<h2>Background PLFA | Bacteria</h2>
+<pre class="r"><code>back_bact_HSD&lt;-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=bact_PLFA,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
 <pre><code>## 
-## Call:
-## lm(formula = ln_FAME ~ Tree, data = fungi_PLFA, na.action = na.omit)
+## Study: aov(ln_FAME ~ Rhizosphere_Manipulation, data = bact_PLFA, na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
 ## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1.01564 -0.28985 -0.02105  0.26200  0.89470 
+## HSD Test for ln_FAME 
 ## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  1.38388    0.06741  20.530   &lt;2e-16 ***
-## TreeP       -0.24797    0.09595  -2.584   0.0117 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## Mean Square Error:  0.3014571 
 ## 
-## Residual standard error: 0.421 on 75 degrees of freedom
-## Multiple R-squared:  0.08177,    Adjusted R-squared:  0.06952 
-## F-statistic: 6.679 on 1 and 75 DF,  p-value: 0.0117</code></pre>
-</div>
-</div>
-</div>
-<div id="background-bacteria-fame-models" class="section level1">
-<h1>Background Bacteria FAME Models</h1>
-<div id="step-wise-aic-model-selection-for-background-bacteria" class="section level2">
-<h2>Step-wise AIC Model Selection for Background Bacteria</h2>
-<pre class="r"><code>back_bact_AIC&lt;-stepAIC(object=aov(lm(FAME_bact~Exclusion_bact*Tree_bact)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-88.48
-## FAME_bact ~ Exclusion_bact * Tree_bact
+## Rhizosphere_Manipulation,  means
 ## 
-##                            Df Sum of Sq    RSS     AIC
-## - Exclusion_bact:Tree_bact  2    0.1266 21.009 -92.013
-## &lt;none&gt;                                  20.882 -88.478
+##    ln_FAME       std  r      Min      Max
+## 1 3.301507 0.4431513 23 2.498217 4.413777
+## 2 3.268556 0.5656315 26 1.982922 4.201014
+## 3 3.453828 0.6082436 28 2.350780 5.109444
 ## 
-## Step:  AIC=-92.01
-## FAME_bact ~ Exclusion_bact + Tree_bact
-## 
-##                            Df Sum of Sq    RSS     AIC
-## - Exclusion_bact            2   0.36372 21.372 -94.691
-## &lt;none&gt;                                  21.009 -92.013
-## - Tree_bact                 1   1.29910 22.308 -89.393
-## + Exclusion_bact:Tree_bact  2   0.12660 20.882 -88.478
-## 
-## Step:  AIC=-94.69
-## FAME_bact ~ Tree_bact
-## 
-##                  Df Sum of Sq    RSS     AIC
-## &lt;none&gt;                        21.372 -94.691
-## + Exclusion_bact  2   0.36372 21.009 -92.013
-## - Tree_bact       1   1.46240 22.835 -91.595</code></pre>
-<pre class="r"><code>back_bact_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## FAME_bact ~ Exclusion_bact * Tree_bact
-## 
-## Final Model:
-## FAME_bact ~ Tree_bact
-## 
-## 
-##                         Step Df  Deviance Resid. Df Resid. Dev       AIC
-## 1                                                71   20.88212 -88.47822
-## 2 - Exclusion_bact:Tree_bact  2 0.1266004        73   21.00872 -92.01281
-## 3           - Exclusion_bact  2 0.3637214        75   21.37245 -94.69112</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_bact~Exclusion_bact+Tree_bact))))</code></pre>
-<pre><code>## [1]   4.00000 -92.01281</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_bact~Exclusion_bact))))</code></pre>
-<pre><code>## [1]   3.00000 -89.39282</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_bact~Tree_bact))))</code></pre>
-<pre><code>## [1]   2.00000 -94.69112</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-bacteria FAME</strong> includes <strong>rhizosphere exclusion and tree
-species</strong>, but no interaction terms. Technically, the model that
-includes only tree species as a fixed effect is the best model, but the
-model including tree species and rhizosphere exclusion as fixed effects
-is only ~1.5 AIC points higher, and is therefore included in the family
-of best models.</p>
-<div id="type-ii-anova-results-15" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>back_bact_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=bact_PLFA)
-Anova(back_bact_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: ln_FAME
-##                           Sum Sq Df F value Pr(&gt;F)  
-## Rhizosphere_Manipulation  0.3637  2  0.6319 0.5345  
-## Tree                      1.2991  1  4.5141 0.0370 *
-## Residuals                21.0087 73                 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-15" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>back_bact_mixed_mod&lt;-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=bact_PLFA,na.action=na.omit,method=&quot;ML&quot;)
-back_bact_fixed_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=bact_PLFA,na.action=na.omit)
-anova(back_bact_mixed_mod,back_bact_fixed_mod)</code></pre>
-<pre><code>##                     Model df      AIC      BIC    logLik   Test L.Ratio p-value
-## back_bact_mixed_mod     1  6 127.6213 141.6841 -57.81063                       
-## back_bact_fixed_mod     2  5 128.5037 140.2227 -59.25186 1 vs 2 2.88247  0.0895</code></pre>
-<p>These models are very close in there AIC scores; the mixed effects
-model is ~0.9 AIC points lower than the fixed effects model, with a
-p-value of 0.090, meaning that either model is valid. I will therefore
-select the more simple, fixed effects model as the superior model.</p>
-<pre class="r"><code>summary(back_bact_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = ln_FAME ~ Rhizosphere_Manipulation + Tree, data = bact_PLFA, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1.21612 -0.34867 -0.02065  0.29831  1.54254 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                 3.4162     0.1242  27.504   &lt;2e-16 ***
-## Rhizosphere_Manipulation2   0.0147     0.1552   0.095    0.925    
-## Rhizosphere_Manipulation3   0.1507     0.1510   0.998    0.322    
-## TreeP                      -0.2638     0.1242  -2.125    0.037 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.5365 on 73 degrees of freedom
-## Multiple R-squared:  0.07997,    Adjusted R-squared:  0.04216 
-## F-statistic: 2.115 on 3 and 73 DF,  p-value: 0.1057</code></pre>
-</div>
-</div>
-</div>
-<div id="background-all-microbes-fame-models" class="section level1">
-<h1>Background All Microbes FAME Models</h1>
-<div id="step-wise-aic-model-selection-for-background-fame-abundance-of-all-microbes" class="section level2">
-<h2>Step-wise AIC Model Selection for Background FAME Abundance of All
-Microbes</h2>
-<pre class="r"><code>back_allmicro_AIC&lt;-stepAIC(object=aov(lm(FAME_allmicro~Exclusion_allmicro*Tree_allmicro)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-87.12
-## FAME_allmicro ~ Exclusion_allmicro * Tree_allmicro
-## 
-##                                    Df Sum of Sq    RSS     AIC
-## - Exclusion_allmicro:Tree_allmicro  2    0.3111 21.564 -90.004
-## &lt;none&gt;                                          21.253 -87.123
-## 
-## Step:  AIC=-90
-## FAME_allmicro ~ Exclusion_allmicro + Tree_allmicro
-## 
-##                                    Df Sum of Sq    RSS     AIC
-## - Exclusion_allmicro                2   0.46303 22.027 -92.368
-## &lt;none&gt;                                          21.564 -90.004
-## + Exclusion_allmicro:Tree_allmicro  2   0.31110 21.253 -87.123
-## - Tree_allmicro                     1   1.47408 23.038 -86.912
-## 
-## Step:  AIC=-92.37
-## FAME_allmicro ~ Tree_allmicro
-## 
-##                      Df Sum of Sq    RSS     AIC
-## &lt;none&gt;                            22.027 -92.368
-## + Exclusion_allmicro  2   0.46303 21.564 -90.004
-## - Tree_allmicro       1   1.70097 23.728 -88.640</code></pre>
-<pre class="r"><code>back_allmicro_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## FAME_allmicro ~ Exclusion_allmicro * Tree_allmicro
-## 
-## Final Model:
-## FAME_allmicro ~ Tree_allmicro
-## 
-## 
-##                                 Step Df  Deviance Resid. Df Resid. Dev
-## 1                                                        71   21.25300
-## 2 - Exclusion_allmicro:Tree_allmicro  2 0.3110975        73   21.56410
-## 3               - Exclusion_allmicro  2 0.4630341        75   22.02713
-##         AIC
-## 1 -87.12267
-## 2 -90.00373
-## 3 -92.36785</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_allmicro~Exclusion_allmicro+Tree_allmicro))))</code></pre>
-<pre><code>## [1]   4.00000 -90.00373</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_allmicro~Exclusion_allmicro))))</code></pre>
-<pre><code>## [1]   3.00000 -86.91227</code></pre>
-<pre class="r"><code>print(extractAIC(aov(lm(FAME_allmicro~Tree_allmicro))))</code></pre>
-<pre><code>## [1]   2.00000 -92.36785</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-FAME for all microbes</strong> includes <strong>rhizosphere exclusion
-and tree species</strong>, but no interaction terms. Technically, the
-model that includes only tree species as a fixed effect is the best
-model, but the model including tree species and rhizosphere exclusion as
-fixed effects is only ~2 AIC points higher, and is therefore included in
-the family of best models.</p>
-<div id="type-ii-anova-results-16" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>back_allmicro_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=allmicro_PLFA)
-Anova(back_allmicro_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: ln_FAME
-##                           Sum Sq Df F value  Pr(&gt;F)  
-## Rhizosphere_Manipulation  0.4630  2  0.7837 0.46050  
-## Tree                      1.4741  1  4.9901 0.02856 *
-## Residuals                21.5641 73                  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="compare-nested-model-to-fixed-effects-model-16" class="section level3">
-<h3>Compare Nested Model to Fixed Effects Model</h3>
-<pre class="r"><code>back_allmicro_mixed_mod&lt;-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=allmicro_PLFA,na.action=na.omit,method=&quot;ML&quot;)
-back_allmicro_fixed_mod&lt;-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=allmicro_PLFA,na.action=na.omit)
-anova(back_allmicro_mixed_mod,back_allmicro_fixed_mod)</code></pre>
-<pre><code>##                         Model df      AIC      BIC   logLik   Test  L.Ratio
-## back_allmicro_mixed_mod     1  6 129.7978 143.8606 -58.8989                
-## back_allmicro_fixed_mod     2  5 130.5128 142.2318 -60.2564 1 vs 2 2.715005
-##                         p-value
-## back_allmicro_mixed_mod        
-## back_allmicro_fixed_mod  0.0994</code></pre>
-<p>These models are very close in there AIC scores; the mixed effects
-model is ~0.8 AIC points lower than the fixed effects model, with a
-p-value of 0.099, meaning that either model is valid. I will therefore
-select the more simple, fixed effects model as the superior model.</p>
-<pre class="r"><code>summary(back_allmicro_fixed_mod)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = ln_FAME ~ Rhizosphere_Manipulation + Tree, data = allmicro_PLFA, 
-##     na.action = na.omit)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -1.27987 -0.38393 -0.01376  0.33432  1.51096 
-## 
-## Coefficients:
-##                            Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)                4.069389   0.125839  32.338   &lt;2e-16 ***
-## Rhizosphere_Manipulation2 -0.008252   0.157230  -0.052   0.9583    
-## Rhizosphere_Manipulation3  0.157563   0.152951   1.030   0.3063    
-## TreeP                     -0.281040   0.125809  -2.234   0.0286 *  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.5435 on 73 degrees of freedom
-## Multiple R-squared:  0.0912, Adjusted R-squared:  0.05385 
-## F-statistic: 2.442 on 3 and 73 DF,  p-value: 0.07101</code></pre>
-</div>
-</div>
-</div>
-<div id="background-specific-respiration-models" class="section level1">
-<h1>Background Specific Respiration Models</h1>
-<div id="step-wise-aic-model-selection-for-background-specific-respiration" class="section level2">
-<h2>Step-wise AIC Model Selection for Background Specific
-Respiration</h2>
-<pre class="r"><code>specResp&lt;-data$Specific_Respiration_CO2_FAME
-Exclusion&lt;-data$Rhizosphere_Manipulation
-Tree&lt;-data$Tree</code></pre>
-<pre class="r"><code>back_specresp_AIC&lt;-stepAIC(object=aov(lm(specResp~Exclusion*Tree)),direction=&quot;both&quot;,na.rm=TRUE)</code></pre>
-<pre><code>## Start:  AIC=-536.02
-## specResp ~ Exclusion * Tree
-## 
-##                  Df  Sum of Sq      RSS     AIC
-## - Exclusion:Tree  1 1.7011e-06 0.065784 -538.02
-## &lt;none&gt;                         0.065783 -536.02
-## 
-## Step:  AIC=-538.02
-## specResp ~ Exclusion + Tree
-## 
-##                  Df Sum of Sq      RSS     AIC
-## &lt;none&gt;                        0.065784 -538.02
-## - Exclusion       1 0.0032721 0.069056 -536.28
-## - Tree            1 0.0033975 0.069182 -536.14
-## + Exclusion:Tree  1 0.0000017 0.065783 -536.02</code></pre>
-<pre class="r"><code>back_specresp_AIC$anova</code></pre>
-<pre><code>## Stepwise Model Path 
-## Analysis of Deviance Table
-## 
-## Initial Model:
-## specResp ~ Exclusion * Tree
-## 
-## Final Model:
-## specResp ~ Exclusion + Tree
-## 
-## 
-##               Step Df     Deviance Resid. Df Resid. Dev       AIC
-## 1                                         73 0.06578268 -536.0207
-## 2 - Exclusion:Tree  1 1.701137e-06        74 0.06578438 -538.0187</code></pre>
-<p>Model selection indicates that the best model for <strong>background
-specific respiration</strong> includes <strong>rhizosphere exclusion and
-tree species</strong> (no interaction term).</p>
-<div id="type-ii-anova-results-17" class="section level3">
-<h3>Type II ANOVA Results</h3>
-<pre class="r"><code>back_specresp_mod&lt;-lm(specResp~Exclusion+Tree,data=data)
-Anova(back_specresp_mod,type=&quot;II&quot;)</code></pre>
-<pre><code>## Anova Table (Type II tests)
-## 
-## Response: specResp
-##             Sum Sq Df F value  Pr(&gt;F)  
-## Exclusion 0.003272  1  3.6807 0.05890 .
-## Tree      0.003398  1  3.8218 0.05437 .
-## Residuals 0.065784 74                  
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-</div>
-<div id="tukeys-hsd-results-5" class="section level3">
-<h3>Tukey’s HSD Results</h3>
-<pre class="r"><code>tx&lt;-with(data, interaction(Exclusion,Tree))
-amod&lt;-aov(specResp ~ tx, data=data)
-HSD.test(amod, &quot;tx&quot;, group=TRUE, console=TRUE)</code></pre>
-<pre><code>## 
-## Study: amod ~ &quot;tx&quot;
-## 
-## HSD Test for specResp 
-## 
-## Mean Square Error:  0.0008804842 
-## 
-## tx,  means
-## 
-##       specResp        std  r         Min        Max
-## 1.G 0.03551566 0.01447721 13 0.010866228 0.06704673
-## 1.P 0.03788433 0.02016513 10 0.010296575 0.07881230
-## 2.G 0.03001729 0.01068668 10 0.011767246 0.04139836
-## 2.P 0.06145461 0.04364625 16 0.010342135 0.16537613
-## 3.G 0.05057222 0.03532483 16 0.005001819 0.11501395
-## 3.P 0.05551240 0.02700032 12 0.021969160 0.10600128
-## 
-## Alpha: 0.05 ; DF Error: 71 
-## Critical Value of Studentized Range: 4.142208 
+## Alpha: 0.05 ; DF Error: 74 
+## Critical Value of Studentized Range: 3.382467 
 ## 
 ## Groups according to probability of means differences and alpha level( 0.05 )
 ## 
 ## Treatments with the same letter are not significantly different.
 ## 
-##       specResp groups
-## 2.P 0.06145461      a
-## 3.P 0.05551240      a
-## 3.G 0.05057222      a
-## 1.P 0.03788433      a
-## 1.G 0.03551566      a
-## 2.G 0.03001729      a</code></pre>
+##    ln_FAME groups
+## 3 3.453828      a
+## 1 3.301507      a
+## 2 3.268556      a</code></pre>
+<pre class="r"><code>t.test(ln_FAME~Tree,data=bact_PLFA,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  ln_FAME by Tree
+## t = 2.2678, df = 74.771, p-value = 0.02623
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.03349754 0.51779792
+## sample estimates:
+## mean in group G mean in group P 
+##        3.481804        3.206157</code></pre>
 </div>
+<div id="background-plfa-all-microbes" class="section level2">
+<h2>Background PLFA | All Microbes</h2>
+<pre class="r"><code>back_allmicro_HSD&lt;-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=allmicro_PLFA,na.action=na.omit),trt=&quot;Rhizosphere_Manipulation&quot;,group=TRUE,console=TRUE)</code></pre>
+<pre><code>## 
+## Study: aov(ln_FAME ~ Rhizosphere_Manipulation, data = allmicro_PLFA,  ~ &quot;Rhizosphere_Manipulation&quot;     na.action = na.omit) ~ &quot;Rhizosphere_Manipulation&quot;
+## 
+## HSD Test for ln_FAME 
+## 
+## Mean Square Error:  0.3113267 
+## 
+## Rhizosphere_Manipulation,  means
+## 
+##    ln_FAME       std  r      Min      Max
+## 1 3.947198 0.4382000 23 3.336729 5.043691
+## 2 3.888189 0.5851753 26 2.505950 4.800909
+## 3 4.106506 0.6162310 28 2.947081 5.737913
+## 
+## Alpha: 0.05 ; DF Error: 74 
+## Critical Value of Studentized Range: 3.382467 
+## 
+## Groups according to probability of means differences and alpha level( 0.05 )
+## 
+## Treatments with the same letter are not significantly different.
+## 
+##    ln_FAME groups
+## 3 4.106506      a
+## 1 3.947198      a
+## 2 3.888189      a</code></pre>
+<pre class="r"><code>t.test(ln_FAME~Tree,data=allmicro_PLFA,alternative=&quot;two.sided&quot;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  ln_FAME by Tree
+## t = 2.4092, df = 74.764, p-value = 0.01845
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  0.05145393 0.54311145
+## sample estimates:
+## mean in group G mean in group P 
+##        4.131914        3.834631</code></pre>
 </div>
 </div>
 

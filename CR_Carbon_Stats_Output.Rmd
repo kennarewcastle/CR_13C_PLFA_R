@@ -1,7 +1,7 @@
 ---
 title: "Costa Rica Carbon Stats Output"
 author: "Kenna Rewcastle"
-date: "4/11/2022"
+date: "`r Sys.Date()`"
 output: html_document
 ---
 
@@ -128,7 +128,6 @@ summary(starch_CO2_mixed_mod)
 summary(starch_CO2_fixed_mod)
 ```
 
-
 ### Tukey's HSD Results
 ```{r starch_13C_CO2_TukeyHSD}
   tx<-with(starch_CO2, interaction(Exclusion, Tree_species))
@@ -216,6 +215,10 @@ Fixed model has lower AIC score than fixed model, with p-value of 0.95. Fixed mo
 summary(leaf_AMF_fixed_mod)
 ```
 
+```{r leaf_AMF_HSD}
+AMF_leaf_HSD<-HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_AMF,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+```
+
 ## **Leaf/Fungi**: Step-wise AIC Model Selection for 13C-PLFA
 ```{r leaf_fungi_variables, include=FALSE}
   leaf_fungi<-filter(leaf_PLFA,Microbial_Group=="FUNGI")
@@ -256,6 +259,10 @@ Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-valu
 
 ```{r leaf_fungi_fixed_mod}
 summary(leaf_fungi_fixed_mod)
+```
+
+```{r leaf_fungi_treat_means}
+HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_fungi,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
 ```
 
 ## **Leaf/Bacteria**: Step-wise AIC Model Selection for 13C-PLFA
@@ -300,6 +307,10 @@ Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-valu
 summary(leaf_bact_fixed_mod)
 ```
 
+```{r leaf_bact_treat_means}
+HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_bact,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+```
+
 ## **Leaf/All Microbes**: Step-wise AIC Model Selection for 13C-PLFA
 ```{r leaf_allmicro_variables, include=FALSE}
   leaf_allmicro<-filter(leaf_PLFA,Microbial_Group=="ALL_MICROBES")
@@ -340,6 +351,10 @@ Fixed model AIC score is ~2 points lower than mixed model AIC score, with p-valu
 
 ```{r leaf_allmicro_fixed_mod}
 summary(leaf_allmicro_fixed_mod)
+```
+
+```{r leaf_allmicro_treat_means}
+HSD.test(y=aov(d13~Rhizosphere_Manipulation,data=leaf_allmicro,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
 ```
 
 ## **Starch/AMF**: Step-wise AIC Model Selection for 13C-PLFA
@@ -718,6 +733,11 @@ back_AMF_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=AMF_PLFA)
 Anova(back_AMF_mod,type="II")
 ```
 
+```{r back_AMF_HSD_ttest}
+back_AMF_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=AMF_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=AMF_PLFA,alternative="two.sided")
+```
+
 ### Compare Nested Model to Fixed Effects Model
 ```{r back_AMF_nested}
 back_AMF_mixed_mod<-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=AMF_PLFA,na.action=na.omit,method="ML")
@@ -758,21 +778,27 @@ print(extractAIC(aov(lm(FAME_fungi~Tree_fungi))))
 Model selection indicates that the best model for **background fungi FAME** includes **just tree species**, and no interaction terms. The model that includes both tree species and rhizosphere exclusion as fixed effects is ~4 AIC points higher, indicating that the model with only tree species as a fixed effect is superior.
 
 ### Type II ANOVA Results
-```{r back_fungi_ttest}
+```{r back_fungi_ANOVA}
+back_fungi_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=fungi_PLFA)
+Anova(back_fungi_mod,type="II")
+```
+
+```{r back_fungi_HSD_ttest}
+back_fungi_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=fungi_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
 t.test(ln_FAME~Tree,data=fungi_PLFA,alternative="two.sided")
 ```
 
 ### Compare Nested Model to Fixed Effects Model
 ```{r back_fungi_nested}
-back_fungi_mixed_mod<-lme(ln_FAME~Tree,random=~1|Tree_ID,data=fungi_PLFA,na.action=na.omit,method="ML")
-back_fungi_fixed_mod<-lm(ln_FAME~Tree,data=fungi_PLFA,na.action=na.omit)
+back_fungi_mixed_mod<-lme(ln_FAME~Rhizosphere_Manipulation+Tree,random=~1|Tree_ID,data=fungi_PLFA,na.action=na.omit,method="ML")
+back_fungi_fixed_mod<-lm(ln_FAME~Rhizosphere_Manipulation+Tree,data=fungi_PLFA,na.action=na.omit)
 anova(back_fungi_mixed_mod,back_fungi_fixed_mod)
 ```
 
 Fixed effects model is ~1.5 AIC points lower than the mixed effects model, with a p-value of 0.4371, so the **fixed effects model is superior**.
 
 ```{r back_fungi_fixed_mod}
-summary(back_fungi_fixed_mod) # T-test results from above are the more appropriate test.
+summary(back_fungi_fixed_mod)
 ```
 
 # Background Bacteria FAME Models
@@ -820,6 +846,11 @@ These models are very close in there AIC scores; the mixed effects model is ~0.9
 summary(back_bact_fixed_mod)
 ```
 
+```{r back_bact_HSD_ttest}
+back_bact_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=bact_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=bact_PLFA,alternative="two.sided")
+```
+
 # Background All Microbes FAME Models
 
 ## Step-wise AIC Model Selection for Background FAME Abundance of All Microbes
@@ -863,6 +894,11 @@ These models are very close in there AIC scores; the mixed effects model is ~0.8
 
 ```{r back_allmicro_fixed_mod}
 summary(back_allmicro_fixed_mod)
+```
+
+```{r back_allmicro_HSD_ttest}
+back_allmicro_HSD<-HSD.test(y=aov(ln_FAME~Rhizosphere_Manipulation,data=allmicro_PLFA,na.action=na.omit),trt="Rhizosphere_Manipulation",group=TRUE,console=TRUE)
+t.test(ln_FAME~Tree,data=allmicro_PLFA,alternative="two.sided")
 ```
 
 # Background Specific Respiration Models
