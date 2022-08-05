@@ -13,14 +13,108 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(vegan)
 library(ggplot2)
+library(tidyr)
+library(reshape2)
+library(stringr)
 ```
 
 ```{r input_data, include=FALSE}
+# 13C-CO2
+  CO2_13C<-read.csv("Costa Rica Master sheet annotated.csv")
+  CO2_13C<-data.frame("Core_ID"=CO2_13C$core_ID,"Tree"=CO2_13C$Tree_species,"Rhizosphere_Manipulation"=as.factor(CO2_13C$Exclusion),"Day2_D13_CO2"=CO2_13C$d13_d2,"Day9_D13_CO2"=CO2_13C$d13_d9,"Substrate"=CO2_13C$Isotope_label)
+  
+  CO2_13C$Tree[which(CO2_13C$Tree=="Goeth")]<-"G"
+  CO2_13C$Tree[which(CO2_13C$Tree=="Penta")]<-"P"
+  
+  leaf_CO2<-filter(CO2_13C,Substrate=="L")
+  leaf_CO2<-leaf_CO2[,c(1,2,3,5)]
+  
+  starch_CO2<-filter(CO2_13C,Substrate=="S")
+  starch_CO2<-starch_CO2[,c(1:4)]
 
-13C_CO2<-read.csv("Costa Rica Master sheet annotated.csv")
-13C_PLFA
-13C_SpecResp
-Resp<-
+# 13C-PLFA
+  data<-read.csv("FINAL_PLFA_with_metadata.csv")
+  data<-data[,2:15] # Gets rid of ID column
+  data<-filter(data,Microbial_Group!="standard")
+  data$Rhizosphere_Manipulation<-as.factor(data$Rhizosphere_Manipulation)
+  data$umol_FAME<-data$nmol_FAME_per_g_soil/1000
+  
+  ## Simplify the microbial groupings
+  data_trim<-data.frame("Sample_Name"=data[,1],"Tree"=data[,2],"Rhizosphere_Manipulation"=data[,3],"Substrate_Type"=data[,4],"Microbial_Group"=data[,14],"d13"=data[,9])
+  
+  data_wide<-dcast(data_trim,Sample_Name+Tree+Rhizosphere_Manipulation+Substrate_Type ~ Microbial_Group, value.var="d13", fun.aggregate=mean, na.rm=TRUE)
+  
+  is.nan.data.frame <- function(x)
+    do.call(cbind, lapply(x, is.nan))
+  data_wide[is.nan(data_wide)] <- NA
+  
+    ### Take mean of narrow groups to yield FUNGI, BACTERIA, ALL_MICROBE groups
+    for (i in 1:nrow(data_wide)) {
+      data_wide$BACTERIA[i]<-mean(c(data_wide$bacteria[i],data_wide$`gram+bacteria`[i],data_wide$`gram-bacteria`[i]),na.rm=TRUE)
+      data_wide$FUNGI[i]<-mean(c(data_wide$AMF[i],data_wide$fungi[i]),na.rm=TRUE)
+      data_wide$ALL_MICROBES[i]<-mean(c(data_wide$AMF[i],data_wide$bacteria[i],data_wide$fungi[i],data_wide$general[i],data_wide$`gram-bacteria`[i],data_wide$`gram+bacteria`[i],data_wide$protozoa[i]),na.rm=TRUE)
+      }
+
+  data_wide<-data_wide[,c(1,2,3,4,5,12,13,14)] # Trim down to broader groups
+  data<-melt(data_wide,value.name="d13",id.vars=c("Sample_Name","Rhizosphere_Manipulation","Tree","Substrate_Type"))
+  names(data)[5]<-"Microbial_Group"
+  
+  ## Add a column for tree ID
+  data$Tree_ID<-substr(data$Sample_Name,1,5)
+  
+  ## Formatting requirements
+  PLFA_13C<-data.frame("Core_ID"=data$Sample_Name,"Tree"=data$Tree,"Rhizosphere_Manipulation"=data$Rhizosphere_Manipulation,"D13_PLFA"=data$d13,"Microbial_Group"=data$Microbial_Group,"Substrate"=data$Substrate_Type)
+  substring(PLFA_13C$Core_ID,3,3)<-"_"
+  substring(PLFA_13C$Core_ID,6,6)<-"_"
+  
+  ## Separate leaf and starch datasets
+  leaf_PLFA<-filter(PLFA_13C,Substrate=="L")
+  leaf_PLFA<-leaf_PLFA[,1:5]
+  starch_PLFA<-filter(PLFA_13C,Substrate=="S")
+  starch_PLFA<-starch_PLFA[,1:5]
+  
+  ## AMF
+  leaf_AMF<-filter(leaf_PLFA,Microbial_Group=="AMF")
+  leaf_AMF<-leaf_AMF[,1:4]
+  starch_AMF<-filter(starch_PLFA,Microbial_Group=="AMF")
+  starch_AMF<-starch_AMF[,1:4]
+  
+  ## Fungi
+  leaf_fungi<-filter(leaf_PLFA,Microbial_Group=="FUNGI")
+  leaf_fungi<-leaf_fungi[,1:4]
+  starch_fungi<-filter(starch_PLFA,Microbial_Group=="FUNGI")
+  starch_fungi<-starch_fungi[,1:4]
+  
+  ## Bacteria
+  leaf_bact<-filter(leaf_PLFA,Microbial_Group=="BACTERIA")
+  leaf_bact<-leaf_bact[,1:4]
+  starch_bact<-filter(starch_PLFA,Microbial_Group=="BACTERIA")
+  starch_bact<-starch_bact[,1:4]
+  
+  ## All Microbes
+  leaf_allmicro<-filter(leaf_PLFA,Microbial_Group=="ALL_MICROBES")
+  leaf_allmicro<-leaf_allmicro[,1:4]
+  starch_allmicro<-filter(starch_PLFA,Microbial_Group=="ALL_MICROBES")
+  starch_allmicro<-starch_allmicro[,1:4]
+  
+# 13C Specific Respiration
+  SpecResp_13C<-read.csv("Final_Specific_Respiration_Data.csv")
+  
+  ## Formatting requirements
+  substring(SpecResp_13C$Core_ID,3,3)<-"_"
+  substring(SpecResp_13C$Core_ID,6,6)<-"_"
+  SpecResp_13C<-data.frame("Core_ID"=SpecResp_13C$Core_ID,"Tree"=SpecResp_13C$Tree_Species,"Rhizosphere_Manipulation"=as.factor(SpecResp_13C$Mesh_Type),"SpecResp_ug_CO2_FAME"=SpecResp_13C$Specific_Respiration_CO2_FAME,"Substrate"=SpecResp_13C$Label_Type)
+  
+  ## Separate leaf and starch
+  leaf_SpecResp<-filter(SpecResp_13C,Substrate=="L")
+  leaf_SpecResp<-leaf_SpecResp[,1:4]
+  starch_SpecResp<-filter(SpecResp_13C,Substrate=="S")
+  starch_SpecResp<-starch_SpecResp[,1:4]
+
+# Background respiration
+  
+  
+  
 PLFA<-
 SpecResp<-
 ```
